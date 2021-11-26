@@ -1,6 +1,12 @@
+// need to add the compat in import for v9
+//https://stackoverflow.com/questions/68946446/how-do-i-fix-a-firebase-9-0-import-error-attempted-import-error-firebase-app
+
+import firebase from "firebase/compat/app"; 
+import "firebase/compat/database";
+
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { initializeApp } from "firebase/app"; // somehow doesn't work
+// import { getAnalytics } from "firebase/analytics"; // somehow doesn't work
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,11 +24,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const app = firebase.initializeApp(firebaseConfig);
+// const db = app.database()
+// export default db;
+// const analytics = getAnalytics(app);
+
 
 // commented out because this is probably all wrong
-
 // import firebase from 'firebase';
 // //from 1st may
 // var firebaseConfig = {
@@ -37,4 +45,4 @@ const analytics = getAnalytics(app);
 // };
 // // Initialize Firebase
 // firebase.initializeApp(firebaseConfig);
-// export default firebase;
+export default firebase; // needs to contain a default export
