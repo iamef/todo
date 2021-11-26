@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import firebase from '../firebase';
-import { TextField } from '@material-ui/core';
+import { RadioGroup, TextField } from '@material-ui/core';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
+
+// Added more fields usinig this!
+// https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
 const Form = () => {
-    const [title, setTitle] = useState('');
-    const handleOnChange = (e) => {
-        setTitle(e.target.value);
-    }
+    const [formData, setFormData] = useState({
+        title: "",
+        dueDate: "",
+        hardDeadline: "",
+        estTime: "",
+    });
+    
     const createTodo = () => {
         const todoRef = firebase.database().ref('Todo');
         const todo = {
-            title,
+            ...formData,
             complete: false,
         };
         todoRef.push(todo);
-        setTitle('')
+        setFormData({
+            title: "",
+            dueDate: "",
+            hardDeadline: "",
+            estTime: "",
+        })
     }
     return (
         <>
@@ -24,14 +35,49 @@ const Form = () => {
                     variant='standard'
                     label='Add Todo'
                     type='text'
-                    value={title}
-                    onChange={handleOnChange}
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
                     className='textfield'
                     size='medium'
                 />
+                <br/>
+                
+                <TextField
+                    variant='standard'
+                    label='Due Date'
+                    type='text'
+                    value={formData.dueDate}
+                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                    className='textfield'
+                    size='medium'
+                />
+
+                <div className="radio">
+                    <label>
+                        <input type="radio" value="option1" checked={true} />
+                        Hard Deadline
+                    </label>
+                </div>
+                <div className="radio">
+                    <label>
+                        <input type="radio" value="option2" />
+                        Soft Deadline
+                    </label>
+                </div>
+                
+                <TextField
+                    variant='standard'
+                    label='How Long Will it Take'
+                    type='text'
+                    value={formData.estTime}
+                    onChange={(e) => setFormData({...formData, estTime: e.target.value})}
+                    className='textfield'
+                    size='medium'
+                />
+                
                 <div className='add'>
                     {
-                        title === '' ?
+                        formData.title === '' ?
                             <AddCircleOutlineOutlinedIcon
                                 fontSize='large'
                                 className='icon'
