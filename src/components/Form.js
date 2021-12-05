@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
+
 import firebase from '../firebase';
 
 import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio } from '@material-ui/core';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+
+
 // Added more fields usinig this!
 // https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
 const Form = () => {
     const [formData, setFormData] = useState({
         title: "",
-        dueDate: "",
-        hardDeadline: "",
+        dueDate: new Date(),
+        hardDeadline: true,
         estTime: "",
         priority: "high"
     });
@@ -26,14 +32,16 @@ const Form = () => {
         setFormData({
             title: "",
             dueDate: "",
-            hardDeadline: "",
+            hardDeadline: true,
             estTime: "",
+            priority: "high"
         })
     }
     return (
         <>
             <div className='form'>
                 <TextField
+                    required
                     variant='standard'
                     label='Add Todo'
                     type='text'
@@ -44,17 +52,44 @@ const Form = () => {
                 />
                 <br/>
                 
-                <TextField
-                    variant='standard'
-                    label='Due Date'
-                    type='text'
+                {/* attempts to change color https://github.com/mui-org/material-ui-pickers/issues/393 */}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                    renderInput={(props) => <TextField {...props} />}
                     value={formData.dueDate}
-                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                    label="Due Date"
+                    onChange={(e) => setFormData({...formData, dueDate: e})}
                     className='textfield'
                     size='medium'
                 />
+                </LocalizationProvider>
 
-                <div className="radio">
+                {/* <TextField
+                    variant='standard'
+                    label='Due Date'
+                    type='datetime-local'
+                    value={formData.dueDate}
+                    defaultValue={new Date()}
+                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                    className='textfield'
+                    size='medium'
+                /> */}
+
+                <RadioGroup row>
+                    <FormControlLabel 
+                        checked={formData.hardDeadline}
+                        control={<Radio />} 
+                        onChange={(e) => setFormData({...formData, hardDeadline: e.target.checked})}
+                        label="Hard Deadline" />
+                    <FormControlLabel 
+                        checked={!formData.hardDeadline}
+                        control={<Radio />} 
+                        onChange={(e) => setFormData({...formData, hardDeadline: !e.target.checked})}
+                        label="Soft Deadline" />
+                </RadioGroup>
+
+                
+                {/* <div className="radio">
                     <label>
                         <input type="radio" value="option1" checked={true} />
                         Hard Deadline
