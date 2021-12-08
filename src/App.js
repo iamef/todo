@@ -10,6 +10,7 @@ function App() {
   return (
     <>
       <div className='app'>
+        <CalendarIntegration />
         <TodoApp />
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"
