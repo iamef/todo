@@ -33,8 +33,15 @@ const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v
 // included, separated by spaces.
 var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
+
+/**
+ *  Initializes the API client library and sets up sign-in state
+ *  listeners.
+ */
 export function handleClientLoad(){
   console.log("client load yay")
+  
+  
   window.gapi.load("client:auth2", () => {
     window.gapi.client.init({
       apiKey: API_KEY,
@@ -47,8 +54,6 @@ export function handleClientLoad(){
 
       // Handle the initial sign-in state.
       updateSigninStatus(window.window.gapi.auth2.getAuthInstance().isSignedIn.get());
-      // authorizeButton.onclick = handleAuthClick;
-      // signoutButton.onclick = handleSignoutClick;
       console.log("handle client load seemed to have worked")
     }, function(error) {
       console.log(JSON.stringify(error, null, 2));
@@ -57,18 +62,24 @@ export function handleClientLoad(){
 }
 
 /**
-       *  Called when the signed in status changes, to update the UI
-       *  appropriately. After a sign-in, the API is called.
-       */
+ *  Called when the signed in status changes, to update the UI
+ *  appropriately. After a sign-in, the API is called.
+ */
 function updateSigninStatus(isSignedIn) {
-  console.log("Update sign-in status")
+  console.log("Update sign-in status: ", isSignedIn)
+  
+  var authorizeButton = document.getElementById('authorize_button');
+  var signoutButton = document.getElementById('signout_button');
+
   if (isSignedIn) {
-    // authorizeButton.style.display = 'none';
-    // signoutButton.style.display = 'block';
+    console.log(window.gapi.auth2.getAuthInstance().
+                currentUser.get().getBasicProfile().getEmail());
+    authorizeButton.style.display = 'none';
+    signoutButton.style.display = 'block';
     listUpcomingEvents();
   } else {
-    // authorizeButton.style.display = 'block';
-    // signoutButton.style.display = 'none';
+    authorizeButton.style.display = 'block';
+    signoutButton.style.display = 'none';
   }
 }
 
@@ -82,7 +93,7 @@ export function handleAuthClick(event) {
 /**
  *  Sign out the user upon button click.
  */
-function handleSignoutClick(event) {
+export function handleSignoutClick(event) {
   window.gapi.auth2.getAuthInstance().signOut();
 }
 
