@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 
 import firebase from '../firebase';
 
-import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio } from '@material-ui/core';
-import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
+import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio } from '@mui/material';
+
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+// import { AddCircleRoundedIcon, AddCircleOutlineOutlinedIcon } from '@mui/icons-material'
+// import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -50,6 +53,7 @@ const Form = () => {
                     className='textfield'
                     size='medium'
                 />
+                <br/>
                 <br/>
                 
                 {/* attempts to change color https://github.com/mui-org/material-ui-pickers/issues/393 */}
@@ -165,12 +169,12 @@ const Form = () => {
                 <div className='add'>
                     {
                         formData.title === '' ?
-                            <AddCircleOutlineOutlinedIcon
+                            <AddCircleOutlineIcon
                                 fontSize='large'
                                 className='icon'
                             />
                             :
-                            <AddCircleRoundedIcon
+                            <AddCircleIcon
                                 onClick={createTodo}
                                 fontSize='large'
                                 className='icon'
