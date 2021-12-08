@@ -19,12 +19,10 @@ export const loadGoogleScript = () => {
 // copied from https://developers.google.com/calendar/api/quickstart/js
 
 
-// TIS THE LOCALHOST:8000 CLiEnT ID
-// const CLIENT_ID = '45873534951-ebrqt8r78ii9vsh5smmf0d0nllm2aa6g.apps.googleusercontent.com';
-
-const CLIENT_ID = '45873534951-sdg717toe4qqi52qh1vm9sjrt040gvjc.apps.googleusercontent.com'
+const CLIENT_ID = '45873534951-ebrqt8r78ii9vsh5smmf0d0nllm2aa6g.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyCEGfVixki6n9JjL4mU9jhT6AHEtEofHP4';
 
+console.log(CLIENT_ID)
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
