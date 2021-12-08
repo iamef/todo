@@ -11,7 +11,7 @@ export const loadGoogleScript = () => {
     const js = document.createElement('script');
     js.id = id
     js.src = src;
-    js.onload = window.onGoogleScriptLoad; // fascinating
+    js.onload = handleClientLoad; // fascinating
     firstJs.parentNode.insertBefore(js, firstJs);
   }
 }
