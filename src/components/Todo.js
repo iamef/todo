@@ -1,8 +1,8 @@
 import React from 'react';
 import firebase from '../firebase';
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
-import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { motion } from 'framer-motion';
 const Todo = ({ todo }) => {
     const deleteTodo = () => {
@@ -23,19 +23,19 @@ const Todo = ({ todo }) => {
                     className='list'>
                     {
                         todo.complete ?
-                            <CheckCircleRoundedIcon
+                            <CheckCircleIcon
                                 className='icon'
                                 onClick={completeTodo}
                                 fontSize='large'
                             /> :
-                            <CheckCircleOutlineRoundedIcon
+                            <CheckCircleOutlineIcon
                                 className='icon'
                                 onClick={completeTodo}
                                 fontSize='large'
                             />
                     }
                     <motion.div>
-                        <HighlightOffRoundedIcon
+                        <HighlightOffIcon
                             className='icon'
                             onClick={deleteTodo}
                             fontSize='large'
