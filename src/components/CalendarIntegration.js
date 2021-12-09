@@ -45,9 +45,12 @@ class CalendarIntegration extends React.Component{
         super(props)
         
         this.onSigninChange = this.onSigninChange.bind(this);
-
-        this.state = { signedIn: null }
+        this.handleShowCalClick = this.handleShowCalClick.bind(this);
+        
+        this.state = { signedIn: null, calendarsAvailable: undefined, showCalendars: false }
     }
+
+    
 
     // called when signin listener is changed
     onSigninChange(isSignedIn){
@@ -93,12 +96,23 @@ class CalendarIntegration extends React.Component{
         var button;
         // console.log("CalInt.js", window.gapi)
         if (this.state.signedIn){
-            return (
+            if (this.state.showCalendars)
+                return (
                 <>
                 <SignoutButton onClick={this.handleSignoutClick} />
+                <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
                 <CalendarSelection calendars = {this.state.calendarsAvailable}/>
                 </>
-            )
+                )
+            else{
+                return (
+                <>
+                <SignoutButton onClick={this.handleSignoutClick} />
+                <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
+                {/* <CalendarSelection calendars = {this.state.calendarsAvailable}/> */}
+                </>
+                )
+            }
         }else if(this.state.signedIn === null){
             return null;
         }
