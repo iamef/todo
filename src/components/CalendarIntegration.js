@@ -50,7 +50,19 @@ class CalendarIntegration extends React.Component{
         this.state = { signedIn: null, calendarsAvailable: undefined, showCalendars: false }
     }
 
-    
+    componentDidMount(){
+        console.log(this.state)
+        console.log("mount")
+        
+        handleClientLoad(this.onSigninChange)
+        // const auth = new google.auth.GoogleAuth({
+        // // Scopes can be specified either as an array or as a single, space-delimited string.
+        // scopes: ["https://www.googleapis.com/auth/calendar.readonly"]
+        // });
+        // const authClient = auth.getClient();
+
+        // console.log("mount", authClient)
+    }
 
     // called when signin listener is changed
     onSigninChange(isSignedIn){
