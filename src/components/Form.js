@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import firebase from '../firebase';
 
-import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio } from '@mui/material';
+import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -56,42 +56,46 @@ const Form = () => {
                 <br/>
                 <br/>
                 
-                {/* attempts to change color https://github.com/mui-org/material-ui-pickers/issues/393 */}
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    value={formData.dueDate}
-                    label="Due Date"
-                    onChange={(e) => setFormData({...formData, dueDate: e})}
-                    className='textfield'
-                    size='medium'
-                />
-                </LocalizationProvider>
+                <FormGroup row>
+                    {/* attempts to change color https://github.com/mui-org/material-ui-pickers/issues/393 */}
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        renderInput={(props) => <TextField {...props} />}
+                        value={formData.dueDate}
+                        label="Due Date"
+                        onChange={(e) => {
+                            console.log(e);
+                            setFormData({...formData, dueDate: e});
+                        }}
+                        className='textfield'
+                        size='medium'
+                    />
+                    </LocalizationProvider>
 
-                {/* <TextField
-                    variant='standard'
-                    label='Due Date'
-                    type='datetime-local'
-                    value={formData.dueDate}
-                    defaultValue={new Date()}
-                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
-                    className='textfield'
-                    size='medium'
-                /> */}
+                    {/* <TextField
+                        variant='standard'
+                        label='Due Date'
+                        type='datetime-local'
+                        value={formData.dueDate}
+                        defaultValue={new Date()}
+                        onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                        className='textfield'
+                        size='medium'
+                    /> */}
 
-                <RadioGroup row>
-                    <FormControlLabel 
-                        checked={formData.hardDeadline}
-                        control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, hardDeadline: e.target.checked})}
-                        label="Hard Deadline" />
-                    <FormControlLabel 
-                        checked={!formData.hardDeadline}
-                        control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, hardDeadline: !e.target.checked})}
-                        label="Soft Deadline" />
-                </RadioGroup>
-
+                    <RadioGroup row>
+                        <FormControlLabel 
+                            checked={formData.hardDeadline}
+                            control={<Radio />} 
+                            onChange={(e) => setFormData({...formData, hardDeadline: e.target.checked})}
+                            label="Hard Deadline" />
+                        <FormControlLabel 
+                            checked={!formData.hardDeadline}
+                            control={<Radio />} 
+                            onChange={(e) => setFormData({...formData, hardDeadline: !e.target.checked})}
+                            label="Soft Deadline" />
+                    </RadioGroup>
+                </FormGroup>
                 
                 {/* <div className="radio">
                     <label>
@@ -120,14 +124,15 @@ const Form = () => {
                 
                 <br/>
                 <br/>
+                
+                <FormLabel component="legend">Priority</FormLabel>  
+                <RadioGroup row>
 
-                <RadioGroup>
-                    <FormLabel component="legend">Priority</FormLabel>  
                     <FormControlLabel 
                         checked={formData.priority === 'tbd'}
                         control={<Radio />} 
                         onChange={(e) => setFormData({...formData, priority: 'tbd'})}
-                        label="Priority To Be Determined" />
+                        label="To Be Determined" />
                     <FormControlLabel 
                         checked={formData.priority === 'vlow'}
                         control={<Radio />} 
