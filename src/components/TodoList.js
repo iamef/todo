@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import firebase from '../firebase'
-import Todo from './Todo';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
