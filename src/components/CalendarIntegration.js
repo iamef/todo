@@ -40,39 +40,74 @@ function ShowCalendarButton(props){
     )
 }
 
+class CalendarIntegration extends React.Component{
+    constructor(props){
+        super(props)
+        
+        this.onSigninChange = this.onSigninChange.bind(this);
 
-// function CalendarCheckboxes(props){
-//     // props.calsIds.map((id)) => <FormControlLabel />
-// }
+        this.state = { signedIn: null }
+    }
 
+    // called when signin listener is changed
+    onSigninChange(isSignedIn){
+        console.log("onSigninChange", isSignedIn)
+        this.setState({ signedIn: isSignedIn})
+        
+        if(isSignedIn){
+            getCalendarList((cals) => {
+                console.log(cals)
+                this.setState({calendarsAvailable: cals});
+            })
+        }else{
+            this.setState({calendarsAvailable: undefined})
+        }
 
-// const CalendarIntegration = () => {
-//     return (
-//         <> 
-//         {/* This is necessary because JSX need parent */}
-//             <Button
-//                 variant='contained'
-//                 id='authorize_button'
-//                 onClick={handleAuthClick}
-//             >
-//                 Connect to GCAL
-//             </Button>
+        console.log(this.state)
+    }
+    
+    handleAuthClick(){
+        gapiSignin()
+    }
 
-//             <Button
-//                 variant='contained'
-//                 id='signout_button'
-//                 onClick={handleSignoutClick}
-//             >
-//                 Sign Out
-//             </Button>
+    handleSignoutClick(){
+        gapiSignout()
+    }
 
-//             <Checkbox>
-//                 label
-//             </Checkbox>
+    handleShowCalClick(){
+        console.log("clicked!")
+        this.setState((state) => {
+            return {showCalendars: !state.showCalendars}
+        });
 
-//         </>
-//     );
-// }
+        getCalendarList((cals) => {
+            // console.log(cals)
+            this.setState({calendarsAvailable: cals});
+        })
 
+    }
+
+    render(){
+        loadGoogleScript(() => handleClientLoad(this.onSigninChange))
+        
+        var button;
+        // console.log("CalInt.js", window.gapi)
+        if (this.state.signedIn){
+            return (
+                <>
+                <SignoutButton onClick={this.handleSignoutClick} />
+                <CalendarSelection calendars = {this.state.calendarsAvailable}/>
+                </>
+            )
+        }else if(this.state.signedIn === null){
+            return null;
+        }
+        
+        return (
+        <>
+            <LoginButton onClick={this.handleAuthClick} />
+        </>)
+    }
+}
 
 export default CalendarIntegration;
