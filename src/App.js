@@ -2,11 +2,8 @@ import React from 'react';
 import './App.css';
 import TodoApp from './components/TodoApp'
 import CalendarIntegration from './components/CalendarIntegration';
-import { loadGoogleScript } from './utils/loadgs';
 
 function App() {
-  loadGoogleScript();
-
   return (
     <>
       <div className='app'>
