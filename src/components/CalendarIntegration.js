@@ -39,4 +39,40 @@ function ShowCalendarButton(props){
         </Button>
     )
 }
+
+
+// function CalendarCheckboxes(props){
+//     // props.calsIds.map((id)) => <FormControlLabel />
+// }
+
+
+// const CalendarIntegration = () => {
+//     return (
+//         <> 
+//         {/* This is necessary because JSX need parent */}
+//             <Button
+//                 variant='contained'
+//                 id='authorize_button'
+//                 onClick={handleAuthClick}
+//             >
+//                 Connect to GCAL
+//             </Button>
+
+//             <Button
+//                 variant='contained'
+//                 id='signout_button'
+//                 onClick={handleSignoutClick}
+//             >
+//                 Sign Out
+//             </Button>
+
+//             <Checkbox>
+//                 label
+//             </Checkbox>
+
+//         </>
+//     );
+// }
+
+
 export default CalendarIntegration;
