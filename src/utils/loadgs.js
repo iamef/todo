@@ -1,4 +1,4 @@
-export const loadGoogleScript = () => {
+export function loadGoogleScript(onLoadFunc){
   // I feel like adding the "function" is a typo but apparently it works?
   console.log("Hello")
   const id = 'google-js'
@@ -11,7 +11,7 @@ export const loadGoogleScript = () => {
     const js = document.createElement('script');
     js.id = id
     js.src = src;
-    js.onload = handleClientLoad; // fascinating
+    js.onload = onLoadFunc; // fascinating
     firstJs.parentNode.insertBefore(js, firstJs);
   }
 }
@@ -36,10 +36,11 @@ var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
  *  Initializes the API client library and sets up sign-in state
  *  listeners.
  */
-export function handleClientLoad(){
+export function handleClientLoad(updateSigninCallback){
+  if(window.gapi === undefined) return;
+  
   console.log("client load yay")
-  
-  
+
   window.gapi.load("client:auth2", () => {
     window.gapi.client.init({
       apiKey: API_KEY,
@@ -48,10 +49,10 @@ export function handleClientLoad(){
       scope: SCOPES
     }).then(function () {
       // Listen for sign-in state changes.
-      window.gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+      window.gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninCallback);
 
       // Handle the initial sign-in state.
-      updateSigninStatus(window.window.gapi.auth2.getAuthInstance().isSignedIn.get());
+      updateSigninCallback(window.window.gapi.auth2.getAuthInstance().isSignedIn.get());
       console.log("handle client load seemed to have worked")
     }, function(error) {
       console.log(JSON.stringify(error, null, 2));
@@ -59,39 +60,39 @@ export function handleClientLoad(){
   })
 }
 
-/**
- *  Called when the signed in status changes, to update the UI
- *  appropriately. After a sign-in, the API is called.
- */
-function updateSigninStatus(isSignedIn) {
-  console.log("Update sign-in status: ", isSignedIn)
+// /**
+//  *  Called when the signed in status changes, to update the UI
+//  *  appropriately. After a sign-in, the API is called.
+//  */
+// function updateSigninStatus(isSignedIn) {
+//   console.log("Update sign-in status: ", isSignedIn)
   
-  var authorizeButton = document.getElementById('authorize_button');
-  var signoutButton = document.getElementById('signout_button');
+//   var authorizeButton = document.getElementById('authorize_button');
+//   var signoutButton = document.getElementById('signout_button');
 
-  if (isSignedIn) {
-    console.log(window.gapi.auth2.getAuthInstance().
-                currentUser.get().getBasicProfile().getEmail());
-    authorizeButton.style.display = 'none';
-    signoutButton.style.display = 'block';
-    listUpcomingEvents();
-  } else {
-    authorizeButton.style.display = 'block';
-    signoutButton.style.display = 'none';
-  }
-}
+//   if (isSignedIn) {
+//     console.log(window.gapi.auth2.getAuthInstance().
+//                 currentUser.get().getBasicProfile().getEmail());
+//     authorizeButton.style.display = 'none';
+//     signoutButton.style.display = 'block';
+//     listUpcomingEvents();
+//   } else {
+//     authorizeButton.style.display = 'block';
+//     signoutButton.style.display = 'none';
+//   }
+// }
 
 /**
        *  Sign in the user upon button click.
        */
-export function handleAuthClick(event) {
-  window.gapi.auth2.getAuthInstance().signIn();
+export function gapiSignin(event) {
+  return window.gapi.auth2.getAuthInstance().signIn();
 }
 
 /**
  *  Sign out the user upon button click.
  */
-export function handleSignoutClick(event) {
+export function gapiSignout(event) {
   window.gapi.auth2.getAuthInstance().signOut();
 }
 
@@ -101,24 +102,25 @@ export function handleSignoutClick(event) {
  *
  * @param {string} message Text to be placed in pre element.
  */
-function appendPre(message) {
-  console.log(message)
-  // var pre = document.getElementById('content');
-  // var textContent = document.createTextNode(message + '\n');
-  // pre.appendChild(textContent);
-}
+// function appendPre(message) {
+//   console.log(message)
+//   // var pre = document.getElementById('content');
+//   // var textContent = document.createTextNode(message + '\n');
+//   // pre.appendChild(textContent);
+// }
 
 /**
  * Print the summary and start datetime/date of the next ten events in
  * the authorized user's calendar. If no events are found an
  * appropriate message is printed.
  */
-function listUpcomingEvents() {
+export function getCalendarList(calListCallback) {
   // https://stackoverflow.com/questions/29974011/try-to-display-calendar-list-from-google-api-using-java-script
   var request = window.gapi.client.calendar.calendarList.list();
   request.execute(function(resp){
     var calendars = resp.items;
-    console.log(calendars);
+    // console.log(calendars);
+    calListCallback(calendars);
   });
   
   // window.gapi.client.calendar.events.list({
