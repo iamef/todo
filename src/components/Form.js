@@ -19,10 +19,11 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 const Form = () => {
     const [formData, setFormData] = useState({
         title: "",
-        dueDate: new Date(),
-        hardDeadline: true,
+        // dueDate: new Date(),
+        dueDate: "",
+        deadlineType: "noDeadline",
         estTime: "",
-        priority: "high"
+        priority: "tbd"
     });
     
     const createTodo = () => {
@@ -31,15 +32,22 @@ const Form = () => {
             ...formData,
             complete: false,
         };
+
+        todo.dueDate = todo.dueDate.toLocaleString()
+
+        console.log(todo);
         todoRef.push(todo);
         setFormData({
             title: "",
             dueDate: "",
-            hardDeadline: true,
+            // dueDate: new Date(),
+            deadlineType: "noDeadline",
             estTime: "",
-            priority: "high"
+            priority: "tbd"
         })
     }
+
+
     return (
         <>
             <div className='form'>
@@ -61,11 +69,15 @@ const Form = () => {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DateTimePicker
                         renderInput={(props) => <TextField {...props} />}
+                        // required={formData.deadlineType !== "noDeadline"}
                         value={formData.dueDate}
                         label="Due Date"
                         onChange={(e) => {
                             console.log(e);
-                            setFormData({...formData, dueDate: e});
+                            if(formData.deadlineType === "noDeadline")
+                                setFormData({...formData, dueDate: e, deadlineType: "hard"});
+                            else
+                                setFormData({...formData, dueDate: e});
                         }}
                         className='textfield'
                         size='medium'
@@ -85,15 +97,20 @@ const Form = () => {
 
                     <RadioGroup row>
                         <FormControlLabel 
-                            checked={formData.hardDeadline}
+                            checked={formData.deadlineType === "hard"}
                             control={<Radio />} 
-                            onChange={(e) => setFormData({...formData, hardDeadline: e.target.checked})}
+                            onChange={(e) => setFormData({...formData, deadlineType: "hard"})}
                             label="Hard Deadline" />
                         <FormControlLabel 
-                            checked={!formData.hardDeadline}
+                            checked={formData.deadlineType === "soft"}
                             control={<Radio />} 
-                            onChange={(e) => setFormData({...formData, hardDeadline: !e.target.checked})}
+                            onChange={(e) => setFormData({...formData, deadlineType: "soft"})}
                             label="Soft Deadline" />
+                        <FormControlLabel 
+                            checked={formData.deadlineType === "noDeadline"}
+                            control={<Radio />} 
+                            onChange={(e) => setFormData({...formData, deadlineType: "noDeadline", dueDate: ""})}
+                            label="No Deadline" />
                     </RadioGroup>
                 </FormGroup>
                 

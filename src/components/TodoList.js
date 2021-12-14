@@ -86,7 +86,7 @@ const TodoList = () => {
                         {todo.title}
                     </TableCell>
                     <TableCell align="right">{todo.dueDate}</TableCell>
-                    <TableCell align="right">{todo.hardDeadline.toString()}</TableCell>
+                    <TableCell align="right">{todo.deadlineType}</TableCell>
                     <TableCell align="right">{todo.estTime}</TableCell>
                     <TableCell align="right">{todo.priority}</TableCell>
                     </TableRow>
