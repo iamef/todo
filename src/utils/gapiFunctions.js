@@ -1,3 +1,4 @@
+// https://github.com/QuodAI/tutorial-react-google-api-login/blob/main/src/lib/GoogleLogin.js
 export function loadGoogleScript(onLoadFunc){
   // I feel like adding the "function" is a typo but apparently it works?
   console.log("Hello")

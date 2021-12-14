@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import React from 'react'
 
 import CalendarSelection from './CalendarSelection'
-import { gapiSignin, gapiSignout, handleClientLoad, getCalendarList, loadGoogleScript } from '../utils/loadgs'
+import { gapiSignin, gapiSignout, handleClientLoad, getCalendarList, loadGoogleScript } from '../utils/gapiFunctions'
 
 
 function LoginButton(props){
