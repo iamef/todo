@@ -31,13 +31,71 @@ export async function calculateBuffer(todos, calendars){
     
     return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
   });
+  console.log("SORTED", todos)
 
+  var buffer = 0;
+  var prevTodoEndString = (new Date()).toISOString()
+
+  for(var todo in todos){
+    var calIter = calendars.values(); // returns iterator so I can call next
+    
+    var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2021-12-20T07:36:53.880Z');
+    // for(var calId of calendars)
+    //   events = window.gapi.client.calendar.events.list({
+    //     'calendarId': calId,
+    //     'timeMin': prevTodoEndString, // note this is end time
+    //     'showDeleted': false,
+    //     'singleEvents': true,
+    //     'orderBy': 'startTime'
+    //   });
+
+    console.log(eList)
+    
+    
+  }
 }
 
 const eventsDispatcher = {
 
 }
 
+async function returnEventsRecursion(calIter, minTime, maxTime){
+  if(window.gapi.client.calendar === undefined){
+    console.log("gapi calendar undefined")
+    return;
+  }
+  
+  var calNext = calIter.next();
+  return new Promise((resolve, reject) => {
+    if(calNext.done){
+      resolve([]);
+    }else{
+      window.gapi.client.calendar.events.list({
+          'calendarId': calNext.value,
+          'timeMin': minTime, // note this is end time
+          'timeMax': maxTime, 
+          'showDeleted': false,
+          'singleEvents': true,
+          'orderBy': 'startTime'
+      }).then((response) => {
+        console.log("resp0", response)
+        returnEventsRecursion(calIter, minTime, maxTime).
+        then((recResponse) => {
+          var events = response.result.items;
+          console.log("resp", response)
+          console.log("recResp", recResponse)
+          resolve(response.result.items.concat(recResponse))
+        })
+      },
+      (error) => {
+        console.log(error);
+      });
+    }
+    
+    reject();
+
+  });
+}
 
 // /** Loads google calendar api
 //  * @param {string} apiKey api key for google's calendar api
