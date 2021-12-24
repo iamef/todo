@@ -1,6 +1,42 @@
-import firebase from '../firebase'
+// This function is probably unnecessary because we already get the todos from another place
+// export function getTodos(){
+//   firebase.database().ref("Todo").get().then((value) => {
+//       console.log(value.val())
 
+import { gapiSignin } from "./gapiFunctions";
 
+      
+
+//     }, (reason) => console.log(reason))
+// }
+
+// later on add support for overshoots  based on priority
+// Update to this https://blog.patricktriest.com/what-is-async-await-why-should-you-care/
+export async function calculateBuffer(todos, calendars){
+  // get calendars that are checked
+  console.log("unsortedtodos", todos)
+
+  console.log(calendars)
+
+  // sort todos in order of dueDate
+  // can later incoporate priority
+  todos.sort((item1, item2) => {
+    if(item1.dueDate == '' && item2.dueDate == ''){
+      return 0
+    }else if(item1.dueDate == ''){
+      return 1  // this means item1 - item2 is positive
+    }else if(item2.dueDate == ''){
+      return -1 // this means item1 - item2 is negative
+    }
+    
+    return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
+  });
+
+}
+
+const eventsDispatcher = {
+
+}
 
 
 // /** Loads google calendar api

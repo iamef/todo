@@ -7,7 +7,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
-import Paper from '@mui/material/Paper';
+import { calculateBuffer } from '../utils/calculateOvershoot';
 
 
 const deleteTodo = (todo) => {
@@ -21,21 +21,40 @@ const completeTodo = (todo) => {
     })
 }
 
+debugger
 const TodoList = () => {
     const [todoList, setTodoList] = useState();
     useEffect(() => {
+        
+        firebase.database().ref('Todo').get().then((sometodos) =>
+            console.log("some todo", sometodos.val())
+        );
+        
         const todoRef = firebase.database().ref('Todo');
         todoRef.on('value', (snapshot) => {
+            console.log(snapshot)
+            
             const todos = snapshot.val();
             console.log("Log todos", todos)
-            const todoList = []
-            for (let id in todos) {
-                console.log(id)
-                todoList.push({ id, ...todos[id] });
-            }
-            console.log(todoList)
-            setTodoList(todoList);
-        })
+            // console.log("parsed todos", JSON.parse(todos))
+            
+            firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
+                var calendars = calendarsSnapshot.val();
+
+                // console.log("Log todos", todos)
+                
+
+                const todoList = []
+                for (let id in todos) {
+                    console.log(id)
+                    todoList.push({ id, ...todos[id] });
+                }
+                console.log("todoList", todoList)
+                calculateBuffer(todoList, calendars)
+                setTodoList(todoList);
+            });
+
+        });
     }, [])
     
     return (
