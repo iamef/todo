@@ -39,7 +39,8 @@ export async function calculateBuffer(todos, calendars){
   for(var todo in todos){
     var calIter = calendars.values(); // returns iterator so I can call next
     
-    var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2021-12-20T07:36:53.880Z');
+    var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2021-12-25T07:36:53.880Z');
+    // debugger
     // for(var calId of calendars)
     //   events = window.gapi.client.calendar.events.list({
     //     'calendarId': calId,
@@ -49,8 +50,8 @@ export async function calculateBuffer(todos, calendars){
     //     'orderBy': 'startTime'
     //   });
 
-    console.log(eList)
-    
+    console.log('eList', eList)
+    // debugger
     
   }
 }
@@ -66,8 +67,12 @@ async function returnEventsRecursion(calIter, minTime, maxTime){
   }
   
   var calNext = calIter.next();
+  // debugger
   return new Promise((resolve, reject) => {
-    if(calNext.done){
+    // when it is done, 
+    // calNext.value is undefined
+    // calNext.done is true
+    if(calNext.done){  
       resolve([]);
     }else{
       window.gapi.client.calendar.events.list({
@@ -78,13 +83,18 @@ async function returnEventsRecursion(calIter, minTime, maxTime){
           'singleEvents': true,
           'orderBy': 'startTime'
       }).then((response) => {
-        console.log("resp0", response)
+        console.log("resp0", response.result.items, response)
         returnEventsRecursion(calIter, minTime, maxTime).
         then((recResponse) => {
-          var events = response.result.items;
-          console.log("resp", response)
-          console.log("recResp", recResponse)
+          // var events = response.result.items;
+          // console.log("resp", response, events)
+          // console.log("recResp", recResponse)
+          // // should return all the calendar events
+          // // by recursively concatenating them
           resolve(response.result.items.concat(recResponse))
+        }).catch((error) => {
+          console.log(error);
+          debugger
         })
       },
       (error) => {
@@ -92,7 +102,7 @@ async function returnEventsRecursion(calIter, minTime, maxTime){
       });
     }
     
-    reject();
+    // reject("Something went wrong...");
 
   });
 }

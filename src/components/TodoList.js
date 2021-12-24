@@ -21,7 +21,6 @@ const completeTodo = (todo) => {
     })
 }
 
-debugger
 const TodoList = () => {
     const [todoList, setTodoList] = useState();
     useEffect(() => {
