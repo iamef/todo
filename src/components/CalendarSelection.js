@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import firebase from '../firebase';
 
@@ -25,19 +25,18 @@ class CalendarSelection extends React.Component{
   }
 
   componentDidMount(){
-    console.log("cal selection mount");
+    // console.log("cal selection mount");
 
     firebase.database().ref("Calendars").get().then((value) => {
-      console.log(value.val())
+      // console.log(value.val())
       var formDataInitialJSON = value.val().map((calID) => {
         return "\"" + calID + "\"" + ": true"
       }).toString();
       formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
       
-      console.log(formDataInitialJSON)
+      // console.log(formDataInitialJSON)
 
       this.setState(formDataInitialJSON);
-
 
     }, (reason) => console.log(reason))
     // this.setState(['aaf', 'asdfasd', 'asdf'])

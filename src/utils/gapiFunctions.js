@@ -1,7 +1,7 @@
 // https://github.com/QuodAI/tutorial-react-google-api-login/blob/main/src/lib/GoogleLogin.js
 export function loadGoogleScript(onLoadFunc){
   // I feel like adding the "function" is a typo but apparently it works?
-  console.log("Hello")
+  // console.log("Hello")
   const id = 'google-js'
   const src = "https://apis.google.com/js/api.js" // Quad used platform.js
 
@@ -23,7 +23,7 @@ export function loadGoogleScript(onLoadFunc){
 const CLIENT_ID = '45873534951-ebrqt8r78ii9vsh5smmf0d0nllm2aa6g.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyCEGfVixki6n9JjL4mU9jhT6AHEtEofHP4';
 
-console.log(CLIENT_ID)
+// console.log(CLIENT_ID)
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
@@ -40,6 +40,7 @@ var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 export function handleClientLoad(updateSigninCallback){
   if(window.gapi === undefined) return;
   
+  debugger;
   console.log("client load yay")
 
   window.gapi.load("client:auth2", () => {
@@ -51,37 +52,18 @@ export function handleClientLoad(updateSigninCallback){
     }).then(function () {
       // Listen for sign-in state changes.
       window.gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninCallback);
-
+      window.gapi.auth2.getAuthInstance().isSignedIn.listen((abool) => console.log("handleLoad, isSignedIn", abool));
+      
+      // window.gapi.auth2.getAuthInstance().isSignedIn.listen(
+      
       // Handle the initial sign-in state.
       updateSigninCallback(window.window.gapi.auth2.getAuthInstance().isSignedIn.get());
-      console.log("handle client load seemed to have worked")
+      // console.log("handle client load seemed to have worked")
     }, function(error) {
       console.log(JSON.stringify(error, null, 2));
     });
   })
 }
-
-// /**
-//  *  Called when the signed in status changes, to update the UI
-//  *  appropriately. After a sign-in, the API is called.
-//  */
-// function updateSigninStatus(isSignedIn) {
-//   console.log("Update sign-in status: ", isSignedIn)
-  
-//   var authorizeButton = document.getElementById('authorize_button');
-//   var signoutButton = document.getElementById('signout_button');
-
-//   if (isSignedIn) {
-//     console.log(window.gapi.auth2.getAuthInstance().
-//                 currentUser.get().getBasicProfile().getEmail());
-//     authorizeButton.style.display = 'none';
-//     signoutButton.style.display = 'block';
-//     listUpcomingEvents();
-//   } else {
-//     authorizeButton.style.display = 'block';
-//     signoutButton.style.display = 'none';
-//   }
-// }
 
 /**
        *  Sign in the user upon button click.

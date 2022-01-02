@@ -51,8 +51,8 @@ class CalendarIntegration extends React.Component{
     }
 
     componentDidMount(){
-        console.log(this.state)
-        console.log("mount")
+        // console.log(this.state)
+        // console.log("mount")
         
         handleClientLoad(this.onSigninChange)
         // const auth = new google.auth.GoogleAuth({
@@ -66,19 +66,19 @@ class CalendarIntegration extends React.Component{
 
     // called when signin listener is changed
     onSigninChange(isSignedIn){
-        console.log("onSigninChange", isSignedIn)
+        // console.log("onSigninChange", isSignedIn)
         this.setState({ signedIn: isSignedIn})
         
         if(isSignedIn){
             getCalendarList((cals) => {
-                console.log(cals)
+                // console.log(cals)
                 this.setState({calendarsAvailable: cals});
             })
         }else{
             this.setState({calendarsAvailable: undefined})
         }
 
-        console.log(this.state)
+        // console.log(this.state)
     }
     
     handleAuthClick(){
@@ -105,7 +105,6 @@ class CalendarIntegration extends React.Component{
     render(){
         loadGoogleScript(() => handleClientLoad(this.onSigninChange))
         
-        var button;
         // console.log("CalInt.js", window.gapi)
         if (this.state.signedIn){
             if (this.state.showCalendars)
