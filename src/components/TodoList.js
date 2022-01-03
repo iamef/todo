@@ -31,10 +31,10 @@ const TodoList = () => {
         
         const todoRef = firebase.database().ref('Todo');
         todoRef.on('value', (snapshot) => {
-            console.log(snapshot)
+            // console.log(snapshot)
             
             const todos = snapshot.val();
-            console.log("Log todos", todos)
+            // console.log("Log todos", todos)
             // console.log("parsed todos", JSON.parse(todos))
             
             firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
@@ -45,10 +45,10 @@ const TodoList = () => {
 
                 const todoList = []
                 for (let id in todos) {
-                    console.log(id)
+                    // console.log(id)
                     todoList.push({ id, ...todos[id] });
                 }
-                console.log("todoList", todoList)
+                // console.log("todoList", todoList)
                 calculateBuffer(todoList, calendars)
                 setTodoList(todoList);
             });

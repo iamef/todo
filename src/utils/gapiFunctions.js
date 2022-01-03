@@ -52,7 +52,9 @@ export function handleClientLoad(updateSigninCallback){
     }).then(function () {
       // Listen for sign-in state changes.
       window.gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninCallback);
-      window.gapi.auth2.getAuthInstance().isSignedIn.listen((abool) => console.log("handleLoad, isSignedIn", abool));
+      
+      // apparently this also works and doesn't disrupt the former isSignedIn listener
+      // window.gapi.auth2.getAuthInstance().isSignedIn.listen((abool) => console.log("handleLoad, isSignedIn", abool));
       
       // window.gapi.auth2.getAuthInstance().isSignedIn.listen(
       

@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import React from 'react'
 
 import CalendarSelection from './CalendarSelection'
-import { gapiSignin, gapiSignout, handleClientLoad, getCalendarList, loadGoogleScript } from '../utils/gapiFunctions'
+// import { gapiSignin, gapiSignout, handleClientLoad, getCalendarList, loadGoogleScript } from '../utils/gapiFunctions'
 
 
 function LoginButton(props){
@@ -43,6 +43,7 @@ function ShowCalendarButton(props){
 class CalendarIntegration extends React.Component{
     constructor(props){
         super(props)
+        console.log("Cal Integration", props)
         
         this.onSigninChange = this.onSigninChange.bind(this);
         this.handleShowCalClick = this.handleShowCalClick.bind(this);
@@ -51,10 +52,10 @@ class CalendarIntegration extends React.Component{
     }
 
     componentDidMount(){
-        // console.log(this.state)
+        console.log(this.state)
         // console.log("mount")
         
-        handleClientLoad(this.onSigninChange)
+        // handleClientLoad(this.onSigninChange)
         // const auth = new google.auth.GoogleAuth({
         // // Scopes can be specified either as an array or as a single, space-delimited string.
         // scopes: ["https://www.googleapis.com/auth/calendar.readonly"]
@@ -64,16 +65,20 @@ class CalendarIntegration extends React.Component{
         // console.log("mount", authClient)
     }
 
+    componentDidUpdate(){
+        console.log(this.props, this.state)
+    }
+
     // called when signin listener is changed
     onSigninChange(isSignedIn){
         // console.log("onSigninChange", isSignedIn)
         this.setState({ signedIn: isSignedIn})
         
         if(isSignedIn){
-            getCalendarList((cals) => {
-                // console.log(cals)
-                this.setState({calendarsAvailable: cals});
-            })
+            // getCalendarList((cals) => {
+            //     // console.log(cals)
+            //     this.setState({calendarsAvailable: cals});
+            // })
         }else{
             this.setState({calendarsAvailable: undefined})
         }
@@ -82,11 +87,11 @@ class CalendarIntegration extends React.Component{
     }
     
     handleAuthClick(){
-        gapiSignin()
+        // gapiSignin()
     }
 
     handleSignoutClick(){
-        gapiSignout()
+        // gapiSignout()
     }
 
     handleShowCalClick(){
@@ -95,15 +100,15 @@ class CalendarIntegration extends React.Component{
             return {showCalendars: !state.showCalendars}
         });
 
-        getCalendarList((cals) => {
-            // console.log(cals)
-            this.setState({calendarsAvailable: cals});
-        })
+        // getCalendarList((cals) => {
+        //     // console.log(cals)
+        //     this.setState({calendarsAvailable: cals});
+        // })
 
     }
 
     render(){
-        loadGoogleScript(() => handleClientLoad(this.onSigninChange))
+        // loadGoogleScript(() => handleClientLoad(this.onSigninChange))
         
         // console.log("CalInt.js", window.gapi)
         if (this.state.signedIn){
