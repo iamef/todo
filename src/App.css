@@ -1,7 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@500&display=swap");
 
 body {
-  background: url("http://superdevresources.com/wp-content/uploads/2014/02/pattern-background.png");
+  background-color: beige;
+  /* background: url("http://superdevresources.com/wp-content/uploads/2014/02/pattern-background.png"); */
   font-family: "Bree Serif", serif;
 }
 
@@ -12,13 +13,13 @@ body {
 
 .todoapp {
   width: 90%;
-  max-width: 400px;
+  max-width: 750px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
   text-align: center;
   float: center;
-  padding: 20px;
+  padding: 50px;
   background: linear-gradient(10deg, #ff961d 0%, #f71aa2 100%);
   color: #fff;
   border: 0px solid rebeccapurple;

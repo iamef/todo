@@ -13,7 +13,7 @@ import "firebase/compat/database";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDVsbM8eWn_6opVMb86eIvyNiKpwyFmJ1w",
+  apiKey: "AIzaSyDVsbM8eWn_6opVMb86eIvyNiKpwyFmJ1w", // can be found on console.cloud.google.com
   authDomain: "todo-medium.firebaseapp.com",
   databaseURL: "https://todo-medium-default-rtdb.firebaseio.com",
   projectId: "todo-medium",
