@@ -10,18 +10,20 @@ import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from
 import { calculateBuffer } from '../utils/calculateOvershoot';
 
 
-const deleteTodo = (todo) => {
+function deleteTodo(todo){
     const todoRef = firebase.database().ref('Todo').child(todo.id);
     todoRef.remove();
 }
-const completeTodo = (todo) => {
+function completeTodo(todo){
     const todoRef = firebase.database().ref('Todo').child(todo.id);
     todoRef.update({
         complete: !todo.complete,
     })
 }
 
-const TodoList = () => {
+function TodoList(props){
+    console.log(props)
+    
     const [todoList, setTodoList] = useState();
     useEffect(() => {
         

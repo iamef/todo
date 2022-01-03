@@ -45,7 +45,10 @@ function App() {
         <CalendarIntegration 
           gapiLoaded={gapiState.loaded} 
           signedIn={gapiState.signedIn}/>
-        <TodoApp />
+        <TodoApp 
+          gapiLoaded={gapiState.loaded} 
+          signedIn={gapiState.signedIn}
+        />
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
