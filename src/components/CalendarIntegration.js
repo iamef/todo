@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import React from 'react'
 
 import CalendarSelection from './CalendarSelection'
-import { gapiSignin, gapiSignout, handleClientLoad, getCalendarList, loadGoogleScript } from '../utils/gapiFunctions'
+import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions'
 
 
 function LoginButton(props){
@@ -42,45 +42,38 @@ function ShowCalendarButton(props){
 
 class CalendarIntegration extends React.Component{
     constructor(props){
-        super(props)
+        super(props) // props are external and are passed into the class
+        // console.log("Cal Integration", props)
         
-        this.onSigninChange = this.onSigninChange.bind(this);
         this.handleShowCalClick = this.handleShowCalClick.bind(this);
         
-        this.state = { signedIn: null, calendarsAvailable: undefined, showCalendars: false }
+        // state is internal
+        this.state = { calendarsAvailable: undefined, showCalendars: false }
     }
 
     componentDidMount(){
-        // console.log(this.state)
-        // console.log("mount")
-        
-        handleClientLoad(this.onSigninChange)
-        // const auth = new google.auth.GoogleAuth({
-        // // Scopes can be specified either as an array or as a single, space-delimited string.
-        // scopes: ["https://www.googleapis.com/auth/calendar.readonly"]
-        // });
-        // const authClient = auth.getClient();
-
-        // console.log("mount", authClient)
+        // console.log("calint mount", this.props, this.state)
     }
 
-    // called when signin listener is changed
-    onSigninChange(isSignedIn){
-        // console.log("onSigninChange", isSignedIn)
-        this.setState({ signedIn: isSignedIn})
+    componentDidUpdate(prevProps, prevState, snapshot){
+        // console.log("calint update", prevProps, this.props, prevState, this.state)
         
-        if(isSignedIn){
+        /* can implement getCalendarList here, 
+           but I don't want user to sign out to have list update
+        if(prevProps.signedIn == false && this.props.signedIn == true){
             getCalendarList((cals) => {
                 // console.log(cals)
                 this.setState({calendarsAvailable: cals});
             })
-        }else{
+        } 
+        */
+        
+        // calendars shouldn't be available when user signs out
+        if(prevProps.signedIn === true && this.props.signedIn === false){
             this.setState({calendarsAvailable: undefined})
         }
-
-        // console.log(this.state)
     }
-    
+
     handleAuthClick(){
         gapiSignin()
     }
@@ -89,24 +82,24 @@ class CalendarIntegration extends React.Component{
         gapiSignout()
     }
 
+    // the show cal checkboxes button
+    // should only show when signed in
     handleShowCalClick(){
+        var show = !this.state.showCalendars;
+        if(show){
+            getCalendarList((cals) => {
+                this.setState({calendarsAvailable: cals});
+            })
+        }
+        
         console.log("clicked!")
         this.setState((state) => {
             return {showCalendars: !state.showCalendars}
         });
-
-        getCalendarList((cals) => {
-            // console.log(cals)
-            this.setState({calendarsAvailable: cals});
-        })
-
     }
 
     render(){
-        loadGoogleScript(() => handleClientLoad(this.onSigninChange))
-        
-        // console.log("CalInt.js", window.gapi)
-        if (this.state.signedIn){
+        if (this.props.signedIn){
             if (this.state.showCalendars)
                 return (
                 <>
@@ -124,7 +117,7 @@ class CalendarIntegration extends React.Component{
                 </>
                 )
             }
-        }else if(this.state.signedIn === null){
+        }else if(this.props.signedIn === null){
             return null;
         }
         
