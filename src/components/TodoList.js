@@ -79,7 +79,14 @@ class TodoList extends React.Component{
 
             calculateBuffer(todoList, calendars).then((buffers) => {
                 for(var todo of todoList){
-                    todo.bufferMS = buffers[todo.id]["bufferMS"]
+                    var bufferMS = buffers[todo.id]["bufferMS"]
+                    
+                    if(typeof(bufferMS) === 'number'){
+                        todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
+                    }else{
+                        todo.bufferHrs = bufferMS
+                    }
+
                     todo.bufferData = buffers[todo.id]
                 }
                 
@@ -140,7 +147,7 @@ class TodoList extends React.Component{
                         <TableCell align="right">{todo.deadlineType}</TableCell>
                         <TableCell align="right">{todo.estTime}</TableCell>
                         <TableCell align="right">{todo.priority}</TableCell>
-                        <TableCell align="right">{todo.bufferMS ? todo.bufferMS / (60*60*1000) : "loading"}</TableCell>
+                        <TableCell align="right">{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
                         </TableRow>
                     )
                     : null
