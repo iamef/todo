@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import firebase from '../firebase'
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -26,14 +26,15 @@ class TodoList extends React.Component{
         super(props);
         console.log("Todolist props", props);
 
-        this.state = {}
+        // need the todoList because 
+        // this.state.todoList can be mappable
+        // whereas this.state cannot be mappable
+        // https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
+        this.state = { todoList: false }
     }
 
     componentDidMount(){
-        // firebase.database().ref('Todo').get().then((sometodos) =>
-        //     console.log("some todo", sometodos.val())
-        // );
-        
+        console.log("Todolist mount", this.props, this.state)
         const todoRef = firebase.database().ref('Todo');
         todoRef.on('value', (snapshot) => {
             // Snapshot returns a DataSnapshot object
@@ -41,83 +42,49 @@ class TodoList extends React.Component{
             
             const todos = snapshot.val();
             console.log("Log todos", todos)
-            // console.log("parsed todos", JSON.parse(todos))
+        
             const todoList = []
             for (let id in todos) {
                 // console.log(id)
                 todoList.push({ id, ...todos[id] });
             }
-            // console.log("todoList", todoList)
-            // calculateBuffer(todoList, calendars)
-            this.setState(todoList);
-
 
             if(this.props.signedIn === true){
+                debugger;
                 firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
                     var calendars = calendarsSnapshot.val();
 
                     // console.log("Log todos", todos)
-                    
 
-                    const todoList = []
-                    for (let id in todos) {
-                        // console.log(id)
-                        todoList.push({ id, ...todos[id] });
-                    }
-                    // console.log("todoList", todoList)
                     calculateBuffer(todoList, calendars)
-                    this.setState(todoList);
+                    
+                    this.setState(this.setState({todoList: todoList}));
                 });
+            }else{
+                this.setState({todoList: todoList});
             }
 
+            // console.log("todoList", todoList)
+            // calculateBuffer(todoList, calendars)
         })
     }
 
-    
-    // useEffect(() => {
-        
-    //     // firebase.database().ref('Todo').get().then((sometodos) =>
-    //     //     console.log("some todo", sometodos.val())
-    //     // );
-        
-    //     const todoRef = firebase.database().ref('Todo');
-    //     todoRef.on('value', (snapshot) => {
-    //         // Snapshot returns a DataSnapshot object
-    //         // console.log("snapshot", snapshot) 
-            
-    //         const todos = snapshot.val();
-    //         console.log("Log todos", todos)
-    //         // console.log("parsed todos", JSON.parse(todos))
-    //         const todoList = []
-    //         for (let id in todos) {
-    //             // console.log(id)
-    //             todoList.push({ id, ...todos[id] });
-    //         }
-    //         // console.log("todoList", todoList)
-    //         // calculateBuffer(todoList, calendars)
-    //         setTodoList(todoList);
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("Todolist update", prevProps, this.props, prevState, this.state)
 
+        if(prevProps.signedIn !== this.props.signedIn && this.props.signedIn === true){
+            debugger;
+            firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
+                var calendars = calendarsSnapshot.val();
 
-    //         // if(props.signedIn === true){
-    //         //     firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
-    //         //         var calendars = calendarsSnapshot.val();
+                // console.log("Log todos", todos)
 
-    //         //         // console.log("Log todos", todos)
-                    
-
-    //         //         const todoList = []
-    //         //         for (let id in todos) {
-    //         //             // console.log(id)
-    //         //             todoList.push({ id, ...todos[id] });
-    //         //         }
-    //         //         // console.log("todoList", todoList)
-    //         //         calculateBuffer(todoList, calendars)
-    //         //         setTodoList(todoList);
-    //         //     });
-    //         // }
-
-    //     });
-    // }, [])
+                calculateBuffer(this.state.todoList, calendars)
+                
+                // this.setState(todoList);
+            });
+        }
+    }
     
     render(){
         return (
@@ -137,8 +104,8 @@ class TodoList extends React.Component{
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {this.state ?
-                    this.state.map((todo) => 
+                {this.state.todoList ?
+                    this.state.todoList.map((todo) => 
                         <TableRow
                         key={todo.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

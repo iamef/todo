@@ -55,7 +55,7 @@ class CalendarIntegration extends React.Component{
         // console.log("calint mount", this.props, this.state)
     }
 
-    componentDidUpdate(prevProps, prevState){
+    componentDidUpdate(prevProps, prevState, snapshot){
         // console.log("calint update", prevProps, this.props, prevState, this.state)
         
         /* can implement getCalendarList here, 
