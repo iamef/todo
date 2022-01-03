@@ -32,8 +32,9 @@ export async function calculateBuffer(todos, calendars){
   
   console.log("SORTED", todos)
 
-  var currBuffer = 0;
+  var currBufferMS = 0;
   var prevTodoDueDate = new Date()
+  var prevTodoName = "none, 1st todo"
 
   for(var todo of todos){
     // var calIter = calendars.values(); // returns iterator so I can call next
@@ -41,6 +42,19 @@ export async function calculateBuffer(todos, calendars){
     // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
     
     var todoDueDate = new Date(todo.dueDate)
+    
+    buffersById[todo.id] = {}
+    
+    var prevBufferMS = currBufferMS;
+    var msBetweenTasks = Math.max(0, todoDueDate - prevTodoDueDate);
+    var hoursBetweenTasks = msBetweenTasks / (60*60*1000);
+    
+    var msEventsBetweenTasks = 0;
+    var hoursEventsBetweenTasks = 0
+
+    var msToComplete = Number(todo.estTime) * 60*60*1000
+
+    console.log(prevBufferMS / (60*60*1000), hoursBetweenTasks, hoursEventsBetweenTasks)
 
     if(prevTodoDueDate < todoDueDate){
       var eList = []
@@ -55,7 +69,9 @@ export async function calculateBuffer(todos, calendars){
           'singleEvents': true,
           'orderBy': 'startTime'
         });
-        eList.concat(events.result.items)
+        // debugger;
+        console.log(events.result.items)
+        eList = eList.concat(events.result.items)
       }
 
       debugger
@@ -64,16 +80,29 @@ export async function calculateBuffer(todos, calendars){
       for(var event of eList){
         // TODO needs to work on this calculation
         console.log(event);
+
+        var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime))
+        var endTime = Math.min(todoDueDate, new Date(event.end.dateTime))
+        
+        console.log((endTime - startTime) / (60*60*1000))
+        
+        msEventsBetweenTasks += (endTime - startTime)
+
       }
+      hoursEventsBetweenTasks = msEventsBetweenTasks / (60*60*1000)
       
       prevTodoDueDate = todoDueDate
     }
 
-    currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
-
-    buffersById[todo.id] = currBuffer
+    currBufferMS = prevBufferMS + msBetweenTasks - 
+                            msEventsBetweenTasks - msToComplete
+    // currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
 
     
+    
+    buffersById[todo.id]["bufferMS"] = currBufferMS
+
+    prevTodoName = todo.title
   }
 
   return buffersById
