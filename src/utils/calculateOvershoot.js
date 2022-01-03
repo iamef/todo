@@ -1,11 +1,3 @@
-// This function is probably unnecessary because we already get the todos from another place
-// export function getTodos(){
-//   firebase.database().ref("Todo").get().then((value) => {
-//       console.log(value.val())
-
-//     }, (reason) => console.log(reason))
-// }
-
 // later on add support for overshoots  based on priority
 // Update to this https://blog.patricktriest.com/what-is-async-await-why-should-you-care/
 export async function calculateBuffer(todos, calendars){
@@ -40,10 +32,15 @@ export async function calculateBuffer(todos, calendars){
     // var calIter = calendars.values(); // returns iterator so I can call next
     
     // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
-    
-    var todoDueDate = new Date(todo.dueDate)
-    
     buffersById[todo.id] = {}
+
+    if(todo.dueDate == ''){
+        debugger;
+        buffersById[todo.id]["bufferMS"] = "N/A"
+        continue;
+    }
+
+    var todoDueDate = new Date(todo.dueDate)
     
     var prevBufferMS = currBufferMS;
     var msBetweenTasks = Math.max(0, todoDueDate - prevTodoDueDate);
@@ -69,12 +66,10 @@ export async function calculateBuffer(todos, calendars){
           'singleEvents': true,
           'orderBy': 'startTime'
         });
-        // debugger;
         console.log(events.result.items)
         eList = eList.concat(events.result.items)
       }
 
-      debugger
       console.log('eList', eList)
       buffersById[todo.id]["events"] = []
       for(var event of eList){
@@ -86,7 +81,7 @@ export async function calculateBuffer(todos, calendars){
             end: event.end.dateTime,
             htmlLink: event.htmlLink
         })
-
+        // debugger;
         console.log(event);
 
         var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime))
