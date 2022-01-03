@@ -76,9 +76,17 @@ export async function calculateBuffer(todos, calendars){
 
       debugger
       console.log('eList', eList)
-
+      buffersById[todo.id]["events"] = []
       for(var event of eList){
         // TODO needs to work on this calculation
+        console.log(event.summary, event.start, event.end);
+        buffersById[todo.id]["events"].push({
+            summary: event.summary, 
+            start: event.start.dateTime,
+            end: event.end.dateTime,
+            htmlLink: event.htmlLink
+        })
+
         console.log(event);
 
         var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime))
@@ -98,6 +106,11 @@ export async function calculateBuffer(todos, calendars){
                             msEventsBetweenTasks - msToComplete
     // currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
 
+    buffersById[todo.id]["prevTodo"] = todo.title;
+    buffersById[todo.id]["prevBuffer"] = prevBufferMS;
+    buffersById[todo.id]["hoursBetweensTasks"] = hoursBetweenTasks;
+    buffersById[todo.id]["hoursEventBetweensTasks"] = hoursEventsBetweenTasks;
+    buffersById[todo.id]["hoursToComplete"] = Number(todo.estTime);
     
     
     buffersById[todo.id]["bufferMS"] = currBufferMS
