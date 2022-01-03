@@ -40,7 +40,6 @@ var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 export function handleClientLoad(updateSigninCallback){
   if(window.gapi === undefined) return;
   
-  debugger;
   console.log("client load yay")
 
   window.gapi.load("client:auth2", () => {

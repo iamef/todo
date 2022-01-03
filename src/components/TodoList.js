@@ -148,19 +148,6 @@ class TodoList extends React.Component{
             </TableContainer>
             </motion.div>
         );
-        
-        // <>
-        //     <h2>TodoList</h2>
-        //     <motion.div
-        //         layout
-        //     >
-        //         {todoList ?
-        //             todoList.map((todo, index) =>
-        //                 <Todo todo={todo} key={index} />
-        //             )
-        //             : ''}
-        //     </motion.div>
-        // </>
     }
 }
 export default TodoList;

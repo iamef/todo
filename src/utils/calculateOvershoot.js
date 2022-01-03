@@ -3,10 +3,6 @@
 //   firebase.database().ref("Todo").get().then((value) => {
 //       console.log(value.val())
 
-import { gapiSignin } from "./gapiFunctions";
-
-      
-
 //     }, (reason) => console.log(reason))
 // }
 
@@ -21,11 +17,11 @@ export async function calculateBuffer(todos, calendars){
   // sort todos in order of dueDate
   // can later incoporate priority
   todos.sort((item1, item2) => {
-    if(item1.dueDate == '' && item2.dueDate == ''){
+    if(item1.dueDate === '' && item2.dueDate === ''){
       return 0
-    }else if(item1.dueDate == ''){
+    }else if(item1.dueDate === ''){
       return 1  // this means item1 - item2 is positive
-    }else if(item2.dueDate == ''){
+    }else if(item2.dueDate === ''){
       return -1 // this means item1 - item2 is negative
     }
     
