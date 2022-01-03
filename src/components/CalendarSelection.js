@@ -25,7 +25,7 @@ class CalendarSelection extends React.Component{
   }
 
   componentDidMount(){
-    // console.log("cal selection mount");
+    console.log("cal selection mount");
 
     firebase.database().ref("Calendars").get().then((value) => {
       // console.log(value.val())
