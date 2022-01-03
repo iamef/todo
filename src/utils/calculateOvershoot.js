@@ -9,6 +9,8 @@
 // later on add support for overshoots  based on priority
 // Update to this https://blog.patricktriest.com/what-is-async-await-why-should-you-care/
 export async function calculateBuffer(todos, calendars){
+  var buffersById = {}
+  
   // get calendars that are checked
   console.log("unsortedtodos", todos)
 
@@ -79,7 +81,7 @@ async function returnEventsRecursion(calIter, minTime, maxTime){
           'singleEvents': true,
           'orderBy': 'startTime'
       }).then((response) => {
-        console.log("resp0", response.result.items, response)
+        // console.log("resp0", response.result.items, response)
         returnEventsRecursion(calIter, minTime, maxTime).
         then((recResponse) => {
           // var events = response.result.items;

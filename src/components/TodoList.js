@@ -50,22 +50,14 @@ class TodoList extends React.Component{
             }
 
             if(this.props.signedIn === true){
-                debugger;
-                firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
-                    var calendars = calendarsSnapshot.val();
-
-                    // console.log("Log todos", todos)
-
-                    calculateBuffer(todoList, calendars)
-                    
-                    this.setState(this.setState({todoList: todoList}));
-                });
+                this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
+                    this.setState({todoList: todoListWithBuffers});
+                })
             }else{
                 this.setState({todoList: todoList});
             }
 
             // console.log("todoList", todoList)
-            // calculateBuffer(todoList, calendars)
         })
     }
 
@@ -73,17 +65,26 @@ class TodoList extends React.Component{
         console.log("Todolist update", prevProps, this.props, prevState, this.state)
 
         if(prevProps.signedIn !== this.props.signedIn && this.props.signedIn === true){
-            debugger;
-            firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
-                var calendars = calendarsSnapshot.val();
-
-                // console.log("Log todos", todos)
-
-                calculateBuffer(this.state.todoList, calendars)
-                
-                // this.setState(todoList);
-            });
+            this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                this.setState({todoList: todoListWithBuffers});
+            })
         }
+    }
+
+    getTodoListWithBuffers(todoList, callback){
+        firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
+            var calendars = calendarsSnapshot.val();
+
+            // console.log("Log todos", todos)
+
+            calculateBuffer(todoList, calendars).then((buffers) => {
+                for(var todo of todoList){
+                    todo["buffer"] = buffers[todo.id]
+                }
+                
+                callback(todoList)
+            })
+        });
     }
     
     render(){
@@ -100,7 +101,7 @@ class TodoList extends React.Component{
                     <TableCell align="right">deadline</TableCell>
                     <TableCell align="right">estTime</TableCell>
                     <TableCell align="right">priority</TableCell>
-                    <TableCell align="right">overshoot</TableCell>
+                    <TableCell align="right">buffer</TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
@@ -138,7 +139,7 @@ class TodoList extends React.Component{
                         <TableCell align="right">{todo.deadlineType}</TableCell>
                         <TableCell align="right">{todo.estTime}</TableCell>
                         <TableCell align="right">{todo.priority}</TableCell>
-                        <TableCell align="right">0</TableCell>
+                        <TableCell align="right">{todo.buffer ? todo.buffer / (60*60*1000) : "loading"}</TableCell>
                         </TableRow>
                     )
                     : null
