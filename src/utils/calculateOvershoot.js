@@ -29,29 +29,54 @@ export async function calculateBuffer(todos, calendars){
     
     return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
   });
+  
   console.log("SORTED", todos)
 
-  var buffer = 0;
-  var prevTodoEndString = (new Date()).toISOString()
+  var currBuffer = 0;
+  var prevTodoDueDate = new Date()
 
-  for(var todo in todos){
-    var calIter = calendars.values(); // returns iterator so I can call next
+  for(var todo of todos){
+    // var calIter = calendars.values(); // returns iterator so I can call next
     
-    var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2021-12-25T07:36:53.880Z');
-    // debugger
-    // for(var calId of calendars)
-    //   events = window.gapi.client.calendar.events.list({
-    //     'calendarId': calId,
-    //     'timeMin': prevTodoEndString, // note this is end time
-    //     'showDeleted': false,
-    //     'singleEvents': true,
-    //     'orderBy': 'startTime'
-    //   });
+    // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
+    
+    var todoDueDate = new Date(todo.dueDate)
 
-    console.log('eList', eList)
-    // debugger
+    if(prevTodoDueDate < todoDueDate){
+      var eList = []
+
+      for(var calId of calendars){
+        
+        var events = await window.gapi.client.calendar.events.list({
+          'calendarId': calId,
+          'timeMin': prevTodoDueDate.toISOString(), // note this is end time
+          'timeMax': todoDueDate.toISOString(), 
+          'showDeleted': false,
+          'singleEvents': true,
+          'orderBy': 'startTime'
+        });
+        eList.concat(events.result.items)
+      }
+
+      debugger
+      console.log('eList', eList)
+
+      for(var event of eList){
+        // TODO needs to work on this calculation
+        console.log(event);
+      }
+      
+      prevTodoDueDate = todoDueDate
+    }
+
+    currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
+
+    buffersById[todo.id] = currBuffer
+
     
   }
+
+  return buffersById
 }
 
 const eventsDispatcher = {
