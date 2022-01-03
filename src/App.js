@@ -24,11 +24,11 @@ function App() {
   //   });
 
   useEffect(() => {
-    console.log("useEffect", gapiState)
+    // console.log("useEffect", gapiState)
     if(!gapiState.loaded){
       loadGoogleScript(() => {
         setGapiState({loaded: true, signedIn: null});    
-        console.log("updating gapi State")
+        // console.log("updating gapi State")
       });
     }else if(gapiState.signedIn === null){
       handleClientLoad((isSignedIn) => {

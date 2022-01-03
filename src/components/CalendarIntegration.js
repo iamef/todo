@@ -42,31 +42,22 @@ function ShowCalendarButton(props){
 
 class CalendarIntegration extends React.Component{
     constructor(props){
-        super(props)
+        super(props) // props are external and are passed into the class
         console.log("Cal Integration", props)
         
         this.onSigninChange = this.onSigninChange.bind(this);
         this.handleShowCalClick = this.handleShowCalClick.bind(this);
         
-        this.state = { signedIn: null, calendarsAvailable: undefined, showCalendars: false }
+        // state is internal
+        this.state = { signedIn: props.signedIn, calendarsAvailable: undefined, showCalendars: false }
     }
 
     componentDidMount(){
-        console.log(this.state)
-        // console.log("mount")
-        
-        // handleClientLoad(this.onSigninChange)
-        // const auth = new google.auth.GoogleAuth({
-        // // Scopes can be specified either as an array or as a single, space-delimited string.
-        // scopes: ["https://www.googleapis.com/auth/calendar.readonly"]
-        // });
-        // const authClient = auth.getClient();
-
-        // console.log("mount", authClient)
+        console.log("calint mount", this.state)
     }
 
     componentDidUpdate(){
-        console.log(this.props, this.state)
+        console.log("calint update", this.props, this.state)
     }
 
     // called when signin listener is changed
@@ -108,9 +99,6 @@ class CalendarIntegration extends React.Component{
     }
 
     render(){
-        // loadGoogleScript(() => handleClientLoad(this.onSigninChange))
-        
-        // console.log("CalInt.js", window.gapi)
         if (this.state.signedIn){
             if (this.state.showCalendars)
                 return (
