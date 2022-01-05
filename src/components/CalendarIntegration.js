@@ -4,6 +4,32 @@ import React from 'react'
 import CalendarSelection from './CalendarSelection'
 import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions'
 
+import { auth, firebaseSignInWithGoogle, db, firebaseSignOut } from "../firebase"
+
+function FireSignInButton(props){
+    return (
+        <Button
+            variant='contained'
+            id='ahhhhhhhhhhh'
+            onClick={props.onClick}
+        >
+            Firebase Sign In
+        </Button>
+    )
+}
+
+function FireSignOutButton(props){
+    return (
+        <Button
+            variant='contained'
+            id='ouuuutt'
+            onClick={props.onClick}
+        >
+            Firebase Sign Out
+        </Button>
+    )
+}
+
 
 function LoginButton(props){
     return (
@@ -82,6 +108,22 @@ class CalendarIntegration extends React.Component{
         gapiSignout()
     }
 
+    happyMonster(){
+        // debugger;
+        firebaseSignInWithGoogle().then((result) => {
+            console.log(result)
+            debugger;
+        })
+        // var result = await signInWithPopup(auth, provider)
+        // console.log(result);
+    }
+
+    sadMonster(){
+        firebaseSignOut().then(() => {
+            console.log("signed out")
+        })
+    }
+
     // the show cal checkboxes button
     // should only show when signed in
     handleShowCalClick(){
@@ -103,6 +145,8 @@ class CalendarIntegration extends React.Component{
             if (this.state.showCalendars)
                 return (
                 <>
+                <FireSignInButton onClick={this.happyMonster} />
+                <FireSignOutButton onClick={this.happyMonster} />
                 <SignoutButton onClick={this.handleSignoutClick} />
                 <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
                 <CalendarSelection calendars = {this.state.calendarsAvailable}/>
@@ -111,6 +155,8 @@ class CalendarIntegration extends React.Component{
             else{
                 return (
                 <>
+                <FireSignInButton onClick={this.happyMonster} />
+                <FireSignOutButton onClick={this.happyMonster} />
                 <SignoutButton onClick={this.handleSignoutClick} />
                 <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
                 {/* <CalendarSelection calendars = {this.state.calendarsAvailable}/> */}
@@ -118,11 +164,18 @@ class CalendarIntegration extends React.Component{
                 )
             }
         }else if(this.props.signedIn === null){
-            return null;
+            return (
+                <>
+                <FireSignInButton onClick={this.happyMonster} />
+                <FireSignOutButton onClick={this.sadMonster} />
+                </>
+            )
         }
         
         return (
         <>
+            <FireSignInButton onClick={this.happyMonster} />
+            <FireSignOutButton onClick={this.sadMonster} />
             <LoginButton onClick={this.handleAuthClick} />
         </>)
     }
