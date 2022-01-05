@@ -119,6 +119,8 @@ class CalendarIntegration extends React.Component{
     }
 
     sadMonster(){
+        debugger;
+        
         firebaseSignOut().then(() => {
             console.log("signed out")
         })
@@ -146,7 +148,7 @@ class CalendarIntegration extends React.Component{
                 return (
                 <>
                 <FireSignInButton onClick={this.happyMonster} />
-                <FireSignOutButton onClick={this.happyMonster} />
+                <FireSignOutButton onClick={this.sadMonster} />
                 <SignoutButton onClick={this.handleSignoutClick} />
                 <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
                 <CalendarSelection calendars = {this.state.calendarsAvailable}/>
@@ -156,7 +158,7 @@ class CalendarIntegration extends React.Component{
                 return (
                 <>
                 <FireSignInButton onClick={this.happyMonster} />
-                <FireSignOutButton onClick={this.happyMonster} />
+                <FireSignOutButton onClick={this.sadMonster} />
                 <SignoutButton onClick={this.handleSignoutClick} />
                 <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
                 {/* <CalendarSelection calendars = {this.state.calendarsAvailable}/> */}
