@@ -3,6 +3,7 @@
 
 import { initializeApp } from "firebase/app"
 import { getDatabase } from "firebase/database";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
 
 // import firebase from "firebase/compat/app"; 
 // import "firebase/compat/database";
@@ -37,28 +38,62 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getDatabase(firebaseApp)
-export default db;
 
-// firebase.initializeApp(firebaseConfig);
-// const app = firebase.initializeApp(firebaseConfig);
-// const db = app.database()
-// export default db;
-// const analytics = getAnalytics(app);
+const provider = new GoogleAuthProvider();
+provider.addScope("https://www.googleapis.com/auth/calendar.readonly");
+
+const auth = getAuth();
+
+async function firebaseSignInWithGoogle(){
+  return new Promise((resolve, reject) => {
+    signInWithPopup(auth, provider).then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+      // ...
+      debugger;
+      resolve(result);
+
+    })
+  });
+
+// signInWithPopup(auth, provider).then((result) => {
+//   // This gives you a Google Access Token. You can use it to access the Google API.
+//   const credential = GoogleAuthProvider.credentialFromResult(result);
+//   const token = credential.accessToken;
+//   // The signed-in user info.
+//   const user = result.user;
+//   // ...
+//   debugger;
+// }).catch((error) => {
+//   // Handle Errors here.
+//   const errorCode = error.code;
+//   const errorMessage = error.message;
+//   // The email of the user's account used.
+//   const email = error.email;
+//   // The AuthCredential type that was used.
+//   const credential = GoogleAuthProvider.credentialFromError(error);
+//   // ...
+//   console.log(errorCode, errorMessage, email, credential)
+//   debugger;
+// });
+}
+
+async function firebaseSignOut(){
+  return new Promise((resolve, reject) => {
+    signOut(auth).then(() => {
+      resolve(true);
+    });
+
+    // .catch((error) => {
+    //   // An error happened.
+    // });
+  });
+}
 
 
-// commented out because this is probably all wrong
-// import firebase from 'firebase';
-// //from 1st may
-// var firebaseConfig = {
-//     apiKey: "AIzaSyBgw6z_lKum5OgSjT_QTf5zHBUARrwZr9Y",
-//     authDomain: "todo-36448.firebaseapp.com",
-//     databaseURL: "https://todo-36448-default-rtdb.firebaseio.com",
-//     projectId: "todo-36448",
-//     storageBucket: "todo-36448.appspot.com",
-//     messagingSenderId: "717272925628",
-//     appId: "1:717272925628:web:abd8a5dfdc15b374bc57b9",
-//     measurementId: "G-06LGZRD0Z0"
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-// export default firebase; // needs to contain a default export
+
+
+export { auth, db, firebaseSignInWithGoogle , firebaseSignOut };
