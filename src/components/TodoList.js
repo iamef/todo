@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import firebase from '../firebase'
+import db from '../firebase'
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -8,15 +8,17 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
+import { get, onValue, ref, remove, update } from 'firebase/database';
 
 
 function deleteTodo(todo){
-    const todoRef = firebase.database().ref('Todo').child(todo.id);
-    todoRef.remove();
+    const todoRef = ref(db, "Todo/" + todo.id);
+    remove(todoRef);
 }
 function completeTodo(todo){
-    const todoRef = firebase.database().ref('Todo').child(todo.id);
-    todoRef.update({
+    // const todoRef = firebase.database().ref('Todo').child(todo.id);
+    const todoRef = ref(db, "Todo/" + todo.id);
+    update(todoRef, {
         complete: !todo.complete,
     })
 }
@@ -35,8 +37,18 @@ class TodoList extends React.Component{
 
     componentDidMount(){
         console.log("Todolist mount", this.props, this.state)
-        const todoRef = firebase.database().ref('Todo');
-        todoRef.on('value', (snapshot) => {
+        
+        // firebase.firestore().get().then((querySnapshot) => {
+        //     console.log(querySnapshot);
+        //     querySnapshot.forEach((doc) => {
+        //         debugger;
+        //         console.log(doc)
+        //     });
+        // });
+
+
+        const todoRef = ref(db, "Todo");
+        onValue(todoRef, (snapshot) => {
             // Snapshot returns a DataSnapshot object
             // console.log("snapshot", snapshot) 
             
@@ -72,7 +84,7 @@ class TodoList extends React.Component{
     }
 
     getTodoListWithBuffers(todoList, callback){
-        firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
+        get(ref(db), 'Calendars').then((calendarsSnapshot) => {
             var calendars = calendarsSnapshot.val();
 
             // console.log("Log todos", todos)

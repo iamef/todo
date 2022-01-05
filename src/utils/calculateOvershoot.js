@@ -35,7 +35,7 @@ export async function calculateBuffer(todos, calendars){
     buffersById[todo.id] = {}
 
     if(todo.dueDate == ''){
-        debugger;
+        // debugger;
         buffersById[todo.id]["bufferMS"] = "N/A"
         continue;
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-import firebase from '../firebase';
+import db from '../firebase';
+import { push, ref } from 'firebase/database';
 
 import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
 
@@ -27,7 +28,7 @@ const Form = () => {
     });
     
     const createTodo = () => {
-        const todoRef = firebase.database().ref('Todo');
+        const todoRef = ref(db, "Todo");
         const todo = {
             ...formData,
             complete: false,
@@ -36,7 +37,7 @@ const Form = () => {
         todo.dueDate = todo.dueDate.toLocaleString()
 
         console.log(todo);
-        todoRef.push(todo);
+        push(todoRef, todo);
         setFormData({
             title: "",
             dueDate: "",

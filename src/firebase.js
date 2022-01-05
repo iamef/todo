@@ -1,8 +1,19 @@
 // need to add the compat in import for v9
 //https://stackoverflow.com/questions/68946446/how-do-i-fix-a-firebase-9-0-import-error-attempted-import-error-firebase-app
 
-import firebase from "firebase/compat/app"; 
-import "firebase/compat/database";
+import { initializeApp } from "firebase/app"
+import { getDatabase } from "firebase/database";
+
+// import firebase from "firebase/compat/app"; 
+// import "firebase/compat/database";
+// import "firebase/compat/auth";
+
+// import "firebase/compat/firestore"
+
+
+// const firebase = require("firebase");
+// // Required for side-effects
+// require("firebase/firestore");
 
 // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app"; // somehow doesn't work
@@ -24,7 +35,11 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp)
+export default db;
+
+// firebase.initializeApp(firebaseConfig);
 // const app = firebase.initializeApp(firebaseConfig);
 // const db = app.database()
 // export default db;
@@ -46,4 +61,4 @@ firebase.initializeApp(firebaseConfig);
 // };
 // // Initialize Firebase
 // firebase.initializeApp(firebaseConfig);
-export default firebase; // needs to contain a default export
+// export default firebase; // needs to contain a default export
