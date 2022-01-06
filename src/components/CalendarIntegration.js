@@ -25,7 +25,7 @@ function SignoutButton(props){
             id='signout_button'
             onClick={props.onClick}
         >
-            Sign Out
+            Disconnect Google Calendar
         </Button>
     )
 
