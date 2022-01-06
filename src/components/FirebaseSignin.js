@@ -38,30 +38,6 @@ class FirebaseSignin extends React.Component{
       // this.state = { firebasedSignedIn: props }
   }
 
-  componentDidMount(){
-      // console.log("calint mount", this.props, this.state)
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot){
-      // console.log("calint update", prevProps, this.props, prevState, this.state)
-      
-      /* can implement getCalendarList here, 
-         but I don't want user to sign out to have list update
-      if(prevProps.signedIn == false && this.props.signedIn == true){
-          getCalendarList((cals) => {
-              // console.log(cals)
-              this.setState({calendarsAvailable: cals});
-          })
-      } 
-      */
-      
-      // calendars shouldn't be available when user signs out
-      // if(prevProps.signedIn === true && this.props.signedIn === false){
-      //     this.setState({calendarsAvailable: undefined})
-      // }
-  }
-
-
   signIn(){
       // debugger;
       firebaseSignInWithGoogle().then((result) => {

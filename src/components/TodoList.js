@@ -39,15 +39,6 @@ class TodoList extends React.Component{
     componentDidMount(){
         console.log("Todolist mount", this.props, this.state)
         
-        // firebase.firestore().get().then((querySnapshot) => {
-        //     console.log(querySnapshot);
-        //     querySnapshot.forEach((doc) => {
-        //         debugger;
-        //         console.log(doc)
-        //     });
-        // });
-
-
         if(this.props.firebaseSignedIn){
             this.initializeTodolist()
         }

@@ -83,24 +83,6 @@ class CalendarIntegration extends React.Component{
         gapiSignout()
     }
 
-    happyMonster(){
-        // debugger;
-        firebaseSignInWithGoogle().then((result) => {
-            console.log(result)
-            debugger;
-        })
-        // var result = await signInWithPopup(auth, provider)
-        // console.log(result);
-    }
-
-    sadMonster(){
-        debugger;
-        
-        firebaseSignOut().then(() => {
-            console.log("signed out")
-        })
-    }
-
     // the show cal checkboxes button
     // should only show when signed in
     handleShowCalClick(){
