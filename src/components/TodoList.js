@@ -28,6 +28,7 @@ class TodoList extends React.Component{
         super(props);
         console.log("Todolist props", props);
 
+        this.initializeTodolist = this.initializeTodolist.bind(this)
         // need the todoList because 
         // this.state.todoList can be mappable
         // whereas this.state cannot be mappable
@@ -47,6 +48,34 @@ class TodoList extends React.Component{
         // });
 
 
+        if(this.props.firebaseSignedIn){
+            this.initializeTodolist()
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("Todolist update", prevProps, this.props, prevState, this.state)
+        if(this.props.firebaseSignedIn){
+            if(prevProps.firebaseSignedIn != this.props.firebaseSignedIn){
+                this.initializeTodolist()
+            }else if(prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
+                this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                    this.setState({todoList: todoListWithBuffers});
+                })
+            }
+        }else{
+            if(prevProps.firebaseSignedIn != this.props.firebaseSignedIn){
+                this.setState({todoList:false})
+            }
+        }
+        // else if(this.props.firebaseSignedIn && prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
+        //     this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+        //         this.setState({todoList: todoListWithBuffers});
+        //     })
+        // }
+    }
+
+    initializeTodolist(){
         const todoRef = ref(db, "Todo");
         onValue(todoRef, (snapshot) => {
             // Snapshot returns a DataSnapshot object
@@ -61,7 +90,7 @@ class TodoList extends React.Component{
                 todoList.push({ id, ...todos[id] });
             }
 
-            if(this.props.signedIn === true){
+            if(this.props.gapiSignedIn === true){
                 this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
                     this.setState({todoList: todoListWithBuffers});
                 })
@@ -70,17 +99,7 @@ class TodoList extends React.Component{
             }
 
             // console.log("todoList", todoList)
-        })
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot){
-        console.log("Todolist update", prevProps, this.props, prevState, this.state)
-
-        if(prevProps.signedIn !== this.props.signedIn && this.props.signedIn === true){
-            this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
-                this.setState({todoList: todoListWithBuffers});
-            })
-        }
+        });
     }
 
     getTodoListWithBuffers(todoList, callback){
