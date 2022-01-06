@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
+import { onAuthStateChanged } from "firebase/auth";
+
 import './App.css';
 import TodoApp from './components/TodoApp'
 import CalendarIntegration from './components/CalendarIntegration';
 import { loadGoogleScript, handleClientLoad } from './utils/gapiFunctions';
+import { auth } from './firebase';
+import FirebaseSignin from './components/FirebaseSignin';
 // import { getTodos } from './utils/calculateOvershoot';
 
 function App() {
-  const [gapiState, setGapiState] = useState({
-    loaded: false,
-    signedIn: null
+  const [state, setState] = useState({
+    gapiLoaded: false,
+    gapiSignedIn: null,
+    firebaseSignedIn: null
   })
 
-  // debugger;
   
   // console.log("sign in change", gapiState)
 
@@ -25,29 +29,46 @@ function App() {
 
   useEffect(() => {
     // console.log("useEffect", gapiState)
-    if(!gapiState.loaded){
+    if(!state.gapiLoaded){
       loadGoogleScript(() => {
-        setGapiState({loaded: true, signedIn: null});    
+        setState({...state, gapiLoaded: true});    
         // console.log("updating gapi State")
       });
-    }else if(gapiState.signedIn === null){
+    }else if(state.gapiSignedIn === null){
       handleClientLoad((isSignedIn) => {
-            setGapiState({loaded: true, signedIn: isSignedIn});
+            setState({...state, gapiSignedIn: isSignedIn});
       });
     }
+    
+    onAuthStateChanged(auth, (user) => {
+      // debugger;
+      console.log(user);
+      if(state.firebaseSignedIn !== (user !== null)){
+        // TODO check if firebase is even online at all
+        console.log("fsignin status actually changed", state.firebaseSignedIn)
+        setState({...state, firebaseSignedIn: (user !== null)})
+      }
+      
+    })
+
   });
+
 
   // debugger;
 
   return (
     <>
       <div className='app'>
+        <FirebaseSignin 
+          firebaseSignedIn={state.firebaseSignedIn}
+        />
         <CalendarIntegration 
-          gapiLoaded={gapiState.loaded} 
-          signedIn={gapiState.signedIn}/>
+          gapiLoaded={state.gapiLoaded} 
+          gapiSignedIn={state.gapiSignedIn}/>
         <TodoApp 
-          gapiLoaded={gapiState.loaded} 
-          signedIn={gapiState.signedIn}
+          gapiLoaded={state.gapiLoaded} 
+          gapiSignedIn={state.gapiSignedIn}
+          firebaseSignedIn={state.firebaseSignedIn}
         />
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"

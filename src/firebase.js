@@ -1,11 +1,11 @@
 // need to add the compat in import for v9
 //https://stackoverflow.com/questions/68946446/how-do-i-fix-a-firebase-9-0-import-error-attempted-import-error-firebase-app
 
-import firebase from "firebase/compat/app"; 
-import "firebase/compat/database";
-
 // Import the functions you need from the SDKs you need
-// import { initializeApp } from "firebase/app"; // somehow doesn't work
+import { initializeApp } from "firebase/app"
+import { getDatabase } from "firebase/database";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
+
 // import { getAnalytics } from "firebase/analytics"; // somehow doesn't work
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,26 +24,39 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-// const app = firebase.initializeApp(firebaseConfig);
-// const db = app.database()
-// export default db;
-// const analytics = getAnalytics(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp)
+
+const provider = new GoogleAuthProvider();
+provider.addScope("https://www.googleapis.com/auth/calendar.readonly");
+
+const auth = getAuth();
+
+async function firebaseSignInWithGoogle(){
+  return new Promise((resolve, reject) => {
+    signInWithPopup(auth, provider).then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential.accessToken;
+      // // The signed-in user info.
+      // const user = result.user;
+      // ...
+      debugger;
+      resolve(result);
+
+    })
+  });
+}
+
+async function firebaseSignOut(){
+  return new Promise((resolve, reject) => {
+    signOut(auth).then(() => {
+      resolve(true);
+    });
+  });
+}
 
 
-// commented out because this is probably all wrong
-// import firebase from 'firebase';
-// //from 1st may
-// var firebaseConfig = {
-//     apiKey: "AIzaSyBgw6z_lKum5OgSjT_QTf5zHBUARrwZr9Y",
-//     authDomain: "todo-36448.firebaseapp.com",
-//     databaseURL: "https://todo-36448-default-rtdb.firebaseio.com",
-//     projectId: "todo-36448",
-//     storageBucket: "todo-36448.appspot.com",
-//     messagingSenderId: "717272925628",
-//     appId: "1:717272925628:web:abd8a5dfdc15b374bc57b9",
-//     measurementId: "G-06LGZRD0Z0"
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-export default firebase; // needs to contain a default export
+
+
+export { auth, db, firebaseSignInWithGoogle , firebaseSignOut };

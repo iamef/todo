@@ -1,8 +1,9 @@
 import React from 'react'
 
-import firebase from '../firebase';
-
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+
+import { get, ref, set } from 'firebase/database';
+import { db } from '../firebase';
 
 class CalendarSelection extends React.Component{
   constructor(props){
@@ -27,7 +28,7 @@ class CalendarSelection extends React.Component{
   componentDidMount(){
     console.log("cal selection mount");
 
-    firebase.database().ref("Calendars").get().then((value) => {
+    get(ref(db, 'Calendars')).then((value) => {
       // console.log(value.val())
       var formDataInitialJSON = value.val().map((calID) => {
         return "\"" + calID + "\"" + ": true"
@@ -91,7 +92,8 @@ class CalendarSelection extends React.Component{
       if(this.state[key]) calsToInclude.push(key)
     }
     console.log(calsToInclude)
-    firebase.database().ref("Calendars").set(calsToInclude);
+    set(ref(db, "Calendars"), calsToInclude)
+    // firebase.database().ref("Calendars").set(calsToInclude);
     this.setState({});
   }
 

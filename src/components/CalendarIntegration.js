@@ -4,6 +4,7 @@ import React from 'react'
 import CalendarSelection from './CalendarSelection'
 import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions'
 
+import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase"
 
 function LoginButton(props){
     return (
@@ -24,7 +25,7 @@ function SignoutButton(props){
             id='signout_button'
             onClick={props.onClick}
         >
-            Sign Out
+            Disconnect Google Calendar
         </Button>
     )
 
@@ -60,7 +61,7 @@ class CalendarIntegration extends React.Component{
         
         /* can implement getCalendarList here, 
            but I don't want user to sign out to have list update
-        if(prevProps.signedIn == false && this.props.signedIn == true){
+        if(prevProps.gapiSignedIn == false && this.props.gapiSignedIn == true){
             getCalendarList((cals) => {
                 // console.log(cals)
                 this.setState({calendarsAvailable: cals});
@@ -69,7 +70,7 @@ class CalendarIntegration extends React.Component{
         */
         
         // calendars shouldn't be available when user signs out
-        if(prevProps.signedIn === true && this.props.signedIn === false){
+        if(prevProps.gapiSignedIn === true && this.props.gapiSignedIn === false){
             this.setState({calendarsAvailable: undefined})
         }
     }
@@ -99,7 +100,7 @@ class CalendarIntegration extends React.Component{
     }
 
     render(){
-        if (this.props.signedIn){
+        if (this.props.gapiSignedIn){
             if (this.state.showCalendars)
                 return (
                 <>
@@ -117,14 +118,11 @@ class CalendarIntegration extends React.Component{
                 </>
                 )
             }
-        }else if(this.props.signedIn === null){
+        }else if(this.props.gapiSignedIn === null){
             return null;
         }
         
-        return (
-        <>
-            <LoginButton onClick={this.handleAuthClick} />
-        </>)
+        return <LoginButton onClick={this.handleAuthClick} />
     }
 }
 

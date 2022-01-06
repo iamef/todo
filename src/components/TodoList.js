@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import firebase from '../firebase'
+import { db } from '../firebase';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -8,15 +8,17 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
+import { get, onValue, ref, remove, update } from 'firebase/database';
 
 
 function deleteTodo(todo){
-    const todoRef = firebase.database().ref('Todo').child(todo.id);
-    todoRef.remove();
+    const todoRef = ref(db, "Todo/" + todo.id);
+    remove(todoRef);
 }
 function completeTodo(todo){
-    const todoRef = firebase.database().ref('Todo').child(todo.id);
-    todoRef.update({
+    // const todoRef = firebase.database().ref('Todo').child(todo.id);
+    const todoRef = ref(db, "Todo/" + todo.id);
+    update(todoRef, {
         complete: !todo.complete,
     })
 }
@@ -26,6 +28,7 @@ class TodoList extends React.Component{
         super(props);
         console.log("Todolist props", props);
 
+        this.initializeTodolist = this.initializeTodolist.bind(this)
         // need the todoList because 
         // this.state.todoList can be mappable
         // whereas this.state cannot be mappable
@@ -35,8 +38,34 @@ class TodoList extends React.Component{
 
     componentDidMount(){
         console.log("Todolist mount", this.props, this.state)
-        const todoRef = firebase.database().ref('Todo');
-        todoRef.on('value', (snapshot) => {
+        
+        if(this.props.firebaseSignedIn){
+            this.initializeTodolist()
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log("Todolist update", prevProps, this.props, prevState, this.state)
+        if(this.props.firebaseSignedIn){
+            // if you just signed into FIREBASE
+            if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
+                this.initializeTodolist()
+            // if you just signed into GCAL
+            }else if(prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
+                this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                    this.setState({todoList: todoListWithBuffers});
+                })
+            }
+        }else{
+            if(prevProps.firebaseSignedIn){
+                this.setState({todoList:false})
+            }
+        }
+    }
+
+    initializeTodolist(){
+        const todoRef = ref(db, "Todo");
+        onValue(todoRef, (snapshot) => {
             // Snapshot returns a DataSnapshot object
             // console.log("snapshot", snapshot) 
             
@@ -49,7 +78,7 @@ class TodoList extends React.Component{
                 todoList.push({ id, ...todos[id] });
             }
 
-            if(this.props.signedIn === true){
+            if(this.props.gapiSignedIn === true){
                 this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
                     this.setState({todoList: todoListWithBuffers});
                 })
@@ -58,21 +87,11 @@ class TodoList extends React.Component{
             }
 
             // console.log("todoList", todoList)
-        })
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot){
-        console.log("Todolist update", prevProps, this.props, prevState, this.state)
-
-        if(prevProps.signedIn !== this.props.signedIn && this.props.signedIn === true){
-            this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
-                this.setState({todoList: todoListWithBuffers});
-            })
-        }
+        });
     }
 
     getTodoListWithBuffers(todoList, callback){
-        firebase.database().ref('Calendars').get().then((calendarsSnapshot) => {
+        get(ref(db), 'Calendars').then((calendarsSnapshot) => {
             var calendars = calendarsSnapshot.val();
 
             // console.log("Log todos", todos)
