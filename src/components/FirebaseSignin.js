@@ -1,10 +1,7 @@
 import { Button } from '@mui/material';
 import React from 'react'
 
-import CalendarSelection from './CalendarSelection'
-import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions'
-
-import { auth, firebaseSignInWithGoogle, db, firebaseSignOut } from "../firebase"
+import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase"
 
 
 function FirebaseSignInButton(props){
@@ -83,9 +80,14 @@ class FirebaseSignin extends React.Component{
 
   
   render(){
-      return (
+    if(this.props.firebaseSignedIn === null){
+        return null
+    }else if(this.props.firebaseSignedIn === false){
+        return <FirebaseSignInButton onClick={this.signIn} />
+    }
+    
+    return (
       <>
-          <FirebaseSignInButton onClick={this.signIn} />
           <FirebaseSignOutButton onClick={this.signOut} />
       </>)
   }

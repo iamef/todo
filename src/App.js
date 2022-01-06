@@ -44,6 +44,7 @@ function App() {
       // debugger;
       console.log(user);
       if(state.firebaseSignedIn !== (user !== null)){
+        // TODO check if firebase is even online at all
         console.log("fsignin status actually changed", state.firebaseSignedIn)
         setState({...state, firebaseSignedIn: (user !== null)})
       }
@@ -59,11 +60,11 @@ function App() {
     <>
       <div className='app'>
         <FirebaseSignin 
-          signedIn={state.firebaseSignedIn}
+          firebaseSignedIn={state.firebaseSignedIn}
         />
         <CalendarIntegration 
           gapiLoaded={state.gapiLoaded} 
-          signedIn={state.gapiSignedIn}/>
+          gapiSignedIn={state.gapiSignedIn}/>
         <TodoApp 
           gapiLoaded={state.gapiLoaded} 
           gapiSignedIn={state.gapiSignedIn}
