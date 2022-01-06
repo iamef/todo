@@ -119,18 +119,10 @@ class CalendarIntegration extends React.Component{
                 )
             }
         }else if(this.props.gapiSignedIn === null){
-            return (
-                <>
-                </>
-            )
+            return null;
         }
         
-        return (
-        <>
-            {/* <FireSignInButton onClick={this.happyMonster} /> */}
-            {/* <FireSignOutButton onClick={this.sadMonster} /> */}
-            <LoginButton onClick={this.handleAuthClick} />
-        </>)
+        return <LoginButton onClick={this.handleAuthClick} />
     }
 }
 

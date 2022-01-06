@@ -47,8 +47,10 @@ class TodoList extends React.Component{
     componentDidUpdate(prevProps, prevState, snapshot){
         console.log("Todolist update", prevProps, this.props, prevState, this.state)
         if(this.props.firebaseSignedIn){
+            // if you just signed into FIREBASE
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
                 this.initializeTodolist()
+            // if you just signed into GCAL
             }else if(prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
                 this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
                     this.setState({todoList: todoListWithBuffers});
@@ -59,11 +61,6 @@ class TodoList extends React.Component{
                 this.setState({todoList:false})
             }
         }
-        // else if(this.props.firebaseSignedIn && prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
-        //     this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
-        //         this.setState({todoList: todoListWithBuffers});
-        //     })
-        // }
     }
 
     initializeTodolist(){
