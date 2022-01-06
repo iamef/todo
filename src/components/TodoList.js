@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import db from '../firebase'
+import { db } from '../firebase';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';

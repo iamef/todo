@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import db from '../firebase';
+import { db } from '../firebase';
 import { push, ref } from 'firebase/database';
 
 import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';

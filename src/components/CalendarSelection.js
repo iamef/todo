@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 import { get, ref, set } from 'firebase/database';
-import db from '../firebase';
+import { db } from '../firebase';
 
 class CalendarSelection extends React.Component{
   constructor(props){
