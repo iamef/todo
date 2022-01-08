@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import { db } from '../firebase';
+import { auth, db, fs } from '../firebase';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -8,12 +8,17 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
-import { get, onValue, ref, remove, update } from 'firebase/database';
-
+import { get, onValue, query, ref, remove, update } from 'firebase/database';
+import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 
 function deleteTodo(todo){
-    const todoRef = ref(db, "Todo/" + todo.id);
-    remove(todoRef);
+    debugger;
+    const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
+    console.log(todoDoc.id, todoDoc)
+    deleteDoc(todoDoc)
+    // const todoRef = ref(db, "Todo/" + todo.id);
+    // remove(todoRef);
 }
 function completeTodo(todo){
     // const todoRef = firebase.database().ref('Todo').child(todo.id);
@@ -52,66 +57,98 @@ class TodoList extends React.Component{
                 this.initializeTodolist()
             // if you just signed into GCAL
             }else if(prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
-                this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
-                    this.setState({todoList: todoListWithBuffers});
-                })
+                // this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                //     this.setState({todoList: todoListWithBuffers});
+                // })
             }
         }else{
             if(prevProps.firebaseSignedIn){
-                this.setState({todoList:false})
+                this.setState({todoList: false})
             }
         }
     }
 
     initializeTodolist(){
-        const todoRef = ref(db, "Todo");
-        onValue(todoRef, (snapshot) => {
-            // Snapshot returns a DataSnapshot object
-            // console.log("snapshot", snapshot) 
-            
-            const todos = snapshot.val();
-            console.log("Log todos", todos)
+        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+        var fsTodoRef = collection(fs, todoFilePath);
+
+        var fsTodoQuery = query(fsTodoRef);
+        debugger;
+        console.log(fsTodoQuery);
+
         
-            const todoList = []
-            for (let id in todos) {
-                // console.log(id)
-                todoList.push({ id, ...todos[id] });
-            }
+        onSnapshot(fsTodoQuery, (querySnapshot) => {
+            var fsTodoList = [] // when a list is empty you want it update the firestore to empty
+            
+            debugger;
+            console.log(querySnapshot);
+            querySnapshot.forEach((qdoc) => {
+                console.log(qdoc.id, " => ", qdoc.data());
+                fsTodoList.push({id: qdoc.id, ...qdoc.data()})
+            });
 
-            if(this.props.gapiSignedIn === true){
-                this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
-                    this.setState({todoList: todoListWithBuffers});
-                })
-            }else{
-                this.setState({todoList: todoList});
-            }
+            // TODO implement calendar stuff later
+            // if(this.props.gapiSignedIn === true){
+            //     this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
+            //         this.setState({todoList: todoListWithBuffers});
+            //     })
+            // }else{
+            //     this.setState({todoList: todoList});
+            // }
 
+            this.setState({todoList: fsTodoList});
             // console.log("todoList", todoList)
+
         });
+
+        // const todoRef = ref(db, "Todo");
+        // onValue(todoRef, (snapshot) => {
+        //     // Snapshot returns a DataSnapshot object
+        //     // console.log("snapshot", snapshot) 
+            
+        //     const todos = snapshot.val();
+        //     console.log("Log todos", todos)
+        
+        //     const todoList = []
+        //     for (let id in todos) {
+        //         // console.log(id)
+        //         todoList.push({ id, ...todos[id] });
+        //     }
+
+        //     if(this.props.gapiSignedIn === true){
+        //         this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
+        //             this.setState({todoList: todoListWithBuffers});
+        //         })
+        //     }else{
+        //         this.setState({todoList: todoList});
+        //     }
+
+        //     // console.log("todoList", todoList)
+        // });
     }
 
-    getTodoListWithBuffers(todoList, callback){
-        get(ref(db, 'Calendars')).then((calendarsSnapshot) => {
-            var calendars = calendarsSnapshot.val();
-            // console.log("Log todos", todos)
+    // getTodoListWithBuffers(todoList, callback){
+    //     get(ref(db, 'Calendars')).then((calendarsSnapshot) => {
+    //         var calendars = calendarsSnapshot.val();
+    //         // console.log("Log todos", todos)
 
-            calculateBuffer(todoList, calendars).then((buffers) => {
-                for(var todo of todoList){
-                    var bufferMS = buffers[todo.id]["bufferMS"]
+    //         calculateBuffer(todoList, calendars).then((buffers) => {
+    //             for(var todo of todoList){
+    //                 var bufferMS = buffers[todo.id]["bufferMS"]
                     
-                    if(typeof(bufferMS) === 'number'){
-                        todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
-                    }else{
-                        todo.bufferHrs = bufferMS
-                    }
+    //                 if(typeof(bufferMS) === 'number'){
+    //                     todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
+    //                 }else{
+    //                     todo.bufferHrs = bufferMS
+    //                 }
 
-                    todo.bufferData = buffers[todo.id]
-                }
+    //                 todo.bufferData = buffers[todo.id]
+    //             }
                 
-                callback(todoList)
-            })
-        });
-    }
+    //             callback(todoList)
+    //         })
+    //     });
+    // }
     
     render(){
         return (

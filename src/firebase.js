@@ -4,6 +4,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app"
 import { getDatabase } from "firebase/database";
+import { addDoc, collection, getFirestore } from "firebase/firestore"
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
 
 // import { getAnalytics } from "firebase/analytics"; // somehow doesn't work
@@ -26,11 +27,30 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getDatabase(firebaseApp)
+const fs = getFirestore()
 
-const provider = new GoogleAuthProvider();
-provider.addScope("https://www.googleapis.com/auth/calendar.readonly");
+const provider = new GoogleAuthProvider();  // for signing in
+// provider.addScope("https://www.googleapis.com/auth/calendar.readonly");
 
 const auth = getAuth();
+
+// try {
+//   debugger;
+//   console.log(auth.currentUser)
+//   if(auth.currentUser)
+//     console.log(auth.currentUser.uid)
+
+//   addDoc(collection(fs, "users/" + auth.currentUser.uid + "/not labeled"), {
+//     first: "Ada",
+//     last: "Lovelace",
+//     born: 1815
+//   }).then((result) => {
+//     console.log("Document written with ID: ", result);
+//   })
+// } catch (e) {
+//   console.error("Ada Lovelace, Error adding document: ", e);
+// }
+
 
 async function firebaseSignInWithGoogle(){
   return new Promise((resolve, reject) => {
@@ -41,7 +61,6 @@ async function firebaseSignInWithGoogle(){
       // // The signed-in user info.
       // const user = result.user;
       // ...
-      debugger;
       resolve(result);
 
     })
@@ -59,4 +78,4 @@ async function firebaseSignOut(){
 
 
 
-export { auth, db, firebaseSignInWithGoogle , firebaseSignOut };
+export { auth, db, fs, firebaseSignInWithGoogle , firebaseSignOut };

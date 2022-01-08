@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { db } from '../firebase';
+import { auth, db, fs } from '../firebase';
 import { push, ref } from 'firebase/database';
 
 import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
@@ -13,6 +13,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import { getAuth } from 'firebase/auth';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
 
 // Added more fields usinig this!
@@ -28,16 +30,25 @@ const Form = () => {
     });
     
     const createTodo = () => {
-        const todoRef = ref(db, "Todo");
         const todo = {
             ...formData,
             complete: false,
         };
-
+        
         todo.dueDate = todo.dueDate.toLocaleString()
-
+        
         console.log(todo);
-        push(todoRef, todo);
+        
+        // const todoRef = ref(db, "Todo");
+        // push(todoRef, todo);
+
+        debugger
+        console.log(auth.userId)
+        console.log(auth.currentUser.uid)
+
+        var todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+        addDoc(collection(fs, todoFilePath), todo);
+
         setFormData({
             title: "",
             dueDate: "",
