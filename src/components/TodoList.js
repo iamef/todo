@@ -91,9 +91,8 @@ class TodoList extends React.Component{
     }
 
     getTodoListWithBuffers(todoList, callback){
-        get(ref(db), 'Calendars').then((calendarsSnapshot) => {
+        get(ref(db, 'Calendars')).then((calendarsSnapshot) => {
             var calendars = calendarsSnapshot.val();
-
             // console.log("Log todos", todos)
 
             calculateBuffer(todoList, calendars).then((buffers) => {
