@@ -66,7 +66,7 @@ export async function calculateBuffer(todos, calendars){
           'singleEvents': true,
           'orderBy': 'startTime'
         });
-        console.log(events.result.items)
+        // console.log(events.result.items)
         eList = eList.concat(events.result.items)
       }
 

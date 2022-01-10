@@ -3,7 +3,8 @@ import React from 'react'
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 import { get, ref, set } from 'firebase/database';
-import { db } from '../firebase';
+import { auth, db, fs } from '../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 class CalendarSelection extends React.Component{
   constructor(props){
@@ -28,9 +29,13 @@ class CalendarSelection extends React.Component{
   componentDidMount(){
     console.log("cal selection mount");
 
-    get(ref(db, 'Calendars')).then((value) => {
-      // console.log(value.val())
-      var formDataInitialJSON = value.val().map((calID) => {
+    getDoc(doc(fs, "users/" + auth.currentUser.uid)).then((docSnap) => {
+      // debugger;
+      // console.log(docSnap.data().calendars)
+
+      var calendars = docSnap.data().calendars
+
+      var formDataInitialJSON = calendars.map((calID) => {
         return "\"" + calID + "\"" + ": true"
       }).toString();
       formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
@@ -39,12 +44,25 @@ class CalendarSelection extends React.Component{
 
       this.setState(formDataInitialJSON);
 
-    }, (reason) => console.log(reason))
-    // this.setState(['aaf', 'asdfasd', 'asdf'])
-    // firebase.database().ref("Calendars").get().then((value) => {
-    //   console.log(value.val())
-    //   this.setState(value.val())
-    // }, (reason) => console.log(reason))
+    }, (reason) => console.log(reason));
+
+  //   get(ref(db, 'Calendars')).then((value) => {
+  //     // console.log(value.val())
+  //     var formDataInitialJSON = value.val().map((calID) => {
+  //       return "\"" + calID + "\"" + ": true"
+  //     }).toString();
+  //     formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
+      
+  //     // console.log(formDataInitialJSON)
+
+  //     this.setState(formDataInitialJSON);
+
+  //   }, (reason) => console.log(reason))
+  //   // this.setState(['aaf', 'asdfasd', 'asdf'])
+  //   // firebase.database().ref("Calendars").get().then((value) => {
+  //   //   console.log(value.val())
+  //   //   this.setState(value.val())
+  //   // }, (reason) => console.log(reason))
 
   }
 
@@ -92,7 +110,9 @@ class CalendarSelection extends React.Component{
       if(this.state[key]) calsToInclude.push(key)
     }
     console.log(calsToInclude)
-    set(ref(db, "Calendars"), calsToInclude)
+    setDoc(doc(fs, "users/" + auth.currentUser.uid), {calendars: calsToInclude});
+    
+    // set(ref(db, "Calendars"), calsToInclude)
     // firebase.database().ref("Calendars").set(calsToInclude);
     this.setState({});
   }
