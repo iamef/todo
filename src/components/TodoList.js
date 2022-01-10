@@ -78,26 +78,26 @@ class TodoList extends React.Component{
         // console.log(fsTodoQuery);
 
         
-        onSnapshot(fsTodoQuery, (querySnapshot) => {
+        onSnapshot(fsTodoQuery, { includeMetadataChanges: true } ,(querySnapshot) => {
             var itemAdded = false;
             var itemModified = false;
             var itemRemoved = false;
             // check what kinds of changes were made to the firebase todolist
-            querySnapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    itemAdded = true;
-                    console.log("New firebase item: ", change.doc.data());
-                }
-                if (change.type === "modified") {
-                    itemModified = true;
-                    console.log("Modified firebase item: ", change.doc.data());
-                }
-                if (change.type === "removed") {
-                    itemRemoved = true;
-                    console.log("Removed firebase item: ", change.doc.data());
-                }
-                // debugger;
-            });
+            // querySnapshot.docChanges().forEach((change) => {
+            //     if (change.type === "added") {
+            //         itemAdded = true;
+            //         console.log("New firebase item: ", change.doc.data());
+            //     }
+            //     if (change.type === "modified") {
+            //         itemModified = true;
+            //         console.log("Modified firebase item: ", change.doc.data());
+            //     }
+            //     if (change.type === "removed") {
+            //         itemRemoved = true;
+            //         console.log("Removed firebase item: ", change.doc.data());
+            //     }
+            //     // debugger;
+            // });
 
             var fsTodoList = [] // when a list is empty you want it update the firestore to empty
             
