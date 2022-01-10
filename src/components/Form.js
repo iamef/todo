@@ -26,7 +26,9 @@ const Form = () => {
         dueDate: "",
         deadlineType: "noDeadline",
         estTime: "",
-        priority: "tbd"
+        priority: "tbd",
+        folder: "no folder",
+        list: "not labeled"
     });
     
     const createTodo = () => {
@@ -126,19 +128,6 @@ const Form = () => {
                     </RadioGroup>
                 </FormGroup>
                 
-                {/* <div className="radio">
-                    <label>
-                        <input type="radio" value="option1" checked={true} />
-                        Hard Deadline
-                    </label>
-                </div>
-                <div className="radio">
-                    <label>
-                        <input type="radio" value="option2" />
-                        Soft Deadline
-                    </label>
-                </div> */}
-                
                 <TextField
                     variant='standard'
                     label='Estimated Hours'
@@ -188,6 +177,24 @@ const Form = () => {
                         onChange={(e) => setFormData({...formData, priority: 'vHIGH'})}
                         label="Very high" />
                 </RadioGroup>
+
+                <TextField 
+                    required
+                    variant='standard'
+                    label="folder"
+                    value={formData.folder}
+                    onChange={(e) => setFormData({...formData, folder: e.target.value})}
+                    type='text'
+                />
+
+                <TextField 
+                    required
+                    variant='standard'
+                    label="list name"
+                    value={formData.list}
+                    onChange={(e) => setFormData({...formData, list: e.target.value})}
+                    type='text'
+                />
 
                 <div className='add'>
                     {
