@@ -114,6 +114,8 @@ class TodoList extends React.Component{
                     this.setState({todoList: todoListWithBuffers});
                 })
             }else{
+                // reset buffer if you aren't signed in
+                
                 this.setState({todoList: fsTodoList});
             }
 
@@ -215,9 +217,9 @@ class TodoList extends React.Component{
                     <TableCell></TableCell>
                     <TableCell>Todo Item</TableCell>
                     <TableCell align="right">dueDate</TableCell>
-                    <TableCell align="right">deadline</TableCell>
+                    {/* <TableCell align="right">deadline</TableCell> */}
                     <TableCell align="right">estTime</TableCell>
-                    <TableCell align="right">priority</TableCell>
+                    {/* <TableCell align="right">priority</TableCell> */}
                     <TableCell align="right">buffer</TableCell>
                 </TableRow>
                 </TableHead>
@@ -253,9 +255,9 @@ class TodoList extends React.Component{
                             {todo.title}
                         </TableCell>
                         <TableCell align="right">{todo.dueDate}</TableCell>
-                        <TableCell align="right">{todo.deadlineType}</TableCell>
+                        {/* <TableCell align="right">{todo.deadlineType}</TableCell> */}
                         <TableCell align="right">{todo.estTime}</TableCell>
-                        <TableCell align="right">{todo.priority}</TableCell>
+                        {/* <TableCell align="right">{todo.priority}</TableCell> */}
                         <TableCell align="right">{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
                         </TableRow>
                     )

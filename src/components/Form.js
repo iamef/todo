@@ -189,17 +189,6 @@ const Form = () => {
                         label="Very high" />
                 </RadioGroup>
 
-                <TextField
-                    disabled
-                    variant='standard'
-                    label='priority'
-                    type='text'
-                    value={formData.priority}
-                    // onChange={(e) => setFormData({...formData, estTime: e.target.value})}
-                    className='textfield'
-                    size='medium'
-                />
-                
                 <div className='add'>
                     {
                         formData.title === '' ?
