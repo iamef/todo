@@ -66,7 +66,7 @@ export async function calculateBuffer(todos, calendars){
           'singleEvents': true,
           'orderBy': 'startTime'
         });
-        console.log(events.result.items)
+        // console.log(events.result.items)
         eList = eList.concat(events.result.items)
       }
 
@@ -82,16 +82,31 @@ export async function calculateBuffer(todos, calendars){
             htmlLink: event.htmlLink
         })
         // debugger;
-        console.log(event);
+        // console.log(event);
 
         var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime))
         var endTime = Math.min(todoDueDate, new Date(event.end.dateTime))
         
-        console.log((endTime - startTime) / (60*60*1000))
+        // console.log((endTime - startTime) / (60*60*1000))
         
         msEventsBetweenTasks += (endTime - startTime)
 
       }
+
+      buffersById[todo.id]["events"].sort((item1, item2) => {
+        if(item1.start === '' && item2.start === ''){
+          return 0
+        }else if(item1.start === ''){
+          return 1  // this means item1 - item2 is positive
+        }else if(item2.start === ''){
+          return -1 // this means item1 - item2 is negative
+        }
+        
+        return Date.parse(item1.start) - Date.parse(item2.start)
+      });
+
+      debugger;
+
       hoursEventsBetweenTasks = msEventsBetweenTasks / (60*60*1000)
       
       prevTodoDueDate = todoDueDate

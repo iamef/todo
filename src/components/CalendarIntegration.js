@@ -4,8 +4,6 @@ import React from 'react'
 import CalendarSelection from './CalendarSelection'
 import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions'
 
-import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase"
-
 function LoginButton(props){
     return (
         <Button
