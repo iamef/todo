@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import { auth, db, fs } from '../firebase';
+import { auth, fs } from '../firebase';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -8,25 +8,21 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
-import { get, onValue, query, ref, remove, update } from 'firebase/database';
-import { collection, deleteDoc, doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
 
 function deleteTodo(todo){
-    debugger;
     const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
     var todoDoc = doc(collection(fs, todoFilePath), todo.id)
     console.log(todoDoc.id, todoDoc)
     deleteDoc(todoDoc)
-    // const todoRef = ref(db, "Todo/" + todo.id);
-    // remove(todoRef);
 }
 
 function completeTodo(todo){
-    // const todoRef = firebase.database().ref('Todo').child(todo.id);
-    const todoRef = ref(db, "Todo/" + todo.id);
-    update(todoRef, {
-        complete: !todo.complete,
-    })
+    const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
+    console.log(todoDoc.id, todoDoc)
+    updateDoc(todoDoc, {complete: !todo.complete})
+    
 }
 
 class TodoList extends React.Component{
