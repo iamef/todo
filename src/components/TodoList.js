@@ -60,72 +60,68 @@ class TodoList extends React.Component{
         
         onSnapshot(fsTodoQuery, { includeMetadataChanges: true } ,(querySnapshot) => {
             var itemAdded = false;
-            var itemModified = false;
+            var updateItemModified = false;
             var itemRemoved = false;
             // check what kinds of changes were made to the firebase todolist
-            // querySnapshot.docChanges().forEach((change) => {
-            //     if (change.type === "added") {
-            //         itemAdded = true;
-            //         console.log("New firebase item: ", change.doc.data());
-            //     }
-            //     if (change.type === "modified") {
-            //         itemModified = true;
-            //         console.log("Modified firebase item: ", change.doc.data());
-            //     }
-            //     if (change.type === "removed") {
-            //         itemRemoved = true;
-            //         console.log("Removed firebase item: ", change.doc.data());
-            //     }
-            //     // debugger;
-            // });
-
-            var fsTodoList = [] // when a list is empty you want it update the firestore to empty
             
-            // debugger;
-            // console.log(querySnapshot);
-            querySnapshot.forEach((qdoc) => {
-                console.log(qdoc.id, " => ", qdoc.data());
-                fsTodoList.push({id: qdoc.id, ...qdoc.data()})
+            console.log(querySnapshot.size, querySnapshot.docs.length, querySnapshot.docChanges().length)
+            
+            querySnapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    itemAdded = true;
+                    // console.log("New firebase item: ", change.doc.data());
+                }
+                if (change.type === "modified") {
+                    if(querySnapshot.docChanges().length == 1){
+                        var found = this.state.todoList.find((todo) => todo.id === change.doc.id)
+                        var changedData = change.doc.data()
+                        
+                        if(found.complete === changedData.complete && 
+                            found.deadlineType === changedData.deadlineType &&
+                            found.dueDate === changedData.dueDate &&
+                            found.estTime === changedData.estTime &&
+                            found.priority === changedData.priority &&
+                            found.title === changedData.title){
+                                console.log("(no need to edit) Modified firebase item: ", change.doc.id, change.doc.data());
+                        }else{
+                            updateItemModified = true;
+                        }
+                    }
+                }
+                if (change.type === "removed") {
+                    itemRemoved = true;
+                    // console.log("Removed firebase item: ", change.doc.data());
+                }
+                // debugger;
             });
 
-            // TODO implement calendar stuff later
-            if(this.props.gapiSignedIn === true){
-                this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                    this.setState({todoList: todoListWithBuffers});
-                })
-            }else{
-                this.setState({todoList: fsTodoList});
-            }
+            
 
-            // this.setState({todoList: fsTodoList});
-            // console.log("todoList", todoList)
+            if(itemAdded || itemRemoved || updateItemModified){
+                var fsTodoList = [] // when a list is empty you want it update the firestore to empty
+                
+                // debugger;
+                // console.log(querySnapshot);
+                querySnapshot.forEach((qdoc) => {
+                    console.log(qdoc.id, " => ", qdoc.data());
+                    fsTodoList.push({id: qdoc.id, ...qdoc.data()})
+                });
+
+                // TODO implement calendar stuff later
+                if(this.props.gapiSignedIn === true){
+                    this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
+                        this.setState({todoList: todoListWithBuffers});
+                    })
+                }else{
+                    this.setState({todoList: fsTodoList});
+                }
+
+                // this.setState({todoList: fsTodoList});
+                // console.log("todoList", todoList)
+            }
 
         });
 
-        // const todoRef = ref(db, "Todo");
-        // onValue(todoRef, (snapshot) => {
-        //     // Snapshot returns a DataSnapshot object
-        //     // console.log("snapshot", snapshot) 
-            
-        //     const todos = snapshot.val();
-        //     console.log("Log todos", todos)
-        
-        //     const todoList = []
-        //     for (let id in todos) {
-        //         // console.log(id)
-        //         todoList.push({ id, ...todos[id] });
-        //     }
-
-        //     if(this.props.gapiSignedIn === true){
-        //         this.getTodoListWithBuffers(todoList, (todoListWithBuffers) => {
-        //             this.setState({todoList: todoListWithBuffers});
-        //         })
-        //     }else{
-        //         this.setState({todoList: todoList});
-        //     }
-
-        //     // console.log("todoList", todoList)
-        // });
     }
 
     getTodoListWithBuffers(todoList, callback){
@@ -147,9 +143,8 @@ class TodoList extends React.Component{
                         todo.bufferHrs = bufferMS
                     }
 
-                    debugger;
-                    setDoc(doc(fs, todoFilePath + "/" + todo.id), todo)
-                    setDoc(doc(fs, todoFilePath + "/" + todo.id + "/bufferdata/bufferdata"), buffers[todo.id])
+                    // debugger;
+                    setDoc(doc(fs, todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
 
                     // todo.bufferData = buffers[todo.id]
                 }
