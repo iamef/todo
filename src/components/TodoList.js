@@ -9,22 +9,6 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
 import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
-
-function deleteTodo(todo){
-    const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
-    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
-    console.log(todoDoc.id, todoDoc)
-    deleteDoc(todoDoc)
-}
-
-function completeTodo(todo){
-    const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
-    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
-    console.log(todoDoc.id, todoDoc)
-    updateDoc(todoDoc, {complete: !todo.complete})
-    
-}
-
 class TodoList extends React.Component{
     constructor(props){
         super(props);
@@ -174,27 +158,22 @@ class TodoList extends React.Component{
             })
 
         })
+    }
+    
+    
+    deleteTodo(todo){
+        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+        var todoDoc = doc(collection(fs, todoFilePath), todo.id)
+        console.log(todoDoc.id, todoDoc)
+        deleteDoc(todoDoc)
+    }
+    
+    completeTodo(todo){
+        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+        var todoDoc = doc(collection(fs, todoFilePath), todo.id)
+        console.log(todoDoc.id, todoDoc)
+        updateDoc(todoDoc, {complete: !todo.complete})
         
-        // get(ref(db, 'Calendars')).then((calendarsSnapshot) => {
-        //     var calendars = calendarsSnapshot.val();
-        //     // console.log("Log todos", todos)
-
-        //     calculateBuffer(todoList, calendars).then((buffers) => {
-        //         for(var todo of todoList){
-        //             var bufferMS = buffers[todo.id]["bufferMS"]
-                    
-        //             if(typeof(bufferMS) === 'number'){
-        //                 todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
-        //             }else{
-        //                 todo.bufferHrs = bufferMS
-        //             }
-
-        //             todo.bufferData = buffers[todo.id]
-        //         }
-                
-        //         callback(todoList)
-        //     })
-        // });
     }
     
     render(){
@@ -228,19 +207,19 @@ class TodoList extends React.Component{
                             {todo.complete ?
                                 <CheckCircleIcon
                                     className='icon'
-                                    onClick={ () => completeTodo(todo)}
+                                    onClick={ () => this.completeTodo(todo)}
                                     fontSize='large'
                                 /> :
                                 <CheckCircleOutlineIcon
                                     className='icon'
-                                    onClick={ () => completeTodo(todo) }
+                                    onClick={ () => this.completeTodo(todo) }
                                     fontSize='large'
                                 />
                             }
                             {/* <motion.div> */}
                                 <HighlightOffIcon
                                     className='icon'
-                                    onClick={ () => deleteTodo(todo) }
+                                    onClick={ () => this.deleteTodo(todo) }
                                     fontSize='large'
                                 />
                             {/* </motion.div> */}
