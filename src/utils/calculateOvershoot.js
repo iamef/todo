@@ -105,8 +105,6 @@ export async function calculateBuffer(todos, calendars){
         return Date.parse(item1.start) - Date.parse(item2.start)
       });
 
-      debugger;
-
       hoursEventsBetweenTasks = msEventsBetweenTasks / (60*60*1000)
       
       prevTodoDueDate = todoDueDate
