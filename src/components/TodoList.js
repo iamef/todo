@@ -13,32 +13,35 @@ class TodoList extends React.Component{
     constructor(props){
         super(props);
         console.log("Todolist props", props);
-        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
-
+        
         this.initializeTodolist = this.initializeTodolist.bind(this)
+        
         // need the todoList because 
         // this.state.todoList can be mappable
         // whereas this.state cannot be mappable
         // https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
         this.state = { todoList: false }
+        
+        // hopefully this allows auth to load properly...
+        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        this.unsubscribeFirebaseTodolist = () => {};
     }
 
     componentDidMount(){
         console.log("Todolist mount", this.props, this.state)
         
-        if(this.props.firebaseSignedIn){
+        if(this.props.firebaseSignedIn !== null){
             this.initializeTodolist()
         }else{
-            this.initializeTodolist()
+            console.log("Firebase login is null")
+            debugger;
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
         console.log("Todolist update", prevProps, this.props, prevState, this.state)
         
-        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
-        
-        if(this.props.firebaseSignedIn){
+        if(this.props.firebaseSignedIn !== null){
             // if you just signed into FIREBASE
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
                 this.initializeTodolist()
@@ -52,13 +55,25 @@ class TodoList extends React.Component{
             }
         }else{
             if(prevProps.firebaseSignedIn){
-                // this.setState({todoList: false})
-                this.initializeTodolist()
+                this.setState({todoList: false})
+                // this.initializeTodolist()
             }
         }
     }
 
     initializeTodolist(){
+        if(this.todoFilePath.split("/")[1] === "null"){
+            if((auth.currentUser ? auth.currentUser.uid : null) !== null){
+                this.unsubscribeFirebaseTodolist();
+            }
+        }else{
+            if((auth.currentUser ? auth.currentUser.uid : null) === null){
+                this.unsubscribeFirebaseTodolist();
+            }
+        }
+        
+        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        
         var fsTodoRef = collection(fs, this.todoFilePath);
 
         // var fsTodoQuery = query(fsTodoRef, orderBy("folder"), orderBy("list"));
@@ -66,7 +81,7 @@ class TodoList extends React.Component{
         
         // console.log(fsTodoQuery);
 
-        onSnapshot(fsTodoQuery, { includeMetadataChanges: true } ,(querySnapshot) => {
+        this.unsubscribeFirebaseTodolist = onSnapshot(fsTodoQuery, { includeMetadataChanges: true } ,(querySnapshot) => {
             var itemAdded = false;
             var updateItemModified = false;
             var itemRemoved = false;
@@ -115,13 +130,11 @@ class TodoList extends React.Component{
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
                         todoListWithBuffers.sort(this.sortTodosFunction("folder", "list"))
-                        debugger;
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }else{
-                    // reset buffer if you aren't signed in
+                    // TODO reset buffer if you aren't signed in
                     fsTodoList.sort(this.sortTodosFunction("folder", "list"))
-                    debugger;
                     this.setState({todoList: fsTodoList});
                 }
 
@@ -166,8 +179,6 @@ class TodoList extends React.Component{
     // creds: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
     sortTodosFunction(...argsTuple){
         
-        // debugger;
-        
         function compare(item1, item2, type, ascending=true){
             if(type === 'dueDate'){
                 var ret;
@@ -190,8 +201,6 @@ class TodoList extends React.Component{
         
         return function(item1, item2){
             
-            debugger;
-            
             console.log(argsTuple)
 
             for(var arg of argsTuple){
@@ -208,7 +217,6 @@ class TodoList extends React.Component{
 
                 var res = compare(item1[type], item2[type], type, sortAscending);
                 
-                debugger;
                 console.log(item1[type], item2[type], type, sortAscending, res)
 
                 if(res !== 0) return res;
