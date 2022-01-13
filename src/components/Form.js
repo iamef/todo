@@ -40,14 +40,6 @@ const Form = () => {
         
         if(todo.dueDate !== "") todo.dueDate = todo.dueDate.toLocaleString()
         
-        console.log(todo);
-        
-        // const todoRef = ref(db, "Todo");
-        // push(todoRef, todo);
-
-        console.log(auth.userId)
-        console.log(auth.currentUser.uid)
-
         var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
         // todoFilePath +=  formData.folder + "/" + formData.list;
 

@@ -28,6 +28,8 @@ class TodoList extends React.Component{
         
         if(this.props.firebaseSignedIn){
             this.initializeTodolist()
+        }else{
+            this.initializeTodolist()
         }
     }
 
@@ -50,7 +52,8 @@ class TodoList extends React.Component{
             }
         }else{
             if(prevProps.firebaseSignedIn){
-                this.setState({todoList: false})
+                // this.setState({todoList: false})
+                this.initializeTodolist()
             }
         }
     }
