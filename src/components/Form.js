@@ -44,11 +44,12 @@ const Form = () => {
         // const todoRef = ref(db, "Todo");
         // push(todoRef, todo);
 
-        debugger
         console.log(auth.userId)
         console.log(auth.currentUser.uid)
 
-        var todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
+        var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        // todoFilePath +=  formData.folder + "/" + formData.list;
+
         addDoc(collection(fs, todoFilePath), todo);
 
         setFormData({

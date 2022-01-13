@@ -8,11 +8,12 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
-import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, setDoc, updateDoc } from 'firebase/firestore';
 class TodoList extends React.Component{
     constructor(props){
         super(props);
         console.log("Todolist props", props);
+        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
 
         this.initializeTodolist = this.initializeTodolist.bind(this)
         // need the todoList because 
@@ -32,6 +33,9 @@ class TodoList extends React.Component{
 
     componentDidUpdate(prevProps, prevState, snapshot){
         console.log("Todolist update", prevProps, this.props, prevState, this.state)
+        
+        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        
         if(this.props.firebaseSignedIn){
             // if you just signed into FIREBASE
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
@@ -50,14 +54,13 @@ class TodoList extends React.Component{
     }
 
     initializeTodolist(){
-        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
-        var fsTodoRef = collection(fs, todoFilePath);
+        var fsTodoRef = collection(fs, this.todoFilePath);
 
+        // var fsTodoQuery = query(fsTodoRef, orderBy("folder"), orderBy("list"));
         var fsTodoQuery = query(fsTodoRef);
         
         // console.log(fsTodoQuery);
 
-        
         onSnapshot(fsTodoQuery, { includeMetadataChanges: true } ,(querySnapshot) => {
             var itemAdded = false;
             var updateItemModified = false;
@@ -92,13 +95,11 @@ class TodoList extends React.Component{
                     itemRemoved = true;
                     // console.log("Removed firebase item: ", change.doc.data());
                 }
-                // debugger;
             });
 
             if(itemAdded || itemRemoved || updateItemModified){
                 var fsTodoList = [] // when a list is empty you want it update the firestore to empty
                 
-                // debugger;
                 // console.log(querySnapshot);
                 querySnapshot.forEach((qdoc) => {
                     console.log(qdoc.id, " => ", qdoc.data());
@@ -124,50 +125,100 @@ class TodoList extends React.Component{
     }
 
     getTodoListWithBuffers(todoList, callback){
-        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
-        
         getDoc(doc(fs, "users/" + auth.currentUser.uid)).then((docSnap) => {
-            // debugger;
             // console.log(docSnap.data().calendars)
 
             var calendars = docSnap.data().calendars
 
-            calculateBuffer(todoList, calendars).then((buffers) => {
-                for(var todo of todoList){
-                    var bufferMS = buffers[todo.id]["bufferMS"]
+            // calculateBuffer(todoList, calendars).then((buffers) => {
+            //     for(var todo of todoList){
+            //         var bufferMS = buffers[todo.id]["bufferMS"]
                     
-                    if(typeof(bufferMS) === 'number'){
-                        todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
-                    }else{
-                        todo.bufferHrs = bufferMS
-                    }
+            //         if(typeof(bufferMS) === 'number'){
+            //             todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
+            //         }else{
+            //             todo.bufferHrs = bufferMS
+            //         }
 
-                    // debugger;
-                    setDoc(doc(fs, todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
+            //         setDoc(doc(fs, this.todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
 
-                    // todo.bufferData = buffers[todo.id]
-                }
+            //         // todo.bufferData = buffers[todo.id]
+            //     }
                 
-                callback(todoList)
-            })
+            //     callback(todoList)
+            // })
+            callback(todoList)
 
         })
     }
     
+    // argsTuple in the form (whatever to sort by, isAscending)
+    // javascript technically doesn't have tuples...
+    // returns a comparable function given the arguments
+    sortTodosFunction(...argsTuple){
+        
+        // debugger;
+        
+        function compare(item1, item2, type, ascending=true){
+            if(type === 'dueDate'){
+                var ret;
+    
+                if(item1 === '' && item2 === ''){
+                    ret = 0
+                }else if(item1 === ''){
+                    ret = 1  // this means item1 - item2 is positive
+                }else if(item2 === ''){
+                    ret = -1 // this means item1 - item2 is negative
+                }
+                ret = Date.parse(item1) - Date.parse(item2)
+    
+                return (ascending ? ret : -1*ret)
+            }
+    
+            if (item1 == item2) return 0;
+            return item1 < item2 ? -1 : 1;
+        }
+        
+        return function(item1, item2){
+            
+            debugger;
+            
+            console.log(argsTuple)
+
+            for(var arg of argsTuple){
+                console.log(arg)
+                
+                var type, sortAscending;
+                if(Array.isArray(arg)){
+                    type = arg[0];
+                    sortAscending = arg[1];
+                }else{
+                    type = arg;
+                    sortAscending = true;
+                }
+
+                var res = compare(item1[type], item2[type], type, sortAscending);
+                
+                debugger;
+                console.log(item1[type], item2[type], type, sortAscending, res)
+
+                if(res !== 0) return res;
+            }
+            
+            return 0;
+        }
+    }
     
     deleteTodo(todo){
-        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
-        var todoDoc = doc(collection(fs, todoFilePath), todo.id)
+        var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
         console.log(todoDoc.id, todoDoc)
         deleteDoc(todoDoc)
     }
     
     completeTodo(todo){
-        const todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
-        var todoDoc = doc(collection(fs, todoFilePath), todo.id)
+        var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
         console.log(todoDoc.id, todoDoc)
-        updateDoc(todoDoc, {complete: !todo.complete})
-        
+        updateDoc(todoDoc, {complete: !todo.complete})  
     }
     
     render(){
