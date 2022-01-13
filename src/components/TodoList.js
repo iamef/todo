@@ -84,7 +84,7 @@ class TodoList extends React.Component{
                             found.dueDate === changedData.dueDate &&
                             found.estTime === changedData.estTime &&
                             found.priority === changedData.priority &&
-                            found.title === changedData.title){
+                            found.atitle === changedData.atitle){
                                 console.log("(no need to edit) Modified firebase item: ", change.doc.id, change.doc.data());
                         }else{
                             updateItemModified = true;
@@ -233,7 +233,8 @@ class TodoList extends React.Component{
                 <TableHead>
                 <TableRow>
                     <TableCell></TableCell>
-                    <TableCell>Todo Item</TableCell>
+                    <TableCell>folder/list</TableCell>
+                    <TableCell>atitle</TableCell>
                     <TableCell align="right">dueDate</TableCell>
                     {/* <TableCell align="right">deadline</TableCell> */}
                     <TableCell align="right">estTime</TableCell>
@@ -270,7 +271,10 @@ class TodoList extends React.Component{
                             {/* </motion.div> */}
                         </TableCell>
                         <TableCell component="th" scope="row">
-                            {todo.title}
+                            { todo.folder + "/" + todo.list }
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                            {todo.atitle}
                         </TableCell>
                         <TableCell align="right">{todo.dueDate}</TableCell>
                         {/* <TableCell align="right">{todo.deadlineType}</TableCell> */}

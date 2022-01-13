@@ -21,7 +21,7 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 // https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
 const Form = () => {
     const [formData, setFormData] = useState({
-        title: "",
+        atitle: "",
         // dueDate: new Date(),
         dueDate: "",
         deadlineType: "noDeadline",
@@ -53,7 +53,7 @@ const Form = () => {
         addDoc(collection(fs, todoFilePath), todo);
 
         setFormData({
-            title: "",
+            atitle: "",
             dueDate: "",
             // dueDate: new Date(),
             deadlineType: "noDeadline",
@@ -71,8 +71,8 @@ const Form = () => {
                     variant='standard'
                     label='Add Todo'
                     type='text'
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    value={formData.atitle}
+                    onChange={(e) => setFormData({...formData, atitle: e.target.value})}
                     className='textfield'
                     size='medium'
                 />
@@ -199,7 +199,7 @@ const Form = () => {
 
                 <div className='add'>
                     {
-                        formData.title === '' ?
+                        formData.atitle === '' ?
                             <AddCircleOutlineIcon
                                 fontSize='large'
                                 className='icon'

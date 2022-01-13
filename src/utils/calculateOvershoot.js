@@ -123,7 +123,7 @@ export async function calculateBuffer(todos, calendars){
     
     buffersById[todo.id]["bufferMS"] = currBufferMS
 
-    prevTodoName = todo.title
+    prevTodoName = todo.atitle
   }
 
   return buffersById
