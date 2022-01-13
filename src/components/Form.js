@@ -27,8 +27,8 @@ const Form = () => {
         deadlineType: "noDeadline",
         estTime: "",
         priority: "tbd",
-        folder: "no folder",
-        list: "not labeled"
+        folder: "",
+        list: ""
     });
     
     const createTodo = () => {
@@ -37,7 +37,8 @@ const Form = () => {
             complete: false,
         };
         
-        todo.dueDate = todo.dueDate.toLocaleString()
+        
+        if(todo.dueDate !== "") todo.dueDate = todo.dueDate.toLocaleString()
         
         console.log(todo);
         
@@ -58,7 +59,9 @@ const Form = () => {
             // dueDate: new Date(),
             deadlineType: "noDeadline",
             estTime: "",
-            priority: "tbd"
+            priority: "tbd",
+            folder: "",
+            list: ""
         })
     }
 
