@@ -10,7 +10,7 @@ export async function calculateBuffer(todos, calendars){
 
   // sort todos in order of dueDate
   // can later incoporate priority
-  todos.sort((item1, item2) => {
+  var sortedTodos = todos.slice.sort((item1, item2) => {
     if(item1.dueDate === '' && item2.dueDate === ''){
       return 0
     }else if(item1.dueDate === ''){
@@ -22,13 +22,13 @@ export async function calculateBuffer(todos, calendars){
     return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
   });
   
-  console.log("SORTED", todos)
+  console.log("SORTED", sortedTodos)
 
   var currBufferMS = 0;
   var prevTodoDueDate = new Date()
   var prevTodoName = "none, 1st todo"
 
-  for(var todo of todos){
+  for(var todo of sortedTodos){
     // var calIter = calendars.values(); // returns iterator so I can call next
     
     // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
@@ -113,7 +113,8 @@ export async function calculateBuffer(todos, calendars){
     currBufferMS = prevBufferMS + msBetweenTasks - 
                             msEventsBetweenTasks - msToComplete
     // currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
-
+    console.log(todo.id)
+    
     buffersById[todo.id]["prevTodo"] = prevTodoName;
     buffersById[todo.id]["prevBuffer"] = prevBufferMS;
     buffersById[todo.id]["hoursBetweensTasks"] = hoursBetweenTasks;
