@@ -8,7 +8,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
 import { calculateBuffer } from '../utils/calculateOvershoot';
-import { collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
 class TodoList extends React.Component{
     constructor(props){
         super(props);
@@ -80,7 +80,7 @@ class TodoList extends React.Component{
                     // console.log("New firebase item: ", change.doc.data());
                 }
                 if (change.type === "modified") {
-                    if(querySnapshot.docChanges().length == 1 && Array.isArray(this.state.todoList)){
+                    if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.todoList)){
                         var found = this.state.todoList.find((todo) => todo.id === change.doc.id)
                         var changedData = change.doc.data()
                         
@@ -184,7 +184,7 @@ class TodoList extends React.Component{
                 return (ascending ? ret : -1*ret)
             }
     
-            if (item1 == item2) return 0;
+            if (item1 === item2) return 0;
             return item1 < item2 ? -1 : 1;
         }
         

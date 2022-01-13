@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { auth, db, fs } from '../firebase';
-import { push, ref } from 'firebase/database';
+import { auth, fs } from '../firebase';
 
 import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
 
@@ -13,8 +12,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 
 
 // Added more fields usinig this!

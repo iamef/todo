@@ -2,8 +2,7 @@ import React from 'react'
 
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
-import { get, ref, set } from 'firebase/database';
-import { auth, db, fs } from '../firebase';
+import { auth, fs } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 class CalendarSelection extends React.Component{
@@ -36,7 +35,7 @@ class CalendarSelection extends React.Component{
       var calendars = docSnap.data().calendars
 
       var formDataInitialJSON = calendars.map((calID) => {
-        return "\"" + calID + "\"" + ": true"
+        return "\"" + calID + "\": true"
       }).toString();
       formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
       
@@ -45,24 +44,6 @@ class CalendarSelection extends React.Component{
       this.setState(formDataInitialJSON);
 
     }, (reason) => console.log(reason));
-
-  //   get(ref(db, 'Calendars')).then((value) => {
-  //     // console.log(value.val())
-  //     var formDataInitialJSON = value.val().map((calID) => {
-  //       return "\"" + calID + "\"" + ": true"
-  //     }).toString();
-  //     formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
-      
-  //     // console.log(formDataInitialJSON)
-
-  //     this.setState(formDataInitialJSON);
-
-  //   }, (reason) => console.log(reason))
-  //   // this.setState(['aaf', 'asdfasd', 'asdf'])
-  //   // firebase.database().ref("Calendars").get().then((value) => {
-  //   //   console.log(value.val())
-  //   //   this.setState(value.val())
-  //   // }, (reason) => console.log(reason))
 
   }
 
@@ -75,7 +56,7 @@ class CalendarSelection extends React.Component{
   //   if(!(this.props.calendars === undefined)){
   //     console.log("this cal is not undefined")
   //     var formDataInitialJSON = this.props.calendars.map((calendar) => {
-  //         return "\"" + calendar.id + "\"" + ": false"
+  //         return "\"" + calendar.id + "\": false"
   //     }).toString()
   //     formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
   //     this.setState(formDataInitialJSON);
@@ -89,7 +70,7 @@ class CalendarSelection extends React.Component{
 
   handleCheckChange(event, calendarId){
     console.log(event, {...this.state})
-    this.setState(JSON.parse("{\"" + calendarId + "\"" + ": " + event.target.checked + "}"))
+    this.setState(JSON.parse("{\"" + calendarId + "\": " + event.target.checked + "}"))
   }
 
   getChecked(calendarId){
