@@ -42,9 +42,11 @@ class TodoList extends React.Component{
                 this.initializeTodolist()
             // if you just signed into GCAL
             }else if(prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
-                this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
-                    this.setState({todoList: todoListWithBuffers});
-                })
+                if(Array.isArray(this.state.todoList)){
+                    this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                        this.setState({todoList: todoListWithBuffers});
+                    })
+                }
             }
         }else{
             if(prevProps.firebaseSignedIn){
@@ -75,7 +77,7 @@ class TodoList extends React.Component{
                     // console.log("New firebase item: ", change.doc.data());
                 }
                 if (change.type === "modified") {
-                    if(querySnapshot.docChanges().length == 1){
+                    if(querySnapshot.docChanges().length == 1 && Array.isArray(this.state.todoList)){
                         var found = this.state.todoList.find((todo) => todo.id === change.doc.id)
                         var changedData = change.doc.data()
                         
@@ -159,6 +161,7 @@ class TodoList extends React.Component{
     // argsTuple in the form (whatever to sort by, isAscending)
     // javascript technically doesn't have tuples...
     // returns a comparable function given the arguments
+    // creds: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
     sortTodosFunction(...argsTuple){
         
         // debugger;

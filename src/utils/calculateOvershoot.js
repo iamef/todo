@@ -10,7 +10,7 @@ export async function calculateBuffer(todos, calendars){
 
   // sort todos in order of dueDate
   // can later incoporate priority
-  var sortedTodos = todos.slice.sort((item1, item2) => {
+  var sortedTodos = todos.slice().sort((item1, item2) => {
     if(item1.dueDate === '' && item2.dueDate === ''){
       return 0
     }else if(item1.dueDate === ''){
