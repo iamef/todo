@@ -20,8 +20,8 @@ export function loadGoogleScript(onLoadFunc){
 // copied from https://developers.google.com/calendar/api/quickstart/js
 
 
-const CLIENT_ID = '45873534951-ebrqt8r78ii9vsh5smmf0d0nllm2aa6g.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyCEGfVixki6n9JjL4mU9jhT6AHEtEofHP4';
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 // console.log(CLIENT_ID)
 
