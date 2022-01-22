@@ -75,7 +75,9 @@ h2 {
 }
 
 .complete {
-  background-color: #fff;
+  /* background-color: #fff; */
+  font-style: italic;
+  opacity: 0.5;
   text-decoration: line-through;
   margin-left: 30px;
 }

@@ -269,8 +269,9 @@ class TodoList extends React.Component{
                         <TableRow
                         key={todo.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        className={todo.complete ? "complete" : "pending"}
                         >
-                        <TableCell>
+                        <TableCell className={todo.complete ? "complete" : "pending"}>
                             {todo.complete ?
                                 <CheckCircleIcon
                                     className='icon'
@@ -291,17 +292,17 @@ class TodoList extends React.Component{
                                 />
                             {/* </motion.div> */}
                         </TableCell>
-                        <TableCell component="th" scope="row">
+                        <TableCell component="th" scope="row" className={todo.complete ? "complete" : "pending"}>
                             { todo.folder + "/" + todo.list }
                         </TableCell>
-                        <TableCell component="th" scope="row">
+                        <TableCell component="th" scope="row" className={todo.complete ? "complete" : "pending"}>
                             {todo.atitle}
                         </TableCell>
-                        <TableCell align="right">{todo.dueDate}</TableCell>
-                        {/* <TableCell align="right">{todo.deadlineType}</TableCell> */}
-                        <TableCell align="right">{todo.estTime}</TableCell>
-                        {/* <TableCell align="right">{todo.priority}</TableCell> */}
-                        <TableCell align="right">{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.dueDate}</TableCell>
+                        {/* <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.deadlineType}</TableCell> */}
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.estTime}</TableCell>
+                        {/* <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.priority}</TableCell> */}
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
                         </TableRow>
                     )
                     : null
