@@ -133,12 +133,12 @@ class TodoList extends React.Component{
                 // TODO implement calendar stuff later
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                        todoListWithBuffers.sort(this.sortTodosFunction("folder", "list"))
+                        todoListWithBuffers.sort(this.sortTodosFunction("complete", "folder", "list", "dueDate"))
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }else{
                     // TODO reset buffer if you aren't signed in
-                    fsTodoList.sort(this.sortTodosFunction("folder", "list"))
+                    fsTodoList.sort(this.sortTodosFunction("complete", "folder", "list", "dueDate"))
                     this.setState({todoList: fsTodoList});
                 }
 
