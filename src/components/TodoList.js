@@ -22,8 +22,12 @@ class TodoList extends React.Component{
         // https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
         this.state = { todoList: false }
         
-        // hopefully this allows auth to load properly...
-        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        // TODO check if auth to loaded properly...
+        if(typeof(auth) === "undefined"){
+            this.todoFilePath = "users/" + null + "/Todos";
+        }else{
+            this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        }
         this.unsubscribeFirebaseTodolist = () => {};
     }
 
@@ -34,7 +38,7 @@ class TodoList extends React.Component{
             this.initializeTodolist()
         }else{
             console.log("Firebase login is null")
-            debugger;
+            // debugger;
         }
     }
 
@@ -147,7 +151,7 @@ class TodoList extends React.Component{
     }
 
     getTodoListWithBuffers(todoList, callback){
-        getDoc(doc(fs, "users/" + auth.currentUser.uid)).then((docSnap) => {
+        getDoc(doc(fs, "users/" + (auth.currentUser ? auth.currentUser.uid : null))).then((docSnap) => {
             // console.log(docSnap.data().calendars)
 
             var calendars = docSnap.data().calendars
