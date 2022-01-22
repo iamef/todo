@@ -34,7 +34,7 @@ export async function calculateBuffer(todos, calendars){
     // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
     buffersById[todo.id] = {}
 
-    if(todo.dueDate === ''){
+    if(todo.dueDate === '' || todo.complete){
         // debugger;
         buffersById[todo.id]["bufferMS"] = "N/A"
         continue;
