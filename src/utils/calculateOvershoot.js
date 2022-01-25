@@ -28,16 +28,13 @@ export async function calculateBuffer(todos, calendars){
     return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
   });
   
-  console.log("SORTED", sortedTodos)
+  // console.log("SORTED", sortedTodos)
 
   var currBufferMS = 0;
   var prevTodoDueDate = new Date()
   var prevTodoName = "none, 1st todo"
 
   for(var todo of sortedTodos){
-    // var calIter = calendars.values(); // returns iterator so I can call next
-    
-    // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
     buffersById[todo.id] = {}
 
     if(todo.dueDate === '' || todo.complete){
@@ -57,7 +54,7 @@ export async function calculateBuffer(todos, calendars){
 
     var msToComplete = Number(todo.estTime) * 60*60*1000
 
-    console.log(prevBufferMS / (60*60*1000), hoursBetweenTasks, hoursEventsBetweenTasks)
+    // console.log(prevBufferMS / (60*60*1000), hoursBetweenTasks, hoursEventsBetweenTasks)
 
     if(prevTodoDueDate < todoDueDate){
       var eList = []
@@ -76,11 +73,11 @@ export async function calculateBuffer(todos, calendars){
         eList = eList.concat(events.result.items)
       }
 
-      console.log('eList', eList)
+      // console.log('eList', eList)
       buffersById[todo.id]["events"] = []
       for(var event of eList){
         // TODO needs to work on this calculation
-        console.log(event.summary, event.start, event.end);
+        // console.log(event.summary, event.start, event.end);
         buffersById[todo.id]["events"].push({
             summary: event.summary, 
             start: event.start.dateTime,
@@ -119,7 +116,7 @@ export async function calculateBuffer(todos, calendars){
     currBufferMS = prevBufferMS + msBetweenTasks - 
                             msEventsBetweenTasks - msToComplete
     // currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
-    console.log(todo.id)
+    // console.log(todo.id)
     
     buffersById[todo.id]["prevTodo"] = prevTodoName;
     buffersById[todo.id]["prevBuffer"] = prevBufferMS;

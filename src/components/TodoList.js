@@ -96,7 +96,7 @@ class TodoList extends React.Component{
             querySnapshot.docChanges().forEach((change) => {
                 if (change.type === "added") {
                     itemAdded = true;
-                    // console.log("New firebase item: ", change.doc.data());
+                    console.log("New firebase item: ", change.doc.data());
                 }
                 if (change.type === "modified") {
                     if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.todoList)){
@@ -138,6 +138,9 @@ class TodoList extends React.Component{
                     })
                 }else{
                     // TODO reset buffer if you aren't signed in
+                    for(var todo of fsTodoList){
+                        todo.bufferHrs = "Log Into GCAL"
+                    }
                     fsTodoList.sort(this.sortTodosFunction("complete", "folder", "list", "dueDate"))
                     this.setState({todoList: fsTodoList});
                 }
@@ -213,10 +216,10 @@ class TodoList extends React.Component{
         
         return function(item1, item2){
             
-            console.log(argsTuple)
+            // console.log(argsTuple)
 
             for(var arg of argsTuple){
-                console.log(arg)
+                // console.log(arg)
                 
                 var type, sortAscending;
                 if(Array.isArray(arg)){
@@ -229,7 +232,7 @@ class TodoList extends React.Component{
 
                 var res = compare(item1[type], item2[type], type, sortAscending);
                 
-                console.log(item1[type], item2[type], type, sortAscending, res)
+                // console.log(item1[type], item2[type], type, sortAscending, res)
 
                 if(res !== 0) return res;
             }
