@@ -14,7 +14,8 @@ function App() {
   const [state, setState] = useState({
     gapiLoaded: false,
     gapiSignedIn: null,
-    firebaseSignedIn: null
+    firebaseSignedIn: null,
+    userFilePath: "users/" + null
   })
 
   
@@ -27,8 +28,10 @@ function App() {
   //     setGapiState({signedIn: isSignedIn}, () => console.log("sign in change", gapiState))
   //   });
 
+  // useEffect is called after React updates the DOM
+  // TODO fix this because onAuthStateChange gets added every single time
   useEffect(() => {
-    // console.log("useEffect", gapiState)
+    console.log("useEffect")
     if(!state.gapiLoaded){
       loadGoogleScript(() => {
         setState({...state, gapiLoaded: true});    
@@ -36,7 +39,7 @@ function App() {
       });
     }else if(state.gapiSignedIn === null){
       handleClientLoad((isSignedIn) => {
-            setState({...state, gapiSignedIn: isSignedIn});
+        setState({...state, gapiSignedIn: isSignedIn});
       });
     }
     
@@ -45,8 +48,10 @@ function App() {
       console.log(user);
       if(state.firebaseSignedIn !== (user !== null)){
         // TODO check if firebase is even online at all
-        console.log("fsignin status actually changed", state.firebaseSignedIn)
-        setState({...state, firebaseSignedIn: (user !== null)})
+        console.log("fsignin status actually changed", state.userFilePath)
+        
+        // TODO TEST IF THIS ACTUALLY WORKS
+        setState({...state, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)})
       }
       
     })
@@ -64,11 +69,14 @@ function App() {
         />
         <CalendarIntegration 
           gapiLoaded={state.gapiLoaded} 
-          gapiSignedIn={state.gapiSignedIn}/>
+          gapiSignedIn={state.gapiSignedIn}
+          userFirebasePath={state.userFilePath}
+        />
         <TodoApp 
           gapiLoaded={state.gapiLoaded} 
           gapiSignedIn={state.gapiSignedIn}
           firebaseSignedIn={state.firebaseSignedIn}
+          userFirebasePath={state.userFilePath}
         />
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"

@@ -23,11 +23,14 @@ class TodoList extends React.Component{
         this.state = { todoList: false }
         
         // TODO check if auth to loaded properly...
-        if(typeof(auth) === "undefined"){
-            this.todoFilePath = "users/" + null + "/Todos";
-        }else{
-            this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
-        }
+        this.todoFilePath = props.userFirebasePath +  "/Todos";
+        
+        
+        // if(typeof(auth) === "undefined"){
+        //     this.todoFilePath = "users/" + null + "/Todos";
+        // }else{
+        //     this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        // }
         this.unsubscribeFirebaseTodolist = () => {};
     }
 
@@ -45,6 +48,13 @@ class TodoList extends React.Component{
     componentDidUpdate(prevProps, prevState, snapshot){
         console.log("Todolist update", prevProps, this.props, prevState, this.state)
         
+        this.todoFilePath = this.props.userFirebasePath +  "/Todos";
+        
+        if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
+            this.unsubscribeFirebaseTodolist();
+        }
+
+
         if(this.props.firebaseSignedIn !== null){
             // if you just signed into FIREBASE
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
