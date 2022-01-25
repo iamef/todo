@@ -104,7 +104,10 @@ class CalendarIntegration extends React.Component{
                 <>
                 <SignoutButton onClick={this.handleSignoutClick} />
                 <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
-                <CalendarSelection calendars = {this.state.calendarsAvailable}/>
+                <CalendarSelection 
+                    calendars = {this.state.calendarsAvailable}
+                    userFirebasePath = {this.props.userFirebasePath}
+                />
                 </>
                 )
             else{

@@ -27,18 +27,9 @@ class CalendarSelection extends React.Component{
 
   componentDidMount(){
     console.log("cal selection mount");
+    console.log(this.props.userFirebasePath)
 
-    var calFilePath;
-    if(typeof(auth) === "undefined"){
-      calFilePath = "users/" + null;
-    }else{
-      // TODO centralize the base file for the user to App.js instead of redeclaring it here
-      calFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null);
-    }
-
-    // TODO auth.currentUser might be null
-    getDoc(doc(fs, calFilePath)).then((docSnap) => {
-      // TODO calendars might be undefined
+    getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
       var calendars = docSnap.data().calendars
 
       if(calendars !== undefined){
@@ -101,7 +92,7 @@ class CalendarSelection extends React.Component{
       if(this.state[key]) calsToInclude.push(key)
     }
     console.log(calsToInclude)
-    setDoc(doc(fs, "users/" + auth.currentUser.uid), {calendars: calsToInclude});
+    setDoc(doc(fs, this.props.userFirebasePath), {calendars: calsToInclude});
     
     // set(ref(db, "Calendars"), calsToInclude)
     // firebase.database().ref("Calendars").set(calsToInclude);
