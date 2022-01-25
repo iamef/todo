@@ -20,17 +20,13 @@ class TodoList extends React.Component{
         // this.state.todoList can be mappable
         // whereas this.state cannot be mappable
         // https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
+        
+        // todo what if I just make todoList into a variable?
+        // it sure does work
         this.state = { todoList: false }
         
-        // TODO check if auth to loaded properly...
         this.todoFilePath = props.userFirebasePath +  "/Todos";
         
-        
-        // if(typeof(auth) === "undefined"){
-        //     this.todoFilePath = "users/" + null + "/Todos";
-        // }else{
-        //     this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
-        // }
         this.unsubscribeFirebaseTodolist = () => {};
     }
 
@@ -50,9 +46,10 @@ class TodoList extends React.Component{
         
         this.todoFilePath = this.props.userFirebasePath +  "/Todos";
         
-        if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
-            this.unsubscribeFirebaseTodolist();
-        }
+        // currently in iniitialize function
+        // if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
+        //     this.unsubscribeFirebaseTodolist();
+        // }
 
 
         if(this.props.firebaseSignedIn !== null){
@@ -66,27 +63,21 @@ class TodoList extends React.Component{
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }
+
+                // TODO Take an action if you are logged out of gapi
             }
         }else{
             if(prevProps.firebaseSignedIn){
+                alert("somehow firebase signin has become null")
+                
+                this.unsubscribeFirebaseTodolist();
                 this.setState({todoList: false})
-                // this.initializeTodolist()
             }
         }
     }
 
     initializeTodolist(){
-        if(this.todoFilePath.split("/")[1] === "null"){
-            if((auth.currentUser ? auth.currentUser.uid : null) !== null){
-                this.unsubscribeFirebaseTodolist();
-            }
-        }else{
-            if((auth.currentUser ? auth.currentUser.uid : null) === null){
-                this.unsubscribeFirebaseTodolist();
-            }
-        }
-        
-        this.todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        this.unsubscribeFirebaseTodolist();
         
         var fsTodoRef = collection(fs, this.todoFilePath);
 
@@ -164,7 +155,7 @@ class TodoList extends React.Component{
     }
 
     getTodoListWithBuffers(todoList, callback){
-        getDoc(doc(fs, "users/" + (auth.currentUser ? auth.currentUser.uid : null))).then((docSnap) => {
+        getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
             // console.log(docSnap.data().calendars)
 
             var calendars = docSnap.data().calendars
