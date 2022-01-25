@@ -11,72 +11,86 @@ import FirebaseSignin from './components/FirebaseSignin';
 // import { getTodos } from './utils/calculateOvershoot';
 
 function App() {
-  const [state, setState] = useState({
+  
+  // have separate gapi and firebase 
+  // because when I call setState
+  // the previous setState hasn't finished yet
+  // so it'd update to an outdated
+  const [gapiState, setGapiState] = useState({
     gapiLoaded: false,
     gapiSignedIn: null,
+  });  
+
+  // example:
+  // when II update the firebase state
+  // it would often update the gapiLoaded to be false
+  // because the gapiLoaded setState hasn't completed
+  // setting gapiLoaded to be true
+  const [firebaseState, setFirebaseState] = useState({  
     firebaseSignedIn: null,
     userFilePath: "users/" + null
   })
 
-  
-  // console.log("sign in change", gapiState)
-
-  // , () => {
-  //   console.log("gapiLoaded", gapiState)
-    
-  //   handleClientLoad((isSignedIn) => {
-  //     setGapiState({signedIn: isSignedIn}, () => console.log("sign in change", gapiState))
-  //   });
-
   // useEffect is called after React updates the DOM
-  // TODO fix this because onAuthStateChange gets added every single time
+  // effect to load gapi
   useEffect(() => {
-    console.log("useEffect")
-    if(!state.gapiLoaded){
+    console.log("gapi useEffect")
+    if(!gapiState.gapiLoaded){
       loadGoogleScript(() => {
-        setState({...state, gapiLoaded: true});    
+        setGapiState({...gapiState, gapiLoaded: true});    
+        handleClientLoad((isSignedIn) => {
+          setGapiState({...gapiState, gapiLoaded: true, gapiSignedIn: isSignedIn});
+        });
         // console.log("updating gapi State")
       });
-    }else if(state.gapiSignedIn === null){
-      handleClientLoad((isSignedIn) => {
-        setState({...state, gapiSignedIn: isSignedIn});
-      });
     }
-    
+  }, 
+  // [] necessary because this would run after every render (bad)
+  // having a functional update setGapiState(g => ...)
+  // doesn't seem to work 
+  // since setGapiState is called twice in the useEffect
+  []); 
+
+  // effect for firebase login state changes
+  useEffect(() => {
+    console.log("firebase useEffect")
     onAuthStateChanged(auth, (user) => {
-      // debugger;
       console.log(user);
-      if(state.firebaseSignedIn !== (user !== null)){
+      if(firebaseState.firebaseSignedIn !== (user !== null)){
         // TODO check if firebase is even online at all
-        console.log("fsignin status actually changed", state.userFilePath)
+        console.log("fsignin status actually changed", firebaseState.userFilePath)
         
         // TODO TEST IF THIS ACTUALLY WORKS
-        setState({...state, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)})
+        console.log(firebaseState);
+        console.log({...firebaseState, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)})
+        setFirebaseState({...firebaseState, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)})
       }
-      
     })
 
-  });
-
-
-  // debugger;
+  }, 
+  // [] necessary because this would run after every render (bad)
+  // having a functional update setFirebaseState(f => ...)
+  // doesn't seem to work 
+  // because the props for firebaseState seem to show up as undefined
+  // for some reason
+  []); 
 
   return (
     <>
       <div className='app'>
         <FirebaseSignin 
-          firebaseSignedIn={state.firebaseSignedIn}
+          firebaseSignedIn={firebaseState.firebaseSignedIn}
         />
         <CalendarIntegration 
-          gapiLoaded={state.gapiLoaded} 
-          gapiSignedIn={state.gapiSignedIn}
-          userFirebasePath={state.userFilePath}
+          gapiLoaded={gapiState.gapiLoaded} 
+          gapiSignedIn={gapiState.gapiSignedIn}
+          userFirebasePath={firebaseState.userFilePath}
         />
         <TodoApp 
-          gapiLoaded={state.gapiLoaded} 
-          gapiSignedIn={state.gapiSignedIn}
-          firebaseSignedIn={state.firebaseSignedIn}
-          userFirebasePath={state.userFilePath}
+          gapiLoaded={gapiState.gapiLoaded} 
+          gapiSignedIn={gapiState.gapiSignedIn}
+          firebaseSignedIn={firebaseState.firebaseSignedIn}
+          userFirebasePath={firebaseState.userFilePath}
         />
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"
