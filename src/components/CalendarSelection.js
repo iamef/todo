@@ -28,20 +28,30 @@ class CalendarSelection extends React.Component{
   componentDidMount(){
     console.log("cal selection mount");
 
-    getDoc(doc(fs, "users/" + auth.currentUser.uid)).then((docSnap) => {
-      // debugger;
-      // console.log(docSnap.data().calendars)
+    var calFilePath;
+    if(typeof(auth) === "undefined"){
+      calFilePath = "users/" + null;
+    }else{
+      // TODO centralize the base file for the user to App.js instead of redeclaring it here
+      calFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null);
+    }
 
+    // TODO auth.currentUser might be null
+    getDoc(doc(fs, calFilePath)).then((docSnap) => {
+      // TODO calendars might be undefined
       var calendars = docSnap.data().calendars
 
-      var formDataInitialJSON = calendars.map((calID) => {
-        return "\"" + calID + "\": true"
-      }).toString();
-      formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
-      
-      // console.log(formDataInitialJSON)
+      if(calendars !== undefined){
+        var formDataInitialJSON = calendars.map((calID) => {
+          return "\"" + calID + "\": true"
+        }).toString();
+        formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
+        
+        // console.log(formDataInitialJSON)
 
-      this.setState(formDataInitialJSON);
+        this.setState(formDataInitialJSON);
+      
+      }
 
     }, (reason) => console.log(reason));
 

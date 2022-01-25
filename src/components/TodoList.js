@@ -155,24 +155,32 @@ class TodoList extends React.Component{
             // console.log(docSnap.data().calendars)
 
             var calendars = docSnap.data().calendars
+            console.log(calendars)
 
-            calculateBuffer(todoList, calendars).then((buffers) => {
+            if(calendars === undefined){
                 for(var todo of todoList){
-                    var bufferMS = buffers[todo.id]["bufferMS"]
-                    
-                    if(typeof(bufferMS) === 'number'){
-                        todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
-                    }else{
-                        todo.bufferHrs = bufferMS
-                    }
-
-                    setDoc(doc(fs, this.todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
-
-                    // todo.bufferData = buffers[todo.id]
+                  todo.bufferHrs = "select calendars"
                 }
-                
                 callback(todoList)
-            })
+            }else{
+                calculateBuffer(todoList, calendars).then((buffers) => {
+                    for(var todo of todoList){
+                        var bufferMS = buffers[todo.id]["bufferMS"]
+                        
+                        if(typeof(bufferMS) === 'number'){
+                            todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
+                        }else{
+                            todo.bufferHrs = bufferMS
+                        }
+
+                        setDoc(doc(fs, this.todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
+
+                        // todo.bufferData = buffers[todo.id]
+                    }
+                    
+                    callback(todoList)
+                });
+            }
 
         })
     }

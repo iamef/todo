@@ -4,9 +4,15 @@ export async function calculateBuffer(todos, calendars){
   var buffersById = {}
   
   // get calendars that are checked
-  console.log("unsortedtodos", todos)
+  // console.log("unsortedtodos", todos)
 
-  console.log(calendars)
+  // console.log(calendars)
+  if(calendars === undefined){
+    for(var nocaltodo of todos){
+      nocaltodo.bufferMS = "select calendars"
+    }
+    return todos;
+  }
 
   // sort todos in order of dueDate
   // can later incoporate priority
