@@ -21,9 +21,16 @@ class TodoList extends React.Component{
         // whereas this.state cannot be mappable
         // https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
         
-        // todo what if I just make todoList into a variable?
-        // it sure does work
+        // making todoList into a variable doesn't work
+        // the todolist won't update when I click complete and stuff
         this.state = { todoList: false }
+        
+        // making this into a variable does seem to work
+        // and this updates in the todolist app
+        // hypothesis: this works because the todoList updates when happyDay update
+        // the todoList update sort of carries the happyDay update
+        // so todoList still needs to be a state for this to work
+        this.happyDay = 77;
         
         this.todoFilePath = props.userFirebasePath +  "/Todos";
         
@@ -251,7 +258,9 @@ class TodoList extends React.Component{
     completeTodo(todo){
         var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
         console.log(todoDoc.id, todoDoc)
-        updateDoc(todoDoc, {complete: !todo.complete})  
+        updateDoc(todoDoc, {complete: !todo.complete}) 
+        
+        this.happyDay += 1
     }
     
     render(){
@@ -261,6 +270,8 @@ class TodoList extends React.Component{
             
             {/* <SortTodos></SortTodos> */}
             
+            <h3>{this.happyDay}</h3>
+
             <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
