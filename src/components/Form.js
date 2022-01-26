@@ -64,7 +64,7 @@ const Form = () => {
 
         // TODO split into many diff functions
         // FIND DATE
-        findDateString(e)
+        var dateParseData = parseDate(e.target.value)
 
         // FIND TIME
         // at
@@ -84,7 +84,16 @@ const Form = () => {
         // find item name
     }
 
-    function findDateString(e){
+    // returns JSON in format
+    // {
+    //     "month": month number 0 index, 
+    //     "day": day, 
+    //     "year": year, 
+    //     startIndex: 
+    //     endIndex: 
+    //     matchStr
+    // }
+    function parseDate(str){
         var dateFound = false;
         
         var dateNow = new Date();
@@ -94,22 +103,22 @@ const Form = () => {
 
         // today, tod
         var todayRegExp = /tod(ay){0,1}\s/i
-        var res = todayRegExp.exec(e.target.value)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
-        console.log(res)
+        var res = todayRegExp.exec(str)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
         if(res !== null){
+            console.log(res)
             dateFound = true
 
             day = dateNow.getDate()
             month = dateNow.getMonth()
             year = dateNow.getFullYear()
-            console.log(month, day, year)
-            return {"month": month, "day": day, "year": year}
+            console.log(month, day, year, res[0], res.index)
+            return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
         }
         
         // tomorrow, tmr
         if(!dateFound){
             var tomorrowRegExp = /tom(morrow){0,1}\s/i
-            res = tomorrowRegExp.exec(e.target.value)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
+            res = tomorrowRegExp.exec(str)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
             console.log(res)
             if(res !== null){
                 dateFound = true
@@ -120,13 +129,13 @@ const Form = () => {
                 day = dateTomorrow.getDate()
                 month = dateTomorrow.getMonth()
                 year = dateTomorrow.getFullYear()
-                console.log(month, day, year)
-                return {"month": month, "day": day, "year": year}
+                console.log(month, day, year, res[0], res.index)
+                return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
             }
         }
         if(!dateFound){
             var tmrRegExp = /tmr{0,1}\s/i
-            res = tmrRegExp.exec(e.target.value)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
+            res = tmrRegExp.exec(str)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
             console.log(res)
             if(res !== null){
                 dateFound = true
@@ -137,14 +146,15 @@ const Form = () => {
                 day = dateTomorrow.getDate()
                 month = dateTomorrow.getMonth()
                 year = dateTomorrow.getFullYear()
-                console.log(month, day, year)
+                console.log(month, day, year, res[0], res.index)
 
-                return {"month": month, "day": day, "year": year}
+                return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
             }
         }
 
         // day month strs
         // TODO add on
+        // TODO add day number checks for 31+ (ex: January 39th)
         if(!dateFound){
             var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
             for(var i=0; i < monthNames.length; i++){
@@ -163,7 +173,7 @@ const Form = () => {
                 var monthRegExp = RegExp(monthREString + "\\s" + dayREString, "i")
                 // var res = monthRegExp.exec('"January 1", "February 5", "March 2nd", "April 5", "May 6", "June 21", "July 55", "August 24", "September 33", "October 44", "November 7", "December 39"')
                 
-                res = monthRegExp.exec(e.target.value)
+                res = monthRegExp.exec(str)
                 if(res !== null){
                     dateFound = true
                     
@@ -176,7 +186,7 @@ const Form = () => {
                     }
                     
                     console.log(month, day, year, monthRegExp, res)
-                    return {"month": month, "day": day, "year": year}
+                    return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
                     break;
                 }
             }
@@ -191,27 +201,27 @@ const Form = () => {
                 
                 var splitIndex = 3
                 var thisDayRegExp = RegExp(dayStr.substring(0, splitIndex) + "(" + dayStr.substring(splitIndex) + "){0,1}\\s", "i")
-                res = thisDayRegExp.exec("'Sun day', 'Monday ', 'Tuesday ', 'Wed nesday', 'Thurs day', 'Fri day', 'Sat urday'")
-                console.log(res);
-                res = thisDayRegExp.exec(e.target.value)
+                // res = thisDayRegExp.exec("'Sun day', 'Monday ', 'Tuesday ', 'Wed nesday', 'Thurs day', 'Fri day', 'Sat urday'")
+                // console.log(res);
+                res = thisDayRegExp.exec(str)
 
                 if(dayStr === 'Tuesday'){
                     if(res === null){
                         // Tues
                         var tuesRegExp = RegExp("Tues\\s", "i")
                         console.log(tuesRegExp.exec("tues tuesday"))
-                        res = tuesRegExp.exec(e.target.value)
+                        res = tuesRegExp.exec(str)
                     }
                 }else if(dayStr === 'Wednesday'){
                     if(res === null){
                         var wedsRegExp = RegExp("Weds\\s", "i")
-                        res = wedsRegExp.exec(e.target.value)
+                        res = wedsRegExp.exec(str)
                     }
                 }else if(dayStr === 'Thursday'){
                     if(res === null){
                         // Thur/Thurs
                         var thursRegExp = RegExp("Thur[s]{0,1}\\s", "i")
-                        res = thursRegExp.exec(e.target.value)
+                        res = thursRegExp.exec(str)
                     }
                 }
 
@@ -230,10 +240,10 @@ const Form = () => {
                     day = dateWeekday.getDate()
                     month = dateWeekday.getMonth()
                     year = dateWeekday.getFullYear()
-                    console.log(month, day, year)
+                    console.log(month, day, year, res[0], res.index)
 
                     console.log(thisDayRegExp, res)
-                    return {"month": month, "day": day, "year": year}
+                    return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
                     break;
                 }
             }
@@ -242,31 +252,31 @@ const Form = () => {
         //     // for Tues
         //     var tuesRegExp = RegExp("Tues\\s", "i")
         //     console.log(tuesRegExp.exec("tues tuesday"))
-        //     res = tuesRegExp.exec(e.target.value)
+        //     res = tuesRegExp.exec(str)
         //     if(res !== null){
         //         dateFound = true
         //         console.log(tuesRegExp, res)
-        //         return {"month": month, "day": day, "year": year}
+        //         return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
         //     }
         // }
         // if(!dateFound){
         //     // for Weds
         //     var wedsRegExp = RegExp("Weds\\s", "i")
-        //     res = wedsRegExp.exec(e.target.value)
+        //     res = wedsRegExp.exec(str)
         //     if(res !== null){
         //         dateFound = true
         //         console.log(wedsRegExp, res)
-        //         return {"month": month, "day": day, "year": year}
+        //         return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
         //     }
         // }
         // if(!dateFound){
         //     // Thur/Thurs
         //     var thursRegExp = RegExp("Thur[s]{0,1}\\s", "i")
-        //     res = thursRegExp.exec(e.target.value)
+        //     res = thursRegExp.exec(str)
         //     if(res !== null){
         //         dateFound = true
         //         console.log(thursRegExp, res)
-        //         return {"month": month, "day": day, "year": year}
+        //         return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
         //     }
         // }
 
