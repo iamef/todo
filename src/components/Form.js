@@ -67,16 +67,10 @@ const Form = () => {
         var dateParseData = parseDate(e.target.value)
 
         // FIND TIME
-        // at
-        var timeFound = false
+        var timeParseData = parseTime(e.target.value)
 
-        // 7pm
 
-        // 7:30pm
         
-        // 23:47
-
-
 
         
         // common terms
@@ -283,6 +277,72 @@ const Form = () => {
         // TODO next day of the week
         if(!dateFound){
         }
+
+        return false;
+    }
+
+    // returns JSON
+    // { 
+    //    matchStr
+    //    startIndex
+    //    endIndex
+    // }
+    function parseTime(str){
+        var timeFound = false
+        
+        // 7pm or 7 pm 7:30pm
+        // TODO more sophisticated time parsing (99 is not valid)
+        var timeAMRegExp = /[01]{0,1}\d(:\d\d){0,1}\s{0,1}am\s/i
+        var res = timeAMRegExp.exec(str)
+        if(res !== null){
+            console.log(res)
+            timeFound = true
+
+            var hourStr = ("0" + res[0].find(/[01]{0,1}\d/)).slice(-2)
+            var minuteStr = "00"
+            if(res[1] !== undefined){
+                minuteStr = res[1].substring(1)
+            }
+
+            console.log(`{hourStr}:{minuteStr}`, res[0], res.index)
+            return { time: `{hourStr}:{minuteStr}`, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+
+        }
+
+        if(!timeFound){
+            var timePMRegExp = /[01]{0,1}\d(:\d\d){0,1}\s{0,1}pm\s/i
+            res = timePMRegExp.exec(str)
+            if(res !== null){
+                console.log(res)
+                timeFound = true
+    
+                var hourStr = parseInt(res[0].find(/[01]{0,1}\d/)) + 12
+                hourStr = ("0" + hourStr).slice(-2)
+                
+                var minuteStr = "00"
+                if(res[1] !== undefined){
+                    minuteStr = res[1].substring(1,)
+                }
+
+                console.log(`{hourStr}:{minuteStr}`, res[0], res.index)
+                return { time: `{hourStr}:{minuteStr}`, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+            }
+        }
+        
+        
+        // 23:47
+        if(!timeFound){
+            var hhmmRegExp = /[012]{0,1}\d:\d\d\s/i
+            res = hhmmRegExp.exec(str);
+
+            var hourStr, minuteStr = res[0].split(":")
+
+            console.log(`{hourStr}:{minuteStr}`, res[0], res.index)
+            return { time: `{hourStr}:{minuteStr}`, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+        }
+
+
+        // TODO "at" parsing
 
         return false;
     }
