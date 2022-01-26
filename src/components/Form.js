@@ -57,6 +57,226 @@ const Form = () => {
         })
     }
 
+    function parseQuickAdd(e){
+        setQuickAdd({...quickAdd, text: e.target.value})
+        // var apple = chrono.parse(e.target.value)
+        // console.log(apple)
+
+        // TODO split into many diff functions
+        // FIND DATE
+        findDateString(e)
+
+        // FIND TIME
+        // at
+        var timeFound = false
+
+        // 7pm
+
+        // 7:30pm
+        
+        // 23:47
+
+
+
+        
+        // common terms
+        
+        // find item name
+    }
+
+    function findDateString(e){
+        var dateFound = false;
+        
+        var dateNow = new Date();
+        var day = null;
+        var month = null;
+        var year = null;
+
+        // today, tod
+        var todayRegExp = /tod(ay){0,1}\s/i
+        var res = todayRegExp.exec(e.target.value)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
+        console.log(res)
+        if(res !== null){
+            dateFound = true
+
+            day = dateNow.getDate()
+            month = dateNow.getMonth()
+            year = dateNow.getFullYear()
+            console.log(month, day, year)
+            return {"month": month, "day": day, "year": year}
+        }
+        
+        // tomorrow, tmr
+        if(!dateFound){
+            var tomorrowRegExp = /tom(morrow){0,1}\s/i
+            res = tomorrowRegExp.exec(e.target.value)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
+            console.log(res)
+            if(res !== null){
+                dateFound = true
+
+                var dateTomorrow = new Date()
+                dateTomorrow.setDate(dateNow.getDate() + 1)
+
+                day = dateTomorrow.getDate()
+                month = dateTomorrow.getMonth()
+                year = dateTomorrow.getFullYear()
+                console.log(month, day, year)
+                return {"month": month, "day": day, "year": year}
+            }
+        }
+        if(!dateFound){
+            var tmrRegExp = /tmr{0,1}\s/i
+            res = tmrRegExp.exec(e.target.value)  // var res = todayRegExp.exec("todtodaytodayTODAY ")
+            console.log(res)
+            if(res !== null){
+                dateFound = true
+
+                var dateTomorrow = new Date()
+                dateTomorrow.setDate(dateNow.getDate() + 1)
+
+                day = dateTomorrow.getDate()
+                month = dateTomorrow.getMonth()
+                year = dateTomorrow.getFullYear()
+                console.log(month, day, year)
+
+                return {"month": month, "day": day, "year": year}
+            }
+        }
+
+        // day month strs
+        // TODO add on
+        if(!dateFound){
+            var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+            for(var i=0; i < monthNames.length; i++){
+                // console.log(monthStr)
+                var monthStr = monthNames[i]
+
+                var splitIndex = 3
+                if(monthStr === "September"){
+                    splitIndex = 4
+                }
+
+                var monthREString = monthStr.substring(0, splitIndex) + "(" + monthStr.substring(splitIndex) + "){0,1}"
+                var dayREString = "[123]{0,1}\\d(\\w\\w){0,1}"
+
+                // TODO add European method
+                var monthRegExp = RegExp(monthREString + "\\s" + dayREString, "i")
+                // var res = monthRegExp.exec('"January 1", "February 5", "March 2nd", "April 5", "May 6", "June 21", "July 55", "August 24", "September 33", "October 44", "November 7", "December 39"')
+                
+                res = monthRegExp.exec(e.target.value)
+                if(res !== null){
+                    dateFound = true
+                    
+                    day = parseInt(res[0].split("\\s")[1])
+                    month = i
+                    year = dateNow.getFullYear()
+
+                    if(month < dateNow.getMonth()){
+                        year += 1
+                    }
+                    
+                    console.log(month, day, year, monthRegExp, res)
+                    return {"month": month, "day": day, "year": year}
+                    break;
+                }
+            }
+        }
+        
+        // this day of the week
+        // TODO add this as an option
+        var daysOfWeekNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        if(!dateFound){
+            for(var i=0; i < daysOfWeekNames.length; i++){
+                var dayStr = daysOfWeekNames[i]
+                
+                var splitIndex = 3
+                var thisDayRegExp = RegExp(dayStr.substring(0, splitIndex) + "(" + dayStr.substring(splitIndex) + "){0,1}\\s", "i")
+                res = thisDayRegExp.exec("'Sun day', 'Monday ', 'Tuesday ', 'Wed nesday', 'Thurs day', 'Fri day', 'Sat urday'")
+                console.log(res);
+                res = thisDayRegExp.exec(e.target.value)
+
+                if(dayStr === 'Tuesday'){
+                    if(res === null){
+                        // Tues
+                        var tuesRegExp = RegExp("Tues\\s", "i")
+                        console.log(tuesRegExp.exec("tues tuesday"))
+                        res = tuesRegExp.exec(e.target.value)
+                    }
+                }else if(dayStr === 'Wednesday'){
+                    if(res === null){
+                        var wedsRegExp = RegExp("Weds\\s", "i")
+                        res = wedsRegExp.exec(e.target.value)
+                    }
+                }else if(dayStr === 'Thursday'){
+                    if(res === null){
+                        // Thur/Thurs
+                        var thursRegExp = RegExp("Thur[s]{0,1}\\s", "i")
+                        res = thursRegExp.exec(e.target.value)
+                    }
+                }
+
+                if(res !== null){
+                    dateFound = true
+                    
+                    var daysFromToday = i - dateNow.getDay()
+                    if(daysFromToday <= 0){
+                        daysFromToday += 7
+                    }
+                    
+                    var dateWeekday = new Date()
+
+                    dateWeekday.setDate(dateNow.getDate() + daysFromToday)
+
+                    day = dateWeekday.getDate()
+                    month = dateWeekday.getMonth()
+                    year = dateWeekday.getFullYear()
+                    console.log(month, day, year)
+
+                    console.log(thisDayRegExp, res)
+                    return {"month": month, "day": day, "year": year}
+                    break;
+                }
+            }
+        }
+        // if(!dateFound){
+        //     // for Tues
+        //     var tuesRegExp = RegExp("Tues\\s", "i")
+        //     console.log(tuesRegExp.exec("tues tuesday"))
+        //     res = tuesRegExp.exec(e.target.value)
+        //     if(res !== null){
+        //         dateFound = true
+        //         console.log(tuesRegExp, res)
+        //         return {"month": month, "day": day, "year": year}
+        //     }
+        // }
+        // if(!dateFound){
+        //     // for Weds
+        //     var wedsRegExp = RegExp("Weds\\s", "i")
+        //     res = wedsRegExp.exec(e.target.value)
+        //     if(res !== null){
+        //         dateFound = true
+        //         console.log(wedsRegExp, res)
+        //         return {"month": month, "day": day, "year": year}
+        //     }
+        // }
+        // if(!dateFound){
+        //     // Thur/Thurs
+        //     var thursRegExp = RegExp("Thur[s]{0,1}\\s", "i")
+        //     res = thursRegExp.exec(e.target.value)
+        //     if(res !== null){
+        //         dateFound = true
+        //         console.log(thursRegExp, res)
+        //         return {"month": month, "day": day, "year": year}
+        //     }
+        // }
+
+        // TODO next day of the week
+        if(!dateFound){
+        }
+
+        return false;
+    }
+
 
     return (
         <>
