@@ -299,7 +299,7 @@ const Form = () => {
                     label='Add Todo'
                     type='text'
                     value={formData.atitle}
-                    onChange={(e) => setFormData({...formData, atitle: e.target.value})}
+                    onChange={(e) => {setFormData({...formData, atitle: e.target.value}); setQuickAdd({...quickAdd, formModified: true})}}
                     className='textfield'
                     size='medium'
                 />
@@ -320,6 +320,8 @@ const Form = () => {
                                 setFormData({...formData, dueDate: e, deadlineType: "hard"});
                             else
                                 setFormData({...formData, dueDate: e});
+                            
+                            setQuickAdd({...quickAdd, formModified: true})
                         }}
                         className='textfield'
                         size='medium'
