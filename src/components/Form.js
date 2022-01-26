@@ -47,7 +47,7 @@ const Form = () => {
 
         setFormData({
             atitle: "",
-            dueDate: "",
+            dueDate: todo.dueDate,
             // dueDate: new Date(),
             deadlineType: "noDeadline",
             estTime: "",
