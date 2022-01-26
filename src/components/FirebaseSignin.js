@@ -42,7 +42,6 @@ class FirebaseSignin extends React.Component{
       // debugger;
       firebaseSignInWithGoogle().then((result) => {
           console.log(result)
-          debugger;
       })
       // var result = await signInWithPopup(auth, provider)
       // console.log(result);

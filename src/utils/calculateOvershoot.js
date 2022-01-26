@@ -4,13 +4,19 @@ export async function calculateBuffer(todos, calendars){
   var buffersById = {}
   
   // get calendars that are checked
-  console.log("unsortedtodos", todos)
+  // console.log("unsortedtodos", todos)
 
-  console.log(calendars)
+  // console.log(calendars)
+  if(calendars === undefined){
+    for(var nocaltodo of todos){
+      nocaltodo.bufferMS = "select calendars"
+    }
+    return todos;
+  }
 
   // sort todos in order of dueDate
   // can later incoporate priority
-  todos.sort((item1, item2) => {
+  var sortedTodos = todos.slice().sort((item1, item2) => {
     if(item1.dueDate === '' && item2.dueDate === ''){
       return 0
     }else if(item1.dueDate === ''){
@@ -22,19 +28,16 @@ export async function calculateBuffer(todos, calendars){
     return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
   });
   
-  console.log("SORTED", todos)
+  // console.log("SORTED", sortedTodos)
 
   var currBufferMS = 0;
   var prevTodoDueDate = new Date()
   var prevTodoName = "none, 1st todo"
 
-  for(var todo of todos){
-    // var calIter = calendars.values(); // returns iterator so I can call next
-    
-    // var eList = await returnEventsRecursion(calIter, prevTodoEndString, '2022-01-25T07:36:53.880Z');
+  for(var todo of sortedTodos){
     buffersById[todo.id] = {}
 
-    if(todo.dueDate === ''){
+    if(todo.dueDate === '' || todo.complete){
         // debugger;
         buffersById[todo.id]["bufferMS"] = "N/A"
         continue;
@@ -51,7 +54,7 @@ export async function calculateBuffer(todos, calendars){
 
     var msToComplete = Number(todo.estTime) * 60*60*1000
 
-    console.log(prevBufferMS / (60*60*1000), hoursBetweenTasks, hoursEventsBetweenTasks)
+    // console.log(prevBufferMS / (60*60*1000), hoursBetweenTasks, hoursEventsBetweenTasks)
 
     if(prevTodoDueDate < todoDueDate){
       var eList = []
@@ -70,11 +73,11 @@ export async function calculateBuffer(todos, calendars){
         eList = eList.concat(events.result.items)
       }
 
-      console.log('eList', eList)
+      // console.log('eList', eList)
       buffersById[todo.id]["events"] = []
       for(var event of eList){
         // TODO needs to work on this calculation
-        console.log(event.summary, event.start, event.end);
+        // console.log(event.summary, event.start, event.end);
         buffersById[todo.id]["events"].push({
             summary: event.summary, 
             start: event.start.dateTime,
@@ -113,7 +116,8 @@ export async function calculateBuffer(todos, calendars){
     currBufferMS = prevBufferMS + msBetweenTasks - 
                             msEventsBetweenTasks - msToComplete
     // currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
-
+    // console.log(todo.id)
+    
     buffersById[todo.id]["prevTodo"] = prevTodoName;
     buffersById[todo.id]["prevBuffer"] = prevBufferMS;
     buffersById[todo.id]["hoursBetweensTasks"] = hoursBetweenTasks;
@@ -123,7 +127,7 @@ export async function calculateBuffer(todos, calendars){
     
     buffersById[todo.id]["bufferMS"] = currBufferMS
 
-    prevTodoName = todo.title
+    prevTodoName = todo.atitle
   }
 
   return buffersById

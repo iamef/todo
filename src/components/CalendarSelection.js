@@ -2,8 +2,7 @@ import React from 'react'
 
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
-import { get, ref, set } from 'firebase/database';
-import { auth, db, fs } from '../firebase';
+import { auth, fs } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 class CalendarSelection extends React.Component{
@@ -28,41 +27,24 @@ class CalendarSelection extends React.Component{
 
   componentDidMount(){
     console.log("cal selection mount");
+    console.log(this.props.userFirebasePath)
 
-    getDoc(doc(fs, "users/" + auth.currentUser.uid)).then((docSnap) => {
-      // debugger;
-      // console.log(docSnap.data().calendars)
-
+    getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
       var calendars = docSnap.data().calendars
 
-      var formDataInitialJSON = calendars.map((calID) => {
-        return "\"" + calID + "\"" + ": true"
-      }).toString();
-      formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
-      
-      // console.log(formDataInitialJSON)
+      if(calendars !== undefined){
+        var formDataInitialJSON = calendars.map((calID) => {
+          return "\"" + calID + "\": true"
+        }).toString();
+        formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
+        
+        // console.log(formDataInitialJSON)
 
-      this.setState(formDataInitialJSON);
+        this.setState(formDataInitialJSON);
+      
+      }
 
     }, (reason) => console.log(reason));
-
-  //   get(ref(db, 'Calendars')).then((value) => {
-  //     // console.log(value.val())
-  //     var formDataInitialJSON = value.val().map((calID) => {
-  //       return "\"" + calID + "\"" + ": true"
-  //     }).toString();
-  //     formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
-      
-  //     // console.log(formDataInitialJSON)
-
-  //     this.setState(formDataInitialJSON);
-
-  //   }, (reason) => console.log(reason))
-  //   // this.setState(['aaf', 'asdfasd', 'asdf'])
-  //   // firebase.database().ref("Calendars").get().then((value) => {
-  //   //   console.log(value.val())
-  //   //   this.setState(value.val())
-  //   // }, (reason) => console.log(reason))
 
   }
 
@@ -75,7 +57,7 @@ class CalendarSelection extends React.Component{
   //   if(!(this.props.calendars === undefined)){
   //     console.log("this cal is not undefined")
   //     var formDataInitialJSON = this.props.calendars.map((calendar) => {
-  //         return "\"" + calendar.id + "\"" + ": false"
+  //         return "\"" + calendar.id + "\": false"
   //     }).toString()
   //     formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
   //     this.setState(formDataInitialJSON);
@@ -89,7 +71,7 @@ class CalendarSelection extends React.Component{
 
   handleCheckChange(event, calendarId){
     console.log(event, {...this.state})
-    this.setState(JSON.parse("{\"" + calendarId + "\"" + ": " + event.target.checked + "}"))
+    this.setState(JSON.parse("{\"" + calendarId + "\": " + event.target.checked + "}"))
   }
 
   getChecked(calendarId){
@@ -110,7 +92,7 @@ class CalendarSelection extends React.Component{
       if(this.state[key]) calsToInclude.push(key)
     }
     console.log(calsToInclude)
-    setDoc(doc(fs, "users/" + auth.currentUser.uid), {calendars: calsToInclude});
+    setDoc(doc(fs, this.props.userFirebasePath), {calendars: calsToInclude});
     
     // set(ref(db, "Calendars"), calsToInclude)
     // firebase.database().ref("Calendars").set(calsToInclude);

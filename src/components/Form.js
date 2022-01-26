@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { auth, db, fs } from '../firebase';
-import { push, ref } from 'firebase/database';
+import { auth, fs } from '../firebase';
 
 import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
 
@@ -13,20 +12,21 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 
 
 // Added more fields usinig this!
 // https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
 const Form = () => {
     const [formData, setFormData] = useState({
-        title: "",
+        atitle: "",
         // dueDate: new Date(),
         dueDate: "",
         deadlineType: "noDeadline",
         estTime: "",
-        priority: "tbd"
+        priority: "tbd",
+        folder: "",
+        list: ""
     });
     
     const createTodo = () => {
@@ -35,27 +35,23 @@ const Form = () => {
             complete: false,
         };
         
-        todo.dueDate = todo.dueDate.toLocaleString()
         
-        console.log(todo);
+        if(todo.dueDate !== "") todo.dueDate = todo.dueDate.toLocaleString()
         
-        // const todoRef = ref(db, "Todo");
-        // push(todoRef, todo);
+        var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        // todoFilePath +=  formData.folder + "/" + formData.list;
 
-        debugger
-        console.log(auth.userId)
-        console.log(auth.currentUser.uid)
-
-        var todoFilePath = "users/" + auth.currentUser.uid + "/Todos/no folder/not labeled";
         addDoc(collection(fs, todoFilePath), todo);
 
         setFormData({
-            title: "",
+            atitle: "",
             dueDate: "",
             // dueDate: new Date(),
             deadlineType: "noDeadline",
             estTime: "",
-            priority: "tbd"
+            priority: "tbd",
+            folder: "",
+            list: ""
         })
     }
 
@@ -68,8 +64,8 @@ const Form = () => {
                     variant='standard'
                     label='Add Todo'
                     type='text'
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    value={formData.atitle}
+                    onChange={(e) => setFormData({...formData, atitle: e.target.value})}
                     className='textfield'
                     size='medium'
                 />
@@ -126,19 +122,6 @@ const Form = () => {
                     </RadioGroup>
                 </FormGroup>
                 
-                {/* <div className="radio">
-                    <label>
-                        <input type="radio" value="option1" checked={true} />
-                        Hard Deadline
-                    </label>
-                </div>
-                <div className="radio">
-                    <label>
-                        <input type="radio" value="option2" />
-                        Soft Deadline
-                    </label>
-                </div> */}
-                
                 <TextField
                     variant='standard'
                     label='Estimated Hours'
@@ -189,20 +172,27 @@ const Form = () => {
                         label="Very high" />
                 </RadioGroup>
 
-                <TextField
-                    disabled
+                <TextField 
+                    required
                     variant='standard'
-                    label='priority'
+                    label="folder"
+                    value={formData.folder}
+                    onChange={(e) => setFormData({...formData, folder: e.target.value})}
                     type='text'
-                    value={formData.priority}
-                    // onChange={(e) => setFormData({...formData, estTime: e.target.value})}
-                    className='textfield'
-                    size='medium'
                 />
-                
+
+                <TextField 
+                    required
+                    variant='standard'
+                    label="list name"
+                    value={formData.list}
+                    onChange={(e) => setFormData({...formData, list: e.target.value})}
+                    type='text'
+                />
+
                 <div className='add'>
                     {
-                        formData.title === '' ?
+                        formData.atitle === '' ?
                             <AddCircleOutlineIcon
                                 fontSize='large'
                                 className='icon'

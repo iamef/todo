@@ -4,7 +4,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app"
 import { getDatabase } from "firebase/database";
-import { addDoc, collection, enableIndexedDbPersistence, getFirestore } from "firebase/firestore"
+import { enableIndexedDbPersistence, getFirestore } from "firebase/firestore"
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
 
 // import { getAnalytics } from "firebase/analytics"; // somehow doesn't work
@@ -24,6 +24,21 @@ const firebaseConfig = {
   measurementId: "G-XX97Q3VCNM"
 };
 
+// const firebaseConfig = {
+//   apiKey: process.env.REACT_APP_API_KEY, // can be found on console.cloud.google.com
+//   authDomain: "todo-medium.firebaseapp.com",
+//   // databaseURL: "https://todo-medium-default-rtdb.firebaseio.com",
+//   projectId: "todo-medium",
+//   storageBucket: "todo-medium.appspot.com",
+//   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: process.env.REACT_APP_APP_ID,
+//   measurementId: process.env.REACT_APP_MEASUREMENT_ID
+// };
+
+// console.log(process.env)
+// console.log(process.env.REACT_APP_API_KEY)
+
+
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getDatabase(firebaseApp)
@@ -31,11 +46,11 @@ const fs = getFirestore()
 
 enableIndexedDbPersistence(fs)
   .catch((err) => {
-      if (err.code == 'failed-precondition') {
+      if (err.code === 'failed-precondition') {
           // Multiple tabs open, persistence can only be enabled
           // in one tab at a a time.
           // ...
-      } else if (err.code == 'unimplemented') {
+      } else if (err.code === 'unimplemented') {
           // The current browser does not support all of the
           // features required to enable persistence
           // ...
