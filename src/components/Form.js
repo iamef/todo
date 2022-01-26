@@ -28,6 +28,8 @@ const Form = () => {
         folder: "",
         list: ""
     });
+
+    const [quickAdd, setQuickAdd] = useState({text: "Quick Add", formModified: false})
     
     const createTodo = () => {
         const todo = {
@@ -58,6 +60,18 @@ const Form = () => {
 
     return (
         <>
+            <TextField
+                    required
+                    variant='standard'
+                    label='Quick Add Todo'
+                    type='text'
+                    value={quickAdd.text}
+                    onChange={(e) => parseQuickAdd(e)}
+                    disabled={quickAdd.formModified}
+                    className='textfield'
+                    size='medium'
+                />
+
             <div className='form'>
                 <TextField
                     required
