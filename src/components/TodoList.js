@@ -60,7 +60,7 @@ class TodoList extends React.Component{
 
 
         if(this.props.firebaseSignedIn !== null){
-            // if you just signed into FIREBASE
+            // if you just signed into or out of FIREBASE
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
                 this.initializeTodolist()
             // if you just signed into GCAL
