@@ -104,7 +104,11 @@ const Form = () => {
                 title = currQAStr.substring(0, dateParseData.startIndex) + 
                         currQAStr.substring(dateParseData.endIndex)
             }
-            setFormData({...formData, dueDate: dueDate, atitle: title})
+            if(formData.deadlineType === "noDeadline")
+                setFormData({...formData, dueDate: dueDate, atitle: title, deadlineType: "hard"})
+            else
+                setFormData({...formData, dueDate: dueDate, atitle: title})
+            
             console.log("set form data", dueDate, title)
         }else{
             if(timeParseData !== false){
@@ -127,15 +131,18 @@ const Form = () => {
                 title = currQAStr.substring(0, timeParseData.startIndex) + 
                     currQAStr.substring(timeParseData.endIndex)
 
-                setFormData({...formData, dueDate: dueDate, atitle: title})
+                if(formData.deadlineType === "noDeadline")
+                    setFormData({...formData, dueDate: dueDate, atitle: title, deadlineType: "hard"})
+                else
+                    setFormData({...formData, dueDate: dueDate, atitle: title})
             }else{
-                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
-                setFormData({...formData, dueDate: dueDate})
-                console.log("set form data", dueDate)
+                // dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
+                // setFormData({...formData, dueDate: dueDate})
+                // console.log("set form data", dueDate)
                 setFormData({...formData, atitle: title, dueDate: null})
             }
             
-            console.log("set form data", dueDate, title)
+            console.log("set form data", null, title)
         }
 
         
