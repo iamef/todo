@@ -282,12 +282,16 @@ const Form = () => {
         return false;
     }
 
-    // returns JSON
-    // { 
-    //    matchStr
-    //    startIndex
-    //    endIndex
-    // }
+    /** 
+     * returns JSON
+     * {
+     *  hours (as integer)
+     *  minutes (as integer)
+     *  matchStr
+     *  startIndex
+     *  endIndex
+     * }
+     */
     function parseTime(str){
         var timeFound = false
         
@@ -299,14 +303,14 @@ const Form = () => {
             console.log(res)
             timeFound = true
 
-            var hourStr = ("0" + res[0].find(/[01]{0,1}\d/)).slice(-2)
-            var minuteStr = "00"
+            var hours = parseInt(res[0].match(/[01]{0,1}\d/)[0])
+            var minutes = 0
             if(res[1] !== undefined){
-                minuteStr = res[1].substring(1)
+                minutes = parseInt(res[1].substring(1))
             }
 
-            console.log(`{hourStr}:{minuteStr}`, res[0], res.index)
-            return { time: `{hourStr}:{minuteStr}`, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+            console.log(hours, minutes, res[0], res.index)
+            return { hours: hours, minutes: minutes, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
 
         }
 
@@ -317,29 +321,33 @@ const Form = () => {
                 console.log(res)
                 timeFound = true
     
-                var hourStr = parseInt(res[0].find(/[01]{0,1}\d/)) + 12
-                hourStr = ("0" + hourStr).slice(-2)
-                
-                var minuteStr = "00"
+                hours = parseInt(res[0].match(/[01]{0,1}\d/)[0])
+                hours += 12
+
+                minutes = 0
                 if(res[1] !== undefined){
-                    minuteStr = res[1].substring(1,)
+                    minutes = parseInt(res[1].substring(1))
                 }
 
-                console.log(`{hourStr}:{minuteStr}`, res[0], res.index)
-                return { time: `{hourStr}:{minuteStr}`, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+                console.log(hours, minutes, res[0], res.index)
+                return { hours: hours, minutes: minutes, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
             }
         }
         
         
         // 23:47
         if(!timeFound){
-            var hhmmRegExp = /[012]{0,1}\d:\d\d\s/i
+            var hhmmRegExp = /([012]{0,1}\d:\d\d)\s/i
             res = hhmmRegExp.exec(str);
 
-            var hourStr, minuteStr = res[0].split(":")
+            if(res !== null){
+                [hours, minutes] = res[1].split(":")
+                hours = parseInt(hours)
+                minutes = parseInt(minutes)
 
-            console.log(`{hourStr}:{minuteStr}`, res[0], res.index)
-            return { time: `{hourStr}:{minuteStr}`, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+                console.log(hours, minutes, res[0], res.index)
+                return { hours: hours, minutes: minutes, matchStr: res[0], startIndex: res.index, endIndex: res.index + res[0].length }
+            }
         }
 
 
