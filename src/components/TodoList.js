@@ -111,17 +111,22 @@ class TodoList extends React.Component{
                         var found = this.state.todoList.find((todo) => todo.id === change.doc.id)
                         var changedData = change.doc.data()
                         
-                        if(found.complete === changedData.complete && 
-                            found.deadlineType === changedData.deadlineType &&
-                            found.dueDate === changedData.dueDate &&
-                            found.estTime === changedData.estTime &&
-                            found.priority === changedData.priority &&
-                            found.atitle === changedData.atitle){
-                                console.log("(no need to edit) Modified firebase item: ", change.doc.id, change.doc.data());
+                        if(found === undefined){
+                            console.log("found is undefined", changedData)
                         }else{
-                            updateItemModified = true;
+                            if(found.complete === changedData.complete && 
+                                found.deadlineType === changedData.deadlineType &&
+                                found.dueDate === changedData.dueDate &&
+                                found.estTime === changedData.estTime &&
+                                found.priority === changedData.priority &&
+                                found.atitle === changedData.atitle){
+                                    console.log("(no need to edit) Modified firebase item: ", change.doc.id, change.doc.data());
+                                }
                         }
+                    }else{
+                            updateItemModified = true;
                     }
+                    
                 }
                 if (change.type === "removed") {
                     itemRemoved = true;
