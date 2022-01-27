@@ -281,8 +281,8 @@ class TodoList extends React.Component{
                     <TableCell>atitle</TableCell>
                     <TableCell align="right">dueDate</TableCell>
                     {/* <TableCell align="right">deadline</TableCell> */}
-                    <TableCell align="right">estTime</TableCell>
-                    {/* <TableCell align="right">priority</TableCell> */}
+                    <TableCell align="right">eT</TableCell>
+                    <TableCell align="right">priority</TableCell>
                     <TableCell align="right">buffer</TableCell>
                 </TableRow>
                 </TableHead>
@@ -324,7 +324,7 @@ class TodoList extends React.Component{
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.dueDate}</TableCell>
                         {/* <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.deadlineType}</TableCell> */}
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.estTime}</TableCell>
-                        {/* <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.priority}</TableCell> */}
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.priority}</TableCell>
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
                         </TableRow>
                     )

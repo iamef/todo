@@ -39,7 +39,13 @@ const Form = () => {
         };
         
         
-        if(todo.dueDate !== "") todo.dueDate = todo.dueDate.toLocaleString()
+        if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
+            // todo.dueDate = todo.dueDate.toLocaleString()
+            var datObjDueDate = todo.dueDate
+            todo.dueDate = datObjDueDate.toLocaleDateString().split("/", 2).join("/") + " ";
+            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
+            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
+        }
         
         var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
         // todoFilePath +=  formData.folder + "/" + formData.list;
@@ -508,19 +514,32 @@ const Form = () => {
                 <br/>
                 <br/>
                 
+                {/* <TextField
+                    variant='standard'
+                    label='Priority '
+                    helperText="0-100 (0 is highest, 100 is lowest)"
+                    type='number'
+                    value={formData.estTime}
+                    onChange={(e) => setFormData({...formData, estTime: e.target.value})}
+                    className='textfield'
+                    size='medium'
+                />
+                
+                <br/> */}
+
+                
                 <FormLabel component="legend">Priority</FormLabel>  
                 <RadioGroup row>
-
                     <FormControlLabel 
                         checked={formData.priority === 'tbd'}
                         control={<Radio />} 
                         onChange={(e) => setFormData({...formData, priority: 'tbd'})}
                         label="To Be Determined" />
-                    <FormControlLabel 
+                    {/* <FormControlLabel 
                         checked={formData.priority === 'vlow'}
                         control={<Radio />} 
                         onChange={(e) => setFormData({...formData, priority: 'vlow'})}
-                        label="Very Low" />
+                        label="Very Low" /> */}
                     <FormControlLabel 
                         checked={formData.priority === 'low'}
                         control={<Radio />} 
@@ -536,11 +555,11 @@ const Form = () => {
                         control={<Radio />} 
                         onChange={(e) => setFormData({...formData, priority: 'high'})}
                         label="High" />
-                    <FormControlLabel 
+                    {/* <FormControlLabel 
                         checked={formData.priority === 'vHIGH'}
                         control={<Radio />} 
                         onChange={(e) => setFormData({...formData, priority: 'vHIGH'})}
-                        label="Very high" />
+                        label="Very high" /> */}
                 </RadioGroup>
 
                 <TextField 
