@@ -22,7 +22,7 @@ const Form = () => {
     const [formData, setFormData] = useState({
         atitle: "",
         // dueDate: new Date(),
-        dueDate: "",
+        dueDate: null,
         deadlineType: "noDeadline",
         estTime: "",
         priority: "tbd",
@@ -62,7 +62,7 @@ const Form = () => {
         var currQAStr = e.target.value
         
         setQuickAdd({...quickAdd, text: currQAStr})
-        
+
         // var apple = chrono.parse(currQAStr)
         // console.log(apple)
 
@@ -124,7 +124,7 @@ const Form = () => {
                 dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
                 setFormData({...formData, dueDate: dueDate})
                 console.log("set form data", dueDate)
-                setFormData({...formData, atitle: title, dueDate: ""})
+                setFormData({...formData, atitle: title, dueDate: null})
             }
             
             console.log("set form data", dueDate, title)
@@ -488,7 +488,7 @@ const Form = () => {
                         <FormControlLabel 
                             checked={formData.deadlineType === "noDeadline"}
                             control={<Radio />} 
-                            onChange={(e) => setFormData({...formData, deadlineType: "noDeadline", dueDate: ""})}
+                            onChange={(e) => setFormData({...formData, deadlineType: "noDeadline", dueDate: null})}
                             label="No Deadline" />
                     </RadioGroup>
                 </FormGroup>
