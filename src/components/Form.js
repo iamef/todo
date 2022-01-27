@@ -30,7 +30,7 @@ const Form = () => {
         list: ""
     });
 
-    const [quickAdd, setQuickAdd] = useState({text: "Quick Add", formModified: false})
+    const [quickAdd, setQuickAdd] = useState({text: "", formModified: false})
     
     const createTodo = () => {
         const todo = {
@@ -62,6 +62,8 @@ const Form = () => {
             folder: "",
             list: ""
         })
+
+        setQuickAdd({text: "", formModified: false})
     }
 
     function parseQuickAdd(e){
