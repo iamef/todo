@@ -59,19 +59,76 @@ const Form = () => {
     }
 
     function parseQuickAdd(e){
-        setQuickAdd({...quickAdd, text: e.target.value})
-        // var apple = chrono.parse(e.target.value)
+        var currQAStr = e.target.value
+        
+        setQuickAdd({...quickAdd, text: currQAStr})
+        
+        // var apple = chrono.parse(currQAStr)
         // console.log(apple)
 
         // TODO split into many diff functions
         // FIND DATE
-        var dateParseData = parseDate(e.target.value)
+        var dateParseData = parseDate(currQAStr)
 
         // FIND TIME
-        var timeParseData = parseTime(e.target.value)
+        var timeParseData = parseTime(currQAStr)
 
-
+        // rest of string is title
+        var title = currQAStr;
         
+        console.log(dateParseData, timeParseData)
+
+        if(dateParseData !== false){
+            var dueDate;
+            if(timeParseData !== false){
+                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day, 
+                                        timeParseData.hours, timeParseData.minutes)
+                
+                title = currQAStr.substring(0, Math.min(dateParseData.startIndex, timeParseData.startIndex)) + 
+                        currQAStr.substring(Math.min(dateParseData.endIndex, timeParseData.endIndex), Math.max(dateParseData.startIndex, timeParseData.startIndex)) + 
+                        currQAStr.substring(Math.max(dateParseData.endIndex, timeParseData.endIndex))
+
+            }else{
+                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
+                setFormData({...formData, dueDate: dueDate})
+                console.log("set form data", dueDate)
+
+                title = currQAStr.substring(0, dateParseData.startIndex) + 
+                        currQAStr.substring(dateParseData.endIndex)
+            }
+            setFormData({...formData, dueDate: dueDate, atitle: title})
+            console.log("set form data", dueDate, title)
+        }else{
+            if(timeParseData !== false){
+                
+                var dateNow = new Date()
+                
+                if(dateNow.getHours() > timeParseData.hours){
+                    dateNow.setDate(dateNow.getDate() + 1)
+                }else if(dateNow.getHours() === timeParseData.hours){
+                    if(dateNow.getMinutes() > timeParseData.minutes){
+                        dateNow.setDate(dateNow.getDate() + 1)
+                    }
+                }
+                
+                console.log(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate())
+
+                dueDate = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 
+                                        timeParseData.hours, timeParseData.minutes)
+                
+                title = currQAStr.substring(0, timeParseData.startIndex) + 
+                    currQAStr.substring(timeParseData.endIndex)
+
+                setFormData({...formData, dueDate: dueDate, atitle: title})
+            }else{
+                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
+                setFormData({...formData, dueDate: dueDate})
+                console.log("set form data", dueDate)
+                setFormData({...formData, atitle: title, dueDate: ""})
+            }
+            
+            console.log("set form data", dueDate, title)
+        }
 
         
         // common terms
@@ -79,7 +136,7 @@ const Form = () => {
         // find item name
     }
 
-    // returns JSON in format
+    /** returns JSON in format
     // {
     //     "month": month number 0 index, 
     //     "day": day, 
@@ -88,6 +145,7 @@ const Form = () => {
     //     endIndex: 
     //     matchStr
     // }
+     */
     function parseDate(str){
         var dateFound = false;
         
@@ -135,7 +193,7 @@ const Form = () => {
             if(res !== null){
                 dateFound = true
 
-                var dateTomorrow = new Date()
+                dateTomorrow = new Date()
                 dateTomorrow.setDate(dateNow.getDate() + 1)
 
                 day = dateTomorrow.getDate()
@@ -182,7 +240,6 @@ const Form = () => {
                     
                     console.log(month, day, year, monthRegExp, res)
                     return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
-                    break;
                 }
             }
         }
@@ -191,10 +248,10 @@ const Form = () => {
         // TODO add this as an option
         var daysOfWeekNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         if(!dateFound){
-            for(var i=0; i < daysOfWeekNames.length; i++){
+            for(i=0; i < daysOfWeekNames.length; i++){
                 var dayStr = daysOfWeekNames[i]
                 
-                var splitIndex = 3
+                splitIndex = 3
                 var thisDayRegExp = RegExp(dayStr.substring(0, splitIndex) + "(" + dayStr.substring(splitIndex) + "){0,1}\\s", "i")
                 // res = thisDayRegExp.exec("'Sun day', 'Monday ', 'Tuesday ', 'Wed nesday', 'Thurs day', 'Fri day', 'Sat urday'")
                 // console.log(res);
@@ -239,7 +296,6 @@ const Form = () => {
 
                     console.log(thisDayRegExp, res)
                     return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
-                    break;
                 }
             }
         }
