@@ -49,6 +49,7 @@ export async function calculateBuffer(todos, calendars){
   var prevTodoDueDate = new Date()
   var prevTodoName = "none, 1st todo"
   
+  // calculate for all priorities
   for(var todo of sortedTodos){
     buffersById[todo.id] = {}
     
@@ -146,6 +147,24 @@ export async function calculateBuffer(todos, calendars){
     buffersById[todo.id]["bufferMS"] = currBufferMS
 
     prevTodoName = todo.atitle
+  }
+
+  // TODO centralize this priority Levels stuff
+  var priorityLevels = ["low", "tbd", "medium", "high"]
+  
+
+  // we skip low priority
+  for(var i=1; i < priorityLevels.length; i++){
+    var msLowerPriorityTasks = 0
+    for(var todo of sortedTodos){
+      if(priorityLevels.indexOf(todo.priority) >= i){
+        buffersById[todo.id]["bufferMS_" + priorityLevels[i]] = buffersById[todo.id]["bufferMS"] - msLowerPriorityTasks
+      }else{
+        msLowerPriorityTasks += Number(todo.estTime) * 60*60*1000
+      }
+    }
+
+
   }
 
   return buffersById
