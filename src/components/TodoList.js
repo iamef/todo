@@ -44,7 +44,6 @@ class TodoList extends React.Component{
             this.initializeTodolist()
         }else{
             console.log("Firebase login is null")
-            // debugger;
         }
     }
 
@@ -147,7 +146,7 @@ class TodoList extends React.Component{
                 // TODO implement calendar stuff later
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                        todoListWithBuffers.sort(this.sortTodosFunction("complete", "folder", "list", "dueDate"))
+                        todoListWithBuffers.sort(this.sortTodosFunction("priority", "complete", "folder", "list", "dueDate"))
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }else{
@@ -155,7 +154,7 @@ class TodoList extends React.Component{
                     for(var todo of fsTodoList){
                         todo.bufferHrs = "Log Into GCAL"
                     }
-                    fsTodoList.sort(this.sortTodosFunction("complete", "folder", "list", "dueDate"))
+                    fsTodoList.sort(this.sortTodosFunction("priority", "complete", "folder", "list", "dueDate"))
                     this.setState({todoList: fsTodoList});
                 }
 
@@ -222,6 +221,12 @@ class TodoList extends React.Component{
                 ret = Date.parse(item1) - Date.parse(item2)
     
                 return (ascending ? ret : -1*ret)
+            }else if(type === "priority"){
+                debugger;
+                var priorityLevels = ["low", "tbd", "medium", "high"]
+                
+                // higher priorities should appear first
+                return -1* (priorityLevels.indexOf(item1) - priorityLevels.indexOf(item2)) 
             }
     
             if (item1 === item2) return 0;
