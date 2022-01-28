@@ -111,8 +111,9 @@ class TodoList extends React.Component{
                         var found = this.state.todoList.find((todo) => todo.id === change.doc.id)
                         var changedData = change.doc.data()
                         
-                        if(found === undefined){
-                            console.log("found is undefined", changedData)
+                        if(found === undefined || changedData === undefined){
+                            debugger;
+                            console.log("found or changedData is undefined", found, changedData)
                         }else{
                             if(found.complete === changedData.complete && 
                                 found.deadlineType === changedData.deadlineType &&
