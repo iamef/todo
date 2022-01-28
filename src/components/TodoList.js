@@ -181,10 +181,25 @@ class TodoList extends React.Component{
                     for(var todo of todoList){
                         var bufferMS = buffers[todo.id]["bufferMS"]
                         
+                        
                         if(typeof(bufferMS) === 'number'){
                             todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
                         }else{
                             todo.bufferHrs = bufferMS
+                        }
+                        
+                        for(var priority of ["tbd", "medium", "high"]){
+                            debugger;
+                            
+                            bufferMS = buffers[todo.id]["bufferMS_" + priority]
+                            if(typeof(bufferMS) === 'number'){
+                                todo["bufferHrs_" + priority] = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
+                            }else if(typeof(bufferMS) === 'undefined'){
+                                todo["bufferHrs_" + priority] = "--"
+                            }else{
+                                todo["bufferHrs_" + priority] = bufferMS
+                            }
+
                         }
 
                         setDoc(doc(fs, this.todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
@@ -203,6 +218,9 @@ class TodoList extends React.Component{
     // javascript technically doesn't have tuples...
     // returns a comparable function given the arguments
     // creds: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
+    // TODO move this to TodoLIst functions at some point
+    // TODO what if I just had a stable sorting function. Bruh...
+    // actually according to mozilla.org, it is stable. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
     sortTodosFunction(...argsTuple){
         
         function compare(item1, item2, type, ascending=true){
@@ -333,6 +351,9 @@ class TodoList extends React.Component{
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.estTime}</TableCell>
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.priority}</TableCell>
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_tbd ? todo.bufferHrs_tbd : "loading"}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_medium ? todo.bufferHrs_medium : "loading"}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_high ? todo.bufferHrs_high : "loading"}</TableCell>
                         </TableRow>
                     )
                     : null
