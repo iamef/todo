@@ -279,7 +279,8 @@ class TodoList extends React.Component{
             {/* <SortTodos></SortTodos> */}
             
             <TableContainer>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ minWidth: 650 }} aria-label="simple table" padding="none" >
+                {/* // TODO add table based sorting! https://mui.com/components/tables/#sorting-amp-selecting */}
                 <TableHead>
                 <TableRow>
                     <TableCell></TableCell>
