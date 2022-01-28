@@ -1,3 +1,18 @@
+function todosDateTimeParse(todoDateTimeStr){
+  if(todoDateTimeStr == null){
+    return null
+  }
+  var todosRegExp = /([01]{0,1}\d)\/([0123]{0,1}\d)\/(\d\d) ([01]{0,1}\d):([0-5]\d)([AP]M)/i
+  var res = todosRegExp.exec(todoDateTimeStr)
+  var month = parseInt(res[1]) - 1
+  var day = parseInt(res[2])
+  var year = parseInt(res[3]) + 2000
+  var hour = parseInt(res[4]) + (res[6] === "AM" ? 0 : 12)
+  var minute = parseInt(res[5])
+
+  return new Date(year, month, day, hour, minute)
+}
+
 // later on add support for overshoots  based on priority
 // Update to this https://blog.patricktriest.com/what-is-async-await-why-should-you-care/
 export async function calculateBuffer(todos, calendars){
@@ -25,25 +40,25 @@ export async function calculateBuffer(todos, calendars){
       return -1 // this means item1 - item2 is negative
     }
     
-    return Date.parse(item1.dueDate) - Date.parse(item2.dueDate)
+    return todosDateTimeParse(item1.dueDate) - todosDateTimeParse(item2.dueDate)
   });
   
   // console.log("SORTED", sortedTodos)
-
+  
   var currBufferMS = 0;
   var prevTodoDueDate = new Date()
   var prevTodoName = "none, 1st todo"
-
+  
   for(var todo of sortedTodos){
     buffersById[todo.id] = {}
-
-    if(todo.dueDate === '' || todo.complete){
-        // debugger;
-        buffersById[todo.id]["bufferMS"] = "N/A"
-        continue;
+    
+    if(todo.dueDate === null || todo.complete){
+      // debugger;
+      buffersById[todo.id]["bufferMS"] = "N/A"
+      continue;
     }
-
-    var todoDueDate = new Date(todo.dueDate)
+    
+    var todoDueDate = todosDateTimeParse(todo.dueDate)
     
     var prevBufferMS = currBufferMS;
     var msBetweenTasks = Math.max(0, todoDueDate - prevTodoDueDate);
@@ -299,37 +314,6 @@ export function parseDate(str){
           }
       }
   }
-  // if(!dateFound){
-  //     // for Tues
-  //     var tuesRegExp = RegExp("Tues\\s", "i")
-  //     console.log(tuesRegExp.exec("tues tuesday"))
-  //     res = tuesRegExp.exec(str)
-  //     if(res !== null){
-  //         dateFound = true
-  //         console.log(tuesRegExp, res)
-  //         return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
-  //     }
-  // }
-  // if(!dateFound){
-  //     // for Weds
-  //     var wedsRegExp = RegExp("Weds\\s", "i")
-  //     res = wedsRegExp.exec(str)
-  //     if(res !== null){
-  //         dateFound = true
-  //         console.log(wedsRegExp, res)
-  //         return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
-  //     }
-  // }
-  // if(!dateFound){
-  //     // Thur/Thurs
-  //     var thursRegExp = RegExp("Thur[s]{0,1}\\s", "i")
-  //     res = thursRegExp.exec(str)
-  //     if(res !== null){
-  //         dateFound = true
-  //         console.log(thursRegExp, res)
-  //         return {"month": month, "day": day, "year": year, startIndex: res.index, endIndex: res.index + res[0].length, matchStr: res[0]}
-  //     }
-  // }
 
   // TODO next day of the week
   if(!dateFound){

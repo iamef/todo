@@ -43,7 +43,8 @@ const Form = () => {
         if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
             // todo.dueDate = todo.dueDate.toLocaleString()
             var datObjDueDate = todo.dueDate
-            todo.dueDate = datObjDueDate.toLocaleDateString().split("/", 2).join("/") + " ";
+            todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
+            todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `
             todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
             todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
         }
