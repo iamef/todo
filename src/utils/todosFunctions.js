@@ -93,22 +93,25 @@ export async function calculateBuffer(todos, calendars){
       for(var event of eList){
         // TODO needs to work on this calculation
         // console.log(event.summary, event.start, event.end);
-        buffersById[todo.id]["events"].push({
-            summary: event.summary, 
-            start: event.start.dateTime,
-            end: event.end.dateTime,
-            htmlLink: event.htmlLink
-        })
         // debugger;
         // console.log(event);
-
+        
         var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime))
         var endTime = Math.min(todoDueDate, new Date(event.end.dateTime))
         
         // console.log((endTime - startTime) / (60*60*1000))
-        
-        msEventsBetweenTasks += (endTime - startTime)
+        if(isNaN(startTime) || isNaN(endTime)){
+          console.log(event.summary, event.creator, event.htmlLink)
+        }else{
+          buffersById[todo.id]["events"].push({
+              summary: event.summary, 
+              start: event.start.dateTime,
+              end: event.end.dateTime,
+              htmlLink: event.htmlLink
+          })
 
+          msEventsBetweenTasks += (endTime - startTime)
+        }
       }
 
       buffersById[todo.id]["events"].sort((item1, item2) => {
