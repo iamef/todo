@@ -30,8 +30,6 @@ class TodoList extends React.Component{
         // hypothesis: this works because the todoList updates when happyDay update
         // the todoList update sort of carries the happyDay update
         // so todoList still needs to be a state for this to work
-        this.happyDay = 77;
-        
         this.todoFilePath = props.userFirebasePath +  "/Todos";
         
         this.unsubscribeFirebaseTodolist = () => {};
@@ -222,7 +220,6 @@ class TodoList extends React.Component{
     
                 return (ascending ? ret : -1*ret)
             }else if(type === "priority"){
-                debugger;
                 var priorityLevels = ["low", "tbd", "medium", "high"]
                 
                 // higher priorities should appear first
@@ -267,11 +264,11 @@ class TodoList extends React.Component{
     }
     
     completeTodo(todo){
+        // TODO COMPLETE SEEMS TO BE BUGGY!!!
+        
         var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
         console.log(todoDoc.id, todoDoc)
         updateDoc(todoDoc, {complete: !todo.complete}) 
-        
-        this.happyDay += 1
     }
     
     render(){
@@ -281,8 +278,6 @@ class TodoList extends React.Component{
             
             {/* <SortTodos></SortTodos> */}
             
-            <h3>{this.happyDay}</h3>
-
             <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
