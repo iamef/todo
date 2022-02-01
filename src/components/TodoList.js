@@ -6,7 +6,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead } from '@mui/material';
+import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button } from '@mui/material';
 import { calculateBuffer } from '../utils/todosFunctions';
 import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
 class TodoList extends React.Component{
@@ -23,7 +23,7 @@ class TodoList extends React.Component{
         
         // making todoList into a variable doesn't work
         // the todolist won't update when I click complete and stuff
-        this.state = { todoList: false }
+        this.state = { todoList: false, hardDeadlineOnlyBuffer: false }
         
         // making this into a variable does seem to work
         // and this updates in the todolist app
@@ -61,11 +61,13 @@ class TodoList extends React.Component{
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
                 this.initializeTodolist()
             // if you just signed into GCAL
-            }else if(prevProps.gapiSignedIn !== this.props.gapiSignedIn && this.props.gapiSignedIn === true){
-                if(Array.isArray(this.state.todoList)){
-                    this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
-                        this.setState({todoList: todoListWithBuffers});
-                    })
+            }else if(this.props.gapiSignedIn === true){
+                if(prevProps.gapiSignedIn !== this.props.gapiSignedIn || prevState.hardDeadlineOnlyBuffer !== this.state.hardDeadlineOnlyBuffer){
+                    if(Array.isArray(this.state.todoList)){
+                        this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                            this.setState({todoList: todoListWithBuffers});
+                        })
+                    }
                 }
 
                 // TODO Take an action if you are logged out of gapi
@@ -178,7 +180,7 @@ class TodoList extends React.Component{
                 }
                 callback(todoList)
             }else{
-                calculateBuffer(todoList, calendars).then((buffers) => {
+                calculateBuffer(todoList, calendars, this.state.hardDeadlineOnlyBuffer).then((buffers) => {
                     for(var todo of todoList){
                         var bufferMS = buffers[todo.id]["bufferMS"]
                         
@@ -190,7 +192,7 @@ class TodoList extends React.Component{
                         }
                         
                         for(var priority of ["tbd", "medium", "high"]){
-                            debugger;
+                            // debugger;
                             
                             bufferMS = buffers[todo.id]["bufferMS_" + priority]
                             if(typeof(bufferMS) === 'number'){
@@ -296,6 +298,22 @@ class TodoList extends React.Component{
             <h2>TodoList</h2>
             
             {/* <SortTodos></SortTodos> */}
+
+            { this.state.hardDeadlineOnlyBuffer ?
+                <Button 
+                    variant="contained"
+                    onClick={() => this.setState({hardDeadlineOnlyBuffer: false})}
+                >
+                    Calculate Buffer for All Deadlines
+                </Button>
+                :
+                <Button 
+                    variant="outlined"
+                    onClick={() => this.setState({hardDeadlineOnlyBuffer: true})}
+                >
+                    Calculate Buffer for HARD Deadlines Only
+                </Button>
+            }
             
             <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table" padding="none" >
@@ -306,7 +324,7 @@ class TodoList extends React.Component{
                     <TableCell>folder/list</TableCell>
                     <TableCell>atitle</TableCell>
                     <TableCell align="right">dueDate</TableCell>
-                    {/* <TableCell align="right">deadline</TableCell> */}
+                    <TableCell align="right">dType</TableCell>
                     <TableCell align="right">eT</TableCell>
                     <TableCell align="right">priority</TableCell>
                     <TableCell align="right">buffer</TableCell>

@@ -15,7 +15,7 @@ function todosDateTimeParse(todoDateTimeStr){
 
 // later on add support for overshoots  based on priority
 // Update to this https://blog.patricktriest.com/what-is-async-await-why-should-you-care/
-export async function calculateBuffer(todos, calendars){
+export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   var buffersById = {}
   
   // get calendars that are checked
@@ -56,6 +56,11 @@ export async function calculateBuffer(todos, calendars){
     if(todo.dueDate === null || todo.complete){
       // debugger;
       buffersById[todo.id]["bufferMS"] = "N/A"
+      continue;
+    }
+
+    if(hardDeadlineOnlyBuffer && todo.deadlineType === "soft"){
+      buffersById[todo.id]["bufferMS"] = "soft"
       continue;
     }
     
