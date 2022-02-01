@@ -110,6 +110,7 @@ class TodoList extends React.Component{
                         
                         if(found === undefined || changedData === undefined){
                             debugger;
+                            alert("found or changedData is undefined")
                             console.log("found or changedData is undefined", found, changedData)
                         }else{
                             if(found.complete === changedData.complete && 
@@ -119,10 +120,10 @@ class TodoList extends React.Component{
                                 found.priority === changedData.priority &&
                                 found.atitle === changedData.atitle){
                                     console.log("(no need to edit) Modified firebase item: ", change.doc.id, change.doc.data());
-                                }
+                            }else{
+                                updateItemModified = true;
+                            }
                         }
-                    }else{
-                            updateItemModified = true;
                     }
                     
                 }
