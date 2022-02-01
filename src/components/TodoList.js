@@ -299,6 +299,16 @@ class TodoList extends React.Component{
         // this.setState({todoList: todoListCopy})
     }
 
+    editTodo(todo, item){
+        var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
+        console.log(todoDoc.id, todoDoc)
+
+        var updatedData = prompt("Please update " + item, todo[item])
+
+        if(updatedData !== null)
+            updateDoc(todoDoc, {[item]: updatedData}) 
+    }
+
     
     render(){
         return (
@@ -373,10 +383,10 @@ class TodoList extends React.Component{
                         <TableCell component="th" scope="row" className={todo.complete ? "complete" : "pending"}>
                             {todo.atitle}
                         </TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.dueDate}</TableCell>
-                        {/* <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.deadlineType}</TableCell> */}
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.estTime}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.priority}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "dueDate")}>{todo.dueDate}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "deadlineType")}>{todo.deadlineType}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "estTime")}>{todo.estTime}</TableCell>
+                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "priority")}>{todo.priority}</TableCell>
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_tbd ? todo.bufferHrs_tbd : "loading"}</TableCell>
                         <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_medium ? todo.bufferHrs_medium : "loading"}</TableCell>
