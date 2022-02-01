@@ -161,7 +161,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   // we skip low priority
   for(var i=1; i < priorityLevels.length; i++){
     var msLowerPriorityTasks = 0
-    for(var todo of sortedTodos){
+    for(todo of sortedTodos){
       if(priorityLevels.indexOf(todo.priority) >= i){
         buffersById[todo.id]["bufferMS_" + priorityLevels[i]] = buffersById[todo.id]["bufferMS"] + msLowerPriorityTasks
       }else{
