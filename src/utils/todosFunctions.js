@@ -163,7 +163,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
     var msLowerPriorityTasks = 0
     for(var todo of sortedTodos){
       if(priorityLevels.indexOf(todo.priority) >= i){
-        buffersById[todo.id]["bufferMS_" + priorityLevels[i]] = buffersById[todo.id]["bufferMS"] - msLowerPriorityTasks
+        buffersById[todo.id]["bufferMS_" + priorityLevels[i]] = buffersById[todo.id]["bufferMS"] + msLowerPriorityTasks
       }else{
         msLowerPriorityTasks += Number(todo.estTime) * 60*60*1000
       }
