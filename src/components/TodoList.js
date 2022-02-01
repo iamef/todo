@@ -286,11 +286,19 @@ class TodoList extends React.Component{
     
     completeTodo(todo){
         // TODO COMPLETE SEEMS TO BE BUGGY!!!
-        
         var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
-        console.log(todoDoc.id, todoDoc)
-        updateDoc(todoDoc, {complete: !todo.complete}) 
+        console.log("completeTodo", todoDoc.id, todoDoc, "from " + todo.complete + " to " + !todo.complete)
+        updateDoc(todoDoc, {complete: !todo.complete})
+        
+        // // https://stackoverflow.com/questions/29537299/react-how-to-update-state-item1-in-state-using-setstate
+        // var foundIndex = this.state.todoList.find((todo) => todo.id === todo.id)
+        
+        // var todoListCopy = [...this.state.todoList]
+        // todo.complete = !todo.complete // update todo item
+        // todoListCopy[foundIndex] = todo
+        // this.setState({todoList: todoListCopy})
     }
+
     
     render(){
         return (
