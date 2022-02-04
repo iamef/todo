@@ -36,40 +36,48 @@ const Form = () => {
 
     const [quickAdd, setQuickAdd] = useState({text: "", formModified: false})
     
-    const createTodo = () => {
-        var currDueDate = formData.dueDate
-        var endDate = formData.recurring ? formData.endRecurring: formData.dueDate
-
-        var todo;
-        // TODO definitely need to do some form checks here
-        while(currDueDate <= endDate){
-            todo = {
-                ...formData,
-                complete: false,
-            };
-
-            debugger;
-            
-            todo.dueDate = currDueDate
-            
-            if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
-                // todo.dueDate = todo.dueDate.toLocaleString()
-                var datObjDueDate = todo.dueDate
-                todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
-                todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `
-                todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
-                todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
-            }
-            
-            var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
-            // todoFilePath +=  formData.folder + "/" + formData.list;
-
-            addDoc(collection(fs, todoFilePath), todo);
-
-            currDueDate.setDate(currDueDate.getDate() + 7)
-
+    function addOneTodoToFirebase(todo){
+        if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
+            // todo.dueDate = todo.dueDate.toLocaleString()
+            var datObjDueDate = todo.dueDate
+            todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
+            todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `
+            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
+            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
         }
-            
+        
+        var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        // todoFilePath +=  formData.folder + "/" + formData.list;
+
+        addDoc(collection(fs, todoFilePath), todo);
+    }
+    
+    const createTodo = () => {
+        
+        const todo = {
+            ...formData,
+            complete: false,
+        };
+        
+        addOneTodoToFirebase(todo);
+        
+        if(formData.recurring){
+            if(formData.endRecurring !== null){
+                var endDate = formData.recurring ? formData.endRecurring: formData.dueDate
+                
+                var currDueDate = formData.dueDate
+                currDueDate.setDate(currDueDate.getDate() + 7)
+                while(currDueDate <= endDate){
+                    todo.dueDate = currDueDate
+                    addOneTodoToFirebase(todo);
+                    currDueDate.setDate(currDueDate.getDate() + 7)
+                }
+            }else{
+                // TODO improve this statement
+                alert("endRecurring is null, unexpected behavior")
+            }
+        }
+        
         setFormData({...intialFormState, dueDate: todo.dueDate})
 
         setQuickAdd({text: "", formModified: false})
