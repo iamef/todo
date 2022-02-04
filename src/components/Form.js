@@ -63,6 +63,8 @@ const Form = () => {
         
         if(formData.recurring){
             if(formData.endRecurring !== null){
+                // also what if the endDate < startDate
+                // should be fine lol
                 var endDate = formData.recurring ? formData.endRecurring: formData.dueDate
                 
                 var currDueDate = formData.dueDate
