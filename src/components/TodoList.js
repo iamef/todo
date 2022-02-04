@@ -196,10 +196,12 @@ class TodoList extends React.Component{
                     fsTodoList.push({id: qdoc.id, ...qdoc.data()})
                 });
 
+                let sortOrder = ["complete", "priority", "dueDate", "folder", "list"]
+
                 // TODO implement calendar stuff later
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                        todoListWithBuffers.sort(this.sortTodosFunction("priority", "complete", "folder", "list", "dueDate"))
+                        todoListWithBuffers.sort(this.sortTodosFunction(...sortOrder))
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }else{
@@ -207,7 +209,7 @@ class TodoList extends React.Component{
                     for(var todo of fsTodoList){
                         todo.bufferHrs = "Log Into GCAL"
                     }
-                    fsTodoList.sort(this.sortTodosFunction("priority", "complete", "folder", "list", "dueDate"))
+                    fsTodoList.sort(this.sortTodosFunction(...sortOrder))
                     this.setState({todoList: fsTodoList});
                 }
 
