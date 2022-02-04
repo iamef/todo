@@ -36,13 +36,16 @@ class TodoList extends React.Component{
 
         this.headCells = [
             {
+              //   firebaseKey: 'folder/list',
               id: 'todoFolderList',
               numeric: false,
               disablePadding: true,
               label: 'folder/list',
               align: "left"
+
             },
             {
+              firebaseKey: 'atitle',
               id: 'todoTitle',
               numeric: false,
               disablePadding: true,
@@ -50,6 +53,7 @@ class TodoList extends React.Component{
               align: "left"
             },
             {
+              firebaseKey: 'dueDate',
               id: 'todoDueDate',
               numeric: false,
               disablePadding: false,
@@ -57,6 +61,7 @@ class TodoList extends React.Component{
               align: "right"
             },
             {
+              firebaseKey: 'deadlineType',
               id: 'todoDeadlineType',
               numeric: true,
               disablePadding: false,
@@ -64,6 +69,7 @@ class TodoList extends React.Component{
               align: "right"
             },
             {
+              firebaseKey: 'estTime',
               id: 'todoEstimatedTime',
               numeric: true,
               disablePadding: false,
@@ -71,6 +77,7 @@ class TodoList extends React.Component{
               align: "right"
             },
             {
+              firebaseKey: 'priority',
               id: 'todoPriority',
               numeric: false,
               disablePadding: false,
@@ -396,13 +403,6 @@ class TodoList extends React.Component{
                     {this.headCells.map((cellJson) => 
                         <TableCell align={cellJson.align}>{cellJson.label}</TableCell>
                     )}
-                    {/* <TableCell>folder/list</TableCell>
-                    <TableCell sortDirection={"desc"}>atitle</TableCell>
-                    <TableCell align="right" sortDirection={"desc"} onClick={() => {console.log("clicked"); var ack = [...this.state.todoList].sort(this.sortTodosFunction('dueDate'));}}>dueDate</TableCell>
-                    <TableCell align="right">dType</TableCell>
-                    <TableCell align="right">eT</TableCell>
-                    <TableCell align="right">priority</TableCell>
-                    <TableCell align="right">buffer</TableCell> */}
                 </TableRow>
                 </TableHead>
                 <TableBody>
@@ -434,20 +434,32 @@ class TodoList extends React.Component{
                                 />
                             {/* </motion.div> */}
                         </TableCell>
+
+
                         <TableCell component="th" scope="row" className={todo.complete ? "complete" : "pending"}>
                             { todo.folder + "/" + todo.list }
                         </TableCell>
-                        <TableCell component="th" scope="row" className={todo.complete ? "complete" : "pending"}>
-                            {todo.atitle}
-                        </TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "dueDate")}>{todo.dueDate}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "deadlineType")}>{todo.deadlineType}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "estTime")}>{todo.estTime}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"} onDoubleClick={() => this.editTodo(todo, "priority")}>{todo.priority}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs ? todo.bufferHrs : "loading"}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_tbd ? todo.bufferHrs_tbd : "loading"}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_medium ? todo.bufferHrs_medium : "loading"}</TableCell>
-                        <TableCell align="right" className={todo.complete ? "complete" : "pending"}>{todo.bufferHrs_high ? todo.bufferHrs_high : "loading"}</TableCell>
+                        
+                        {this.headCells.map((cellJson) => 
+                            cellJson.firebaseKey === undefined ? 
+                            null : 
+                            <TableCell 
+                                align={cellJson.align} 
+                                className={todo.complete ? "complete" : "pending"} 
+                                onDoubleClick={() => this.editTodo(todo, cellJson.firebaseKey)}
+                            >
+                                {todo[cellJson.firebaseKey]}
+                            </TableCell>
+                        )}
+
+                        {['bufferHrs', 'bufferHrs_tbd', 'bufferHrs_medium', "bufferHrs_high"].map((bufferType) =>
+                            <TableCell 
+                                align="right" 
+                                className={todo.complete ? "complete" : "pending"}
+                            >
+                                {todo[bufferType] ? todo[bufferType] : "loading"}
+                            </TableCell>
+                        )}
                         </TableRow>
                     )
                     : null
