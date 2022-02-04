@@ -33,6 +33,58 @@ class TodoList extends React.Component{
         this.todoFilePath = props.userFirebasePath +  "/Todos";
         
         this.unsubscribeFirebaseTodolist = () => {};
+
+        this.headCells = [
+            {
+              id: 'todoFolderList',
+              numeric: false,
+              disablePadding: true,
+              label: 'folder/list',
+              align: "left"
+            },
+            {
+              id: 'todoTitle',
+              numeric: false,
+              disablePadding: true,
+              label: 'title',
+              align: "left"
+            },
+            {
+              id: 'todoDueDate',
+              numeric: false,
+              disablePadding: false,
+              label: 'dueDate',
+              align: "right"
+            },
+            {
+              id: 'todoDeadlineType',
+              numeric: true,
+              disablePadding: false,
+              label: 'dType',
+              align: "right"
+            },
+            {
+              id: 'todoEstimatedTime',
+              numeric: true,
+              disablePadding: false,
+              label: 'eT',
+              align: "right"
+            },
+            {
+              id: 'todoPriority',
+              numeric: false,
+              disablePadding: false,
+              label: 'priority',
+              align: "right"
+            },
+            {
+                id: 'todoBuffer',
+                numeric: true,
+                disablePadding: false,
+                label: 'buffer',
+                align: "right"
+            },
+        ];
     }
 
     componentDidMount(){
@@ -339,13 +391,16 @@ class TodoList extends React.Component{
                 <TableHead>
                 <TableRow>
                     <TableCell></TableCell>
-                    <TableCell>folder/list</TableCell>
-                    <TableCell>atitle</TableCell>
-                    <TableCell align="right">dueDate</TableCell>
+                    {this.headCells.map((cellJson) => 
+                        <TableCell align={cellJson.align}>{cellJson.label}</TableCell>
+                    )}
+                    {/* <TableCell>folder/list</TableCell>
+                    <TableCell sortDirection={"desc"}>atitle</TableCell>
+                    <TableCell align="right" sortDirection={"desc"} onClick={() => {console.log("clicked"); var ack = [...this.state.todoList].sort(this.sortTodosFunction('dueDate'));}}>dueDate</TableCell>
                     <TableCell align="right">dType</TableCell>
                     <TableCell align="right">eT</TableCell>
                     <TableCell align="right">priority</TableCell>
-                    <TableCell align="right">buffer</TableCell>
+                    <TableCell align="right">buffer</TableCell> */}
                 </TableRow>
                 </TableHead>
                 <TableBody>
