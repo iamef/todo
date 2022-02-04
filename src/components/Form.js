@@ -20,9 +20,8 @@ import { parseDate, parseTime } from '../utils/todosFunctions';
 // Added more fields usinig this!
 // https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
 const Form = () => {
-    const [formData, setFormData] = useState({
+    const intialFormState = {
         atitle: "",
-        // dueDate: new Date(),
         dueDate: null,
         deadlineType: "noDeadline",
         estTime: "",
@@ -31,7 +30,9 @@ const Form = () => {
         endRecurring: null,
         folder: "",
         list: ""
-    });
+    };
+
+    const [formData, setFormData] = useState(intialFormState);
 
     const [quickAdd, setQuickAdd] = useState({text: "", formModified: false})
     
@@ -66,6 +67,8 @@ const Form = () => {
             folder: "",
             list: ""
         })
+            
+        setFormData({...intialFormState, dueDate: todo.dueDate})
 
         setQuickAdd({text: "", formModified: false})
     }
