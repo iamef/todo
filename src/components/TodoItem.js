@@ -77,7 +77,7 @@ function TodoItem(props) {
                 {props.todo.folder + "/" + props.todo.list}
             </TableCell>
 
-            {/* complete buttons */}
+            {/* title, dueDate, deadlineType, estTime, priority */}
             {props.headCells.map((cellJson) =>
                 cellJson.firebaseKey === undefined ?
                     null :
@@ -90,6 +90,7 @@ function TodoItem(props) {
                     </TableCell>
             )}
 
+            {/* buffer */}
             {['bufferHrs', 'bufferHrs_tbd', 'bufferHrs_medium', "bufferHrs_high"].map((bufferType) =>
                 <TableCell
                     align="right"
