@@ -1,4 +1,4 @@
-function todosDateTimeParse(todoDateTimeStr){
+export function todosDateTimeParse(todoDateTimeStr){
   if(todoDateTimeStr == null){
     return null
   }
@@ -251,6 +251,7 @@ export function parseDate(str){
   // TODO add on
   // TODO add day number checks for 31+ (ex: January 39th)
   if(!dateFound){
+      // TODO think about enums
       var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
       for(var i=0; i < monthNames.length; i++){
           // console.log(monthStr)

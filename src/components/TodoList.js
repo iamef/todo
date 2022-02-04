@@ -7,7 +7,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button } from '@mui/material';
-import { calculateBuffer } from '../utils/todosFunctions';
+import { calculateBuffer, todosDateTimeParse } from '../utils/todosFunctions';
 import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
 class TodoList extends React.Component{
     constructor(props){
@@ -237,7 +237,7 @@ class TodoList extends React.Component{
                 }else if(item2 === ''){
                     ret = -1 // this means item1 - item2 is negative
                 }
-                ret = Date.parse(item1) - Date.parse(item2)
+                ret = todosDateTimeParse(item1) - todosDateTimeParse(item2)
     
                 return (ascending ? ret : -1*ret)
             }else if(type === "priority"){
