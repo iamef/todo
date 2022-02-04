@@ -1,21 +1,23 @@
 import React from "react";
 
+import { fs } from '../firebase';
+import { collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { TableRow, TableCell } from '@mui/material';
 
-
-deleteTodo(todo){
-    var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
+function deleteTodo(todo, todoFilePath){
+    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
     console.log(todoDoc.id, todoDoc)
     deleteDoc(todoDoc)
 }
 
-completeTodo(todo){
+function completeTodo(todo, todoFilePath){
     // TODO COMPLETE SEEMS TO BE BUGGY!!!
-    var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
+    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
     console.log("completeTodo", todoDoc.id, todoDoc, "from " + todo.complete + " to " + !todo.complete)
     updateDoc(todoDoc, {complete: !todo.complete})
     
@@ -28,8 +30,8 @@ completeTodo(todo){
     // this.setState({todoList: todoListCopy})
 }
 
-editTodo(todo, item){
-    var todoDoc = doc(collection(fs, this.todoFilePath), todo.id)
+function editTodo(todo, item, todoFilePath){
+    var todoDoc = doc(collection(fs, todoFilePath), todo.id)
     console.log(todoDoc.id, todoDoc)
 
     var updatedData = prompt("Please update " + item, todo[item])
@@ -52,19 +54,19 @@ function TodoItem(props) {
                 {props.todo.complete ?
                     <CheckCircleIcon
                         className='icon'
-                        onClick={() => this.completeTodo(props.todo)}
+                        onClick={() => completeTodo(props.todo, props.todoFilePath)}
                         fontSize='large'
                     /> :
                     <CheckCircleOutlineIcon
                         className='icon'
-                        onClick={() => this.completeTodo(props.todo)}
+                        onClick={() => completeTodo(props.todo, props.todoFilePath)}
                         fontSize='large'
                     />
                 }
                 {/* <motion.div> */}
                 <HighlightOffIcon
                     className='icon'
-                    onClick={() => this.deleteTodo(props.todo)}
+                    onClick={() => deleteTodo(props.todo, props.todoFilePath)}
                     fontSize='large'
                 />
                 {/* </motion.div> */}
@@ -82,7 +84,7 @@ function TodoItem(props) {
                     <TableCell
                         align={cellJson.align}
                         className={props.todo.complete ? "complete" : "pending"}
-                        onDoubleClick={() => this.editTodo(props.todo, cellJson.firebaseKey)}
+                        onDoubleClick={() => editTodo(props.todo, cellJson.firebaseKey, props.todoFilePath)}
                     >
                         {props.todo[cellJson.firebaseKey]}
                     </TableCell>

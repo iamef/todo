@@ -4,7 +4,7 @@ import { fs } from '../firebase';
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button } from '@mui/material';
 import { calculateBuffer, todosDateTimeParse } from '../utils/todosFunctions';
-import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, query, setDoc } from 'firebase/firestore';
 import TodoItem from './TodoItem';
 
 class TodoList extends React.Component{
@@ -375,7 +375,7 @@ class TodoList extends React.Component{
                 <TableBody>
                 {this.state.todoList ?
                     this.state.todoList.map((todo) => 
-                        <TodoItem todo={todo} headCells={this.headCells}/>
+                        <TodoItem todo={todo} headCells={this.headCells} todoFilePath={this.todoFilePath}/>
                     )
                     :
                     null
