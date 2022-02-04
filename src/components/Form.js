@@ -69,16 +69,6 @@ const Form = () => {
             currDueDate.setDate(currDueDate.getDate() + 7)
 
         }
-        setFormData({
-            atitle: "",
-            dueDate: todo.dueDate,
-            // dueDate: new Date(),
-            deadlineType: "noDeadline", 
-            estTime: "",
-            priority: "tbd",
-            folder: "",
-            list: ""
-        })
             
         setFormData({...intialFormState, dueDate: todo.dueDate})
 
