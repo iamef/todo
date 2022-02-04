@@ -2,13 +2,11 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { fs } from '../firebase';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button } from '@mui/material';
 import { calculateBuffer, todosDateTimeParse } from '../utils/todosFunctions';
 import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
+import TodoItem from './TodoItem';
+
 class TodoList extends React.Component{
     constructor(props){
         super(props);
@@ -408,61 +406,10 @@ class TodoList extends React.Component{
                 <TableBody>
                 {this.state.todoList ?
                     this.state.todoList.map((todo) => 
-                        <TableRow
-                        key={todo.id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        className={todo.complete ? "complete" : "pending"}
-                        >
-                        <TableCell className={todo.complete ? "complete" : "pending"}>
-                            {todo.complete ?
-                                <CheckCircleIcon
-                                    className='icon'
-                                    onClick={ () => this.completeTodo(todo)}
-                                    fontSize='large'
-                                /> :
-                                <CheckCircleOutlineIcon
-                                    className='icon'
-                                    onClick={ () => this.completeTodo(todo) }
-                                    fontSize='large'
-                                />
-                            }
-                            {/* <motion.div> */}
-                                <HighlightOffIcon
-                                    className='icon'
-                                    onClick={ () => this.deleteTodo(todo) }
-                                    fontSize='large'
-                                />
-                            {/* </motion.div> */}
-                        </TableCell>
-
-
-                        <TableCell component="th" scope="row" className={todo.complete ? "complete" : "pending"}>
-                            { todo.folder + "/" + todo.list }
-                        </TableCell>
-                        
-                        {this.headCells.map((cellJson) => 
-                            cellJson.firebaseKey === undefined ? 
-                            null : 
-                            <TableCell 
-                                align={cellJson.align} 
-                                className={todo.complete ? "complete" : "pending"} 
-                                onDoubleClick={() => this.editTodo(todo, cellJson.firebaseKey)}
-                            >
-                                {todo[cellJson.firebaseKey]}
-                            </TableCell>
-                        )}
-
-                        {['bufferHrs', 'bufferHrs_tbd', 'bufferHrs_medium', "bufferHrs_high"].map((bufferType) =>
-                            <TableCell 
-                                align="right" 
-                                className={todo.complete ? "complete" : "pending"}
-                            >
-                                {todo[bufferType] ? todo[bufferType] : "loading"}
-                            </TableCell>
-                        )}
-                        </TableRow>
+                        <TodoItem todo={todo} headCells={this.headCells}/>
                     )
-                    : null
+                    :
+                    null
                 }
                 </TableBody>
             </Table>
