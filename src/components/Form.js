@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { auth, fs } from '../firebase';
 
-import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
+import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup, Checkbox } from '@mui/material';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -27,6 +27,8 @@ const Form = () => {
         deadlineType: "noDeadline",
         estTime: "",
         priority: "tbd",
+        recurring: false,
+        endRecurring: null,
         folder: "",
         list: ""
     });
@@ -58,7 +60,7 @@ const Form = () => {
             atitle: "",
             dueDate: todo.dueDate,
             // dueDate: new Date(),
-            deadlineType: "noDeadline",
+            deadlineType: "noDeadline", 
             estTime: "",
             priority: "tbd",
             folder: "",
@@ -184,23 +186,23 @@ const Form = () => {
                 <FormGroup row>
                     {/* attempts to change color https://github.com/mui-org/material-ui-pickers/issues/393 */}
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        renderInput={(props) => <TextField {...props} />}
-                        // required={formData.deadlineType !== "noDeadline"}
-                        value={formData.dueDate}
-                        label="Due Date"
-                        onChange={(e) => {
-                            console.log(e);
-                            if(formData.deadlineType === "noDeadline")
-                                setFormData({...formData, dueDate: e, deadlineType: "hard"});
-                            else
-                                setFormData({...formData, dueDate: e});
-                            
-                            setQuickAdd({...quickAdd, formModified: true})
-                        }}
-                        className='textfield'
-                        size='medium'
-                    />
+                        <DateTimePicker
+                            renderInput={(props) => <TextField {...props} />}
+                            // required={formData.deadlineType !== "noDeadline"}
+                            value={formData.dueDate}
+                            label="Due Date"
+                            onChange={(e) => {
+                                console.log(e);
+                                if(formData.deadlineType === "noDeadline")
+                                    setFormData({...formData, dueDate: e, deadlineType: "hard"});
+                                else
+                                    setFormData({...formData, dueDate: e});
+                                
+                                setQuickAdd({...quickAdd, formModified: true})
+                            }}
+                            className='textfield'
+                            size='medium'
+                        />
                     </LocalizationProvider>
 
                     {/* <TextField
@@ -295,7 +297,32 @@ const Form = () => {
                         onChange={(e) => setFormData({...formData, priority: 'vHIGH'})}
                         label="Very high" /> */}
                 </RadioGroup>
+                
+                <br/>
+                
+                {/* TODO add more options to recurring */}
+                <FormControlLabel
+                    control={<Checkbox checked={formData.recurring} onChange={(e) => setFormData({...formData, recurring: e.target.checked})}/>}
+                    label="Recurring weekly"
+                    labelPlacement="start"
+                />
 
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        renderInput={(props) => <TextField {...props} />}
+                        // required={formData.deadlineType !== "noDeadline"}
+                        value={formData.endRecurring}
+                        label="End Recurring"
+                        onChange={(e) => {
+                            setFormData({...formData, endRecurring: e})
+                        }}
+                        className='textfield'
+                        size='medium'
+                    />
+                    </LocalizationProvider>
+                
+                <br/>
+                
                 <TextField 
                     required
                     variant='standard'
