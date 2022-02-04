@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { auth, fs } from '../firebase';
 
-import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup } from '@mui/material';
+import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup, Checkbox } from '@mui/material';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -20,26 +20,23 @@ import { parseDate, parseTime } from '../utils/todosFunctions';
 // Added more fields usinig this!
 // https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
 const Form = () => {
-    const [formData, setFormData] = useState({
+    const intialFormState = {
         atitle: "",
-        // dueDate: new Date(),
         dueDate: null,
         deadlineType: "noDeadline",
         estTime: "",
         priority: "tbd",
+        recurring: false,
+        endRecurring: null,
         folder: "",
         list: ""
-    });
+    };
+
+    const [formData, setFormData] = useState(intialFormState);
 
     const [quickAdd, setQuickAdd] = useState({text: "", formModified: false})
     
-    const createTodo = () => {
-        const todo = {
-            ...formData,
-            complete: false,
-        };
-        
-        
+    function addOneTodoToFirebase(todo){
         if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
             // todo.dueDate = todo.dueDate.toLocaleString()
             var datObjDueDate = todo.dueDate
@@ -53,17 +50,37 @@ const Form = () => {
         // todoFilePath +=  formData.folder + "/" + formData.list;
 
         addDoc(collection(fs, todoFilePath), todo);
-
-        setFormData({
-            atitle: "",
-            dueDate: todo.dueDate,
-            // dueDate: new Date(),
-            deadlineType: "noDeadline",
-            estTime: "",
-            priority: "tbd",
-            folder: "",
-            list: ""
-        })
+    }
+    
+    const createTodo = () => {
+        
+        const todo = {
+            ...formData,
+            complete: false,
+        };
+        
+        addOneTodoToFirebase(todo);
+        
+        if(formData.recurring){
+            if(formData.endRecurring !== null){
+                // also what if the endDate < startDate
+                // should be fine lol
+                var endDate = formData.recurring ? formData.endRecurring: formData.dueDate
+                
+                var currDueDate = formData.dueDate
+                currDueDate.setDate(currDueDate.getDate() + 7)
+                while(currDueDate <= endDate){
+                    todo.dueDate = currDueDate
+                    addOneTodoToFirebase(todo);
+                    currDueDate.setDate(currDueDate.getDate() + 7)
+                }
+            }else{
+                // TODO improve this statement
+                alert("endRecurring is null, unexpected behavior")
+            }
+        }
+        
+        setFormData({...intialFormState, dueDate: todo.dueDate})
 
         setQuickAdd({text: "", formModified: false})
     }
@@ -184,23 +201,23 @@ const Form = () => {
                 <FormGroup row>
                     {/* attempts to change color https://github.com/mui-org/material-ui-pickers/issues/393 */}
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        renderInput={(props) => <TextField {...props} />}
-                        // required={formData.deadlineType !== "noDeadline"}
-                        value={formData.dueDate}
-                        label="Due Date"
-                        onChange={(e) => {
-                            console.log(e);
-                            if(formData.deadlineType === "noDeadline")
-                                setFormData({...formData, dueDate: e, deadlineType: "hard"});
-                            else
-                                setFormData({...formData, dueDate: e});
-                            
-                            setQuickAdd({...quickAdd, formModified: true})
-                        }}
-                        className='textfield'
-                        size='medium'
-                    />
+                        <DateTimePicker
+                            renderInput={(props) => <TextField {...props} />}
+                            // required={formData.deadlineType !== "noDeadline"}
+                            value={formData.dueDate}
+                            label="Due Date"
+                            onChange={(e) => {
+                                console.log(e);
+                                if(formData.deadlineType === "noDeadline")
+                                    setFormData({...formData, dueDate: e, deadlineType: "hard"});
+                                else
+                                    setFormData({...formData, dueDate: e});
+                                
+                                setQuickAdd({...quickAdd, formModified: true})
+                            }}
+                            className='textfield'
+                            size='medium'
+                        />
                     </LocalizationProvider>
 
                     {/* <TextField
@@ -295,7 +312,32 @@ const Form = () => {
                         onChange={(e) => setFormData({...formData, priority: 'vHIGH'})}
                         label="Very high" /> */}
                 </RadioGroup>
+                
+                <br/>
+                
+                {/* TODO add more options to recurring */}
+                <FormControlLabel
+                    control={<Checkbox checked={formData.recurring} onChange={(e) => setFormData({...formData, recurring: e.target.checked})}/>}
+                    label="Recurring weekly"
+                    labelPlacement="start"
+                />
 
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        renderInput={(props) => <TextField {...props} />}
+                        // required={formData.deadlineType !== "noDeadline"}
+                        value={formData.endRecurring}
+                        label="End Recurring"
+                        onChange={(e) => {
+                            setFormData({...formData, endRecurring: e})
+                        }}
+                        className='textfield'
+                        size='medium'
+                    />
+                    </LocalizationProvider>
+                
+                <br/>
+                
                 <TextField 
                     required
                     variant='standard'
