@@ -37,26 +37,38 @@ const Form = () => {
     const [quickAdd, setQuickAdd] = useState({text: "", formModified: false})
     
     const createTodo = () => {
-        const todo = {
-            ...formData,
-            complete: false,
-        };
-        
-        
-        if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
-            // todo.dueDate = todo.dueDate.toLocaleString()
-            var datObjDueDate = todo.dueDate
-            todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
-            todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `
-            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
-            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
+        var currDueDate = formData.dueDate
+        var endDate = formData.recurring ? formData.endRecurring: formData.dueDate
+
+        var todo;
+        // TODO definitely need to do some form checks here
+        while(currDueDate <= endDate){
+            todo = {
+                ...formData,
+                complete: false,
+            };
+
+            debugger;
+            
+            todo.dueDate = currDueDate
+            
+            if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
+                // todo.dueDate = todo.dueDate.toLocaleString()
+                var datObjDueDate = todo.dueDate
+                todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
+                todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `
+                todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
+                todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
+            }
+            
+            var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+            // todoFilePath +=  formData.folder + "/" + formData.list;
+
+            addDoc(collection(fs, todoFilePath), todo);
+
+            currDueDate.setDate(currDueDate.getDate() + 7)
+
         }
-        
-        var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
-        // todoFilePath +=  formData.folder + "/" + formData.list;
-
-        addDoc(collection(fs, todoFilePath), todo);
-
         setFormData({
             atitle: "",
             dueDate: todo.dueDate,
