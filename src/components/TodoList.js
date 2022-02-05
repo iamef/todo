@@ -339,6 +339,13 @@ class TodoList extends React.Component{
         }
     }
     
+    sortedArray(arr, ...sortOrder){
+        // debugger;
+        console.log(sortOrder)
+        let result = [...arr];
+        result.sort(this.compareForMultipleProperties(...sortOrder))
+        return result;
+    }
     
     render(){
         return (
@@ -367,12 +374,22 @@ class TodoList extends React.Component{
             <Table sx={{ minWidth: 650 }} aria-label="simple table" padding="none" >
                 {/* // TODO add table based sorting! https://mui.com/components/tables/#sorting-amp-selecting */}
                 <TableHead>
-                <TableRow>
-                    <TableCell></TableCell>
-                    {this.headCells.map((cellJson) => 
-                        <TableCell align={cellJson.align}>{cellJson.label}</TableCell>
-                    )}
-                </TableRow>
+                    <TableRow key="header">
+                        <TableCell></TableCell>
+                        {this.headCells.map((cellJson) => 
+                            <TableCell align={cellJson.align}>
+                                <TableSortLabel
+                                    active={this.orderBy[1] === cellJson.firebaseKey}
+                                    onClick={() => {
+                                        this.setState({todoList: this.sortedArray(this.state.todoList, "complete", cellJson.firebaseKey)});
+                                        this.orderBy.splice(1,0,cellJson.firebaseKey)
+                                        this.orderBy = [...new Set(this.orderBy)]
+                                        console.log("clicked", cellJson.label, this.orderBy);
+                                    }}
+                                >{cellJson.label}</TableSortLabel>
+                            </TableCell>
+                        )}
+                    </TableRow>
                 </TableHead>
                 <TableBody>
                 {this.state.todoList ?
