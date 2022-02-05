@@ -1,8 +1,10 @@
-import { motion } from 'framer-motion';
 import React from 'react';
+
 import { fs } from '../firebase';
 
-import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button } from '@mui/material';
+import { motion } from 'framer-motion';
+
+import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button, TableSortLabel } from '@mui/material';
 import { calculateBuffer, todosDateTimeParse } from '../utils/todosFunctions';
 import { collection, doc, getDoc, onSnapshot, query, setDoc } from 'firebase/firestore';
 import TodoItem from './TodoItem';
@@ -12,7 +14,7 @@ class TodoList extends React.Component{
         super(props);
         console.log("Todolist props", props);
         
-        this.initializeTodolist = this.initializeTodolist.bind(this)
+        this.initializeTodolist = this.initializeTodolist.bind(this);
         
         // need the todoList because 
         // this.state.todoList can be mappable
@@ -22,6 +24,8 @@ class TodoList extends React.Component{
         // making todoList into a variable doesn't work
         // the todolist won't update when I click complete and stuff
         this.state = { todoList: false, hardDeadlineOnlyBuffer: false }
+
+        this.orderBy = ["complete", "priority", "dueDate", "folder", "list"]
         
         // making this into a variable does seem to work
         // and this updates in the todolist app
@@ -201,12 +205,10 @@ class TodoList extends React.Component{
                     fsTodoList.push({id: qdoc.id, ...qdoc.data()})
                 });
 
-                let sortOrder = ["complete", "priority", "dueDate", "folder", "list"]
-
                 // TODO implement calendar stuff later
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                        todoListWithBuffers.sort(this.sortTodosFunction(...sortOrder))
+                        todoListWithBuffers.sort(this.compareForMultipleProperties(...this.orderBy))
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }else{
@@ -214,7 +216,7 @@ class TodoList extends React.Component{
                     for(var todo of fsTodoList){
                         todo.bufferHrs = "Log Into GCAL"
                     }
-                    fsTodoList.sort(this.sortTodosFunction(...sortOrder))
+                    fsTodoList.sort(this.compareForMultipleProperties(...this.orderBy))
                     this.setState({todoList: fsTodoList});
                 }
 
@@ -283,9 +285,9 @@ class TodoList extends React.Component{
     // TODO move this to TodoLIst functions at some point
     // TODO what if I just had a stable sorting function. Bruh...
     // actually according to mozilla.org, it is stable. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-    sortTodosFunction(...argsTuple){
+    compareForMultipleProperties(...sortOrder){
         
-        function compare(item1, item2, type, ascending=true){
+        function singlePropertyCompare(item1, item2, type, ascending=true){
             if(type === 'dueDate'){
                 var ret;
     
@@ -314,7 +316,7 @@ class TodoList extends React.Component{
             
             // console.log(argsTuple)
 
-            for(var arg of argsTuple){
+            for(var arg of sortOrder){
                 // console.log(arg)
                 
                 var type, sortAscending;
@@ -326,7 +328,7 @@ class TodoList extends React.Component{
                     sortAscending = true;
                 }
 
-                var res = compare(item1[type], item2[type], type, sortAscending);
+                var res = singlePropertyCompare(item1[type], item2[type], type, sortAscending);
                 
                 // console.log(item1[type], item2[type], type, sortAscending, res)
 
