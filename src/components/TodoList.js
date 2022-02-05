@@ -23,9 +23,9 @@ class TodoList extends React.Component{
         
         // making todoList into a variable doesn't work
         // the todolist won't update when I click complete and stuff
-        this.state = { todoList: false, hardDeadlineOnlyBuffer: false }
+        this.state = { todoList: false, hardDeadlineOnlyBuffer: false };
 
-        this.orderBy = ["complete", "priority", "dueDate", "folder", "list"]
+        this.orderBy = ["complete", "priority", "dueDate", "folder", "list"];
         
         // making this into a variable does seem to work
         // and this updates in the todolist app
@@ -98,12 +98,12 @@ class TodoList extends React.Component{
     }
 
     componentDidMount(){
-        console.log("Todolist mount", this.props, this.state)
+        console.log("Todolist mount", this.props, this.state);
         
         if(this.props.firebaseSignedIn !== null){
-            this.initializeTodolist()
+            this.initializeTodolist();
         }else{
-            console.log("Firebase login is null")
+            console.log("Firebase login is null");
         }
     }
 
@@ -136,10 +136,10 @@ class TodoList extends React.Component{
             }
         }else{
             if(prevProps.firebaseSignedIn){
-                alert("somehow firebase signin has become null")
+                alert("somehow firebase signin has become null");
                 
                 this.unsubscribeFirebaseTodolist();
-                this.setState({todoList: false})
+                this.setState({todoList: false});
             }
         }
     }
@@ -174,8 +174,8 @@ class TodoList extends React.Component{
                         
                         if(found === undefined || changedData === undefined){
                             debugger;
-                            alert("found or changedData is undefined")
-                            console.log("found or changedData is undefined", found, changedData)
+                            alert("found or changedData is undefined");
+                            console.log("found or changedData is undefined", found, changedData);
                         }else{
                             if(found.complete === changedData.complete && 
                                 found.deadlineType === changedData.deadlineType &&
@@ -203,21 +203,21 @@ class TodoList extends React.Component{
                 // console.log(querySnapshot);
                 querySnapshot.forEach((qdoc) => {
                     console.log(qdoc.id, " => ", qdoc.data());
-                    fsTodoList.push({id: qdoc.id, ...qdoc.data()})
+                    fsTodoList.push({id: qdoc.id, ...qdoc.data()});
                 });
 
                 // TODO implement calendar stuff later
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                        todoListWithBuffers.sort(this.compareForMultipleProperties(...this.orderBy))
+                        todoListWithBuffers.sort(this.compareForMultipleProperties(...this.orderBy));
                         this.setState({todoList: todoListWithBuffers});
                     })
                 }else{
                     // TODO reset buffer if you aren't signed in
                     for(var todo of fsTodoList){
-                        todo.bufferHrs = "Log Into GCAL"
+                        todo.bufferHrs = "Log Into GCAL";
                     }
-                    fsTodoList.sort(this.compareForMultipleProperties(...this.orderBy))
+                    fsTodoList.sort(this.compareForMultipleProperties(...this.orderBy));
                     this.setState({todoList: fsTodoList});
                 }
 
@@ -342,9 +342,9 @@ class TodoList extends React.Component{
     
     sortedArray(arr, ...sortOrder){
         // debugger;
-        console.log(sortOrder)
+        console.log(sortOrder);
         let result = [...arr];
-        result.sort(this.compareForMultipleProperties(...sortOrder))
+        result.sort(this.compareForMultipleProperties(...sortOrder));
         return result;
     }
     

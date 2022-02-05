@@ -34,16 +34,16 @@ const Form = () => {
 
     const [formData, setFormData] = useState(intialFormState);
 
-    const [quickAdd, setQuickAdd] = useState({text: "", formModified: false})
+    const [quickAdd, setQuickAdd] = useState({text: "", formModified: false});
     
     function addOneTodoToFirebase(todo){
         if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
             // todo.dueDate = todo.dueDate.toLocaleString()
-            var datObjDueDate = todo.dueDate
+            var datObjDueDate = todo.dueDate;
             todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
-            todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `
-            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":")
-            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1]
+            todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `;
+            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":");
+            todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1];
         }
         
         var todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
@@ -65,103 +65,103 @@ const Form = () => {
             if(formData.endRecurring !== null){
                 // also what if the endDate < startDate
                 // should be fine lol
-                var endDate = formData.recurring ? formData.endRecurring: formData.dueDate
+                var endDate = formData.recurring ? formData.endRecurring: formData.dueDate;
                 
-                var currDueDate = formData.dueDate
-                currDueDate.setDate(currDueDate.getDate() + 7)
+                var currDueDate = formData.dueDate;
+                currDueDate.setDate(currDueDate.getDate() + 7);
                 while(currDueDate <= endDate){
-                    todo.dueDate = currDueDate
+                    todo.dueDate = currDueDate;
                     addOneTodoToFirebase(todo);
-                    currDueDate.setDate(currDueDate.getDate() + 7)
+                    currDueDate.setDate(currDueDate.getDate() + 7);
                 }
             }else{
                 // TODO improve this statement
-                alert("endRecurring is null, unexpected behavior")
+                alert("endRecurring is null, unexpected behavior");
             }
         }
         
-        setFormData({...intialFormState, dueDate: todo.dueDate})
+        setFormData({...intialFormState, dueDate: todo.dueDate});
 
-        setQuickAdd({text: "", formModified: false})
-    }
+        setQuickAdd({text: "", formModified: false});
+    };
 
     function parseQuickAdd(e){
-        var currQAStr = e.target.value
+        var currQAStr = e.target.value;
         
-        setQuickAdd({...quickAdd, text: currQAStr})
+        setQuickAdd({...quickAdd, text: currQAStr});
 
         // var apple = chrono.parse(currQAStr)
         // console.log(apple)
 
         // TODO split into many diff functions
         // FIND DATE
-        var dateParseData = parseDate(currQAStr)
+        var dateParseData = parseDate(currQAStr);
 
         // FIND TIME
-        var timeParseData = parseTime(currQAStr)
+        var timeParseData = parseTime(currQAStr);
 
         // rest of string is title
         var title = currQAStr;
         
-        console.log(dateParseData, timeParseData)
+        console.log(dateParseData, timeParseData);
 
         if(dateParseData !== false){
             var dueDate;
             if(timeParseData !== false){
                 dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day, 
-                                        timeParseData.hours, timeParseData.minutes)
+                                        timeParseData.hours, timeParseData.minutes);
                 
                 title = currQAStr.substring(0, Math.min(dateParseData.startIndex, timeParseData.startIndex)) + 
                         currQAStr.substring(Math.min(dateParseData.endIndex, timeParseData.endIndex), Math.max(dateParseData.startIndex, timeParseData.startIndex)) + 
-                        currQAStr.substring(Math.max(dateParseData.endIndex, timeParseData.endIndex))
+                        currQAStr.substring(Math.max(dateParseData.endIndex, timeParseData.endIndex));
 
             }else{
-                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
-                setFormData({...formData, dueDate: dueDate})
-                console.log("set form data", dueDate)
+                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day);
+                setFormData({...formData, dueDate: dueDate});
+                console.log("set form data", dueDate);
 
                 title = currQAStr.substring(0, dateParseData.startIndex) + 
-                        currQAStr.substring(dateParseData.endIndex)
+                        currQAStr.substring(dateParseData.endIndex);
             }
             if(formData.deadlineType === "noDeadline")
-                setFormData({...formData, dueDate: dueDate, atitle: title, deadlineType: "hard"})
+                setFormData({...formData, dueDate: dueDate, atitle: title, deadlineType: "hard"});
             else
-                setFormData({...formData, dueDate: dueDate, atitle: title})
+                setFormData({...formData, dueDate: dueDate, atitle: title});
             
-            console.log("set form data", dueDate, title)
+            console.log("set form data", dueDate, title);
         }else{
             if(timeParseData !== false){
                 
-                var dateNow = new Date()
+                var dateNow = new Date();
                 
                 if(dateNow.getHours() > timeParseData.hours){
-                    dateNow.setDate(dateNow.getDate() + 1)
+                    dateNow.setDate(dateNow.getDate() + 1);
                 }else if(dateNow.getHours() === timeParseData.hours){
                     if(dateNow.getMinutes() > timeParseData.minutes){
-                        dateNow.setDate(dateNow.getDate() + 1)
+                        dateNow.setDate(dateNow.getDate() + 1);
                     }
                 }
                 
-                console.log(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate())
+                console.log(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate());
 
                 dueDate = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 
-                                        timeParseData.hours, timeParseData.minutes)
+                                        timeParseData.hours, timeParseData.minutes);
                 
                 title = currQAStr.substring(0, timeParseData.startIndex) + 
-                    currQAStr.substring(timeParseData.endIndex)
+                    currQAStr.substring(timeParseData.endIndex);
 
                 if(formData.deadlineType === "noDeadline")
-                    setFormData({...formData, dueDate: dueDate, atitle: title, deadlineType: "hard"})
+                    setFormData({...formData, dueDate: dueDate, atitle: title, deadlineType: "hard"});
                 else
-                    setFormData({...formData, dueDate: dueDate, atitle: title})
+                    setFormData({...formData, dueDate: dueDate, atitle: title});
             }else{
                 // dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day)
                 // setFormData({...formData, dueDate: dueDate})
                 // console.log("set form data", dueDate)
-                setFormData({...formData, atitle: title, dueDate: null})
+                setFormData({...formData, atitle: title, dueDate: null});
             }
             
-            console.log("set form data", null, title)
+            console.log("set form data", null, title);
         }
 
         

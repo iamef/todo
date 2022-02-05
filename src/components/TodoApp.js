@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import Form from './Form'
+import Form from './Form';
 import TodoList from './TodoList';
 
 function TodoApp(props){

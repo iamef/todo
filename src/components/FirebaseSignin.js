@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
-import React from 'react'
+import React from 'react';
 
-import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase"
+import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase";
 
 
 function FirebaseSignInButton(props){
@@ -30,8 +30,8 @@ function FirebaseSignOutButton(props){
 
 class FirebaseSignin extends React.Component{
   constructor(props){
-      super(props) // props are external and are passed into the class
-      console.log("FSignIn", props)
+      super(props); // props are external and are passed into the class
+      console.log("FSignIn", props);
       
       // state is internal
       // don't keep track of firebase sign in here
@@ -41,7 +41,7 @@ class FirebaseSignin extends React.Component{
   signIn(){
       // debugger;
       firebaseSignInWithGoogle().then((result) => {
-          console.log(result)
+          console.log(result);
       })
       // var result = await signInWithPopup(auth, provider)
       // console.log(result);
@@ -49,22 +49,22 @@ class FirebaseSignin extends React.Component{
 
   signOut(){
       firebaseSignOut().then(() => {
-          console.log("signed out")
+          console.log("signed out");
       })
   }
 
   
   render(){
     if(this.props.firebaseSignedIn === null){
-        return null
+        return null;
     }else if(this.props.firebaseSignedIn === false){
-        return <FirebaseSignInButton onClick={this.signIn} />
+        return <FirebaseSignInButton onClick={this.signIn} />;
     }
     
     return (
       <>
           <FirebaseSignOutButton onClick={this.signOut} />
-      </>)
+      </>);
   }
 }
 

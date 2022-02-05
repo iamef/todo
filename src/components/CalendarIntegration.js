@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
-import React from 'react'
+import React from 'react';
 
-import CalendarSelection from './CalendarSelection'
-import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions'
+import CalendarSelection from './CalendarSelection';
+import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions';
 
 function LoginButton(props){
     return (
@@ -47,7 +47,7 @@ class CalendarIntegration extends React.Component{
         this.handleShowCalClick = this.handleShowCalClick.bind(this);
         
         // state is internal
-        this.state = { calendarsAvailable: undefined, showCalendars: false }
+        this.state = { calendarsAvailable: undefined, showCalendars: false };
     }
 
     componentDidMount(){
@@ -69,7 +69,7 @@ class CalendarIntegration extends React.Component{
         
         // calendars shouldn't be available when user signs out
         if(prevProps.gapiSignedIn === true && this.props.gapiSignedIn === false){
-            this.setState({calendarsAvailable: undefined})
+            this.setState({calendarsAvailable: undefined});
         }
     }
 
@@ -93,7 +93,7 @@ class CalendarIntegration extends React.Component{
         
         console.log("clicked!")
         this.setState((state) => {
-            return {showCalendars: !state.showCalendars}
+            return {showCalendars: !state.showCalendars};
         });
     }
 
