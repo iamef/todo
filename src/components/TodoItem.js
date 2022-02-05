@@ -78,7 +78,7 @@ function TodoItem(props) {
             </TableCell>
 
             {/* title, dueDate, deadlineType, estTime, priority */}
-            {props.headCells.map((cellJson) =>
+            {props.headCells.slice(1, -1).map((cellJson) =>
                 cellJson.firebaseKey === undefined ?
                     null :
                     <TableCell

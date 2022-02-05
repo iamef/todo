@@ -38,7 +38,7 @@ class TodoList extends React.Component{
 
         this.headCells = [
             {
-              //   firebaseKey: 'folder/list',
+              firebaseKey: ['folder', 'list'],
               id: 'todoFolderList',
               numeric: false,
               disablePadding: true,
@@ -87,11 +87,12 @@ class TodoList extends React.Component{
               align: "right"
             },
             {
-                id: 'todoBuffer',
-                numeric: true,
-                disablePadding: false,
-                label: 'buffer',
-                align: "right"
+              firebaseKey: 'bufferHrs',
+              id: 'todoBuffer',
+              numeric: true,
+              disablePadding: false,
+              label: 'buffer',
+              align: "right"
             },
         ];
     }
