@@ -375,10 +375,10 @@ class TodoList extends React.Component{
             <Table sx={{ minWidth: 650 }} aria-label="simple table" padding="none" >
                 {/* // TODO add table based sorting! https://mui.com/components/tables/#sorting-amp-selecting */}
                 <TableHead>
-                    <TableRow key="header">
+                    <TableRow>
                         <TableCell></TableCell>
                         {this.headCells.map((cellJson) => 
-                            <TableCell align={cellJson.align}>
+                            <TableCell align={cellJson.align} key={cellJson.id}>
                                 <TableSortLabel
                                     active={this.orderBy[1] === cellJson.firebaseKey}
                                     onClick={() => {
@@ -395,7 +395,7 @@ class TodoList extends React.Component{
                 <TableBody>
                 {this.state.todoList ?
                     this.state.todoList.map((todo) => 
-                        <TodoItem todo={todo} headCells={this.headCells} todoFilePath={this.todoFilePath}/>
+                        <TodoItem todo={todo} headCells={this.headCells} todoFilePath={this.todoFilePath} key={todo.id}/>
                     )
                     :
                     null

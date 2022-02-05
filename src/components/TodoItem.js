@@ -85,6 +85,7 @@ function TodoItem(props) {
                         align={cellJson.align}
                         className={props.todo.complete ? "complete" : "pending"}
                         onDoubleClick={() => editTodo(props.todo, cellJson.firebaseKey, props.todoFilePath)}
+                        key={cellJson.firebaseKey + "_" + props.todo.id}
                     >
                         {props.todo[cellJson.firebaseKey]}
                     </TableCell>
@@ -95,6 +96,7 @@ function TodoItem(props) {
                 <TableCell
                     align="right"
                     className={props.todo.complete ? "complete" : "pending"}
+                    key={bufferType + "_" + props.todo.id}
                 >
                     {props.todo[bufferType] ? props.todo[bufferType] : "loading"}
                 </TableCell>
