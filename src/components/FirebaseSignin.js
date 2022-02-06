@@ -1,5 +1,5 @@
-import { Button } from '@mui/material';
-import React from 'react';
+import { Button } from "@mui/material";
+import React from "react";
 
 import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase";
 
@@ -7,25 +7,25 @@ import { firebaseSignInWithGoogle, firebaseSignOut } from "../firebase";
 function FirebaseSignInButton(props){
   return (
       <Button
-          variant='contained'
-          // id='ahhhhhhhhhhh'
+          variant="contained"
+          // id="ahhhhhhhhhhh"
           onClick={props.onClick}
       >
           Firebase Sign In
       </Button>
-  )
+  );
 }
 
 function FirebaseSignOutButton(props){
   return (
       <Button
-          variant='contained'
-          // id='ouuuutt'
+          variant="contained"
+          // id="ouuuutt"
           onClick={props.onClick}
       >
           Firebase Sign Out
       </Button>
-  )
+  );
 }
 
 class FirebaseSignin extends React.Component{
@@ -42,7 +42,7 @@ class FirebaseSignin extends React.Component{
       // debugger;
       firebaseSignInWithGoogle().then((result) => {
           console.log(result);
-      })
+      });
       // var result = await signInWithPopup(auth, provider)
       // console.log(result);
   }
@@ -50,7 +50,7 @@ class FirebaseSignin extends React.Component{
   signOut(){
       firebaseSignOut().then(() => {
           console.log("signed out");
-      })
+      });
   }
 
   

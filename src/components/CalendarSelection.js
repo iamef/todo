@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
-import { fs } from '../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { fs } from "../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 class CalendarSelection extends React.Component{
   constructor(props){
@@ -121,7 +122,13 @@ class CalendarSelection extends React.Component{
         Submit
       </Button>
       </>
-  )}
+    );
+  }
 }
+
+CalendarSelection.PropTypes = {
+  userFirebasePath: PropTypes.string,
+  calendars: PropTypes.arrayOf(PropTypes.string)
+};
 
 export default CalendarSelection;

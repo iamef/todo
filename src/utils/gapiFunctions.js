@@ -2,15 +2,15 @@
 export function loadGoogleScript(onLoadFunc){
   // I feel like adding the "function" is a typo but apparently it works?
   // console.log("Hello")
-  const id = 'google-js'
-  const src = "https://apis.google.com/js/api.js" // Quad used platform.js
+  const id = "google-js";
+  const src = "https://apis.google.com/js/api.js"; // Quad used platform.js
 
-  const firstJs = document.getElementsByTagName('script')[0] // because react
+  const firstJs = document.getElementsByTagName("script")[0]; // because react
 
   if(document.getElementById(id)) return;
   else{
-    const js = document.createElement('script');
-    js.id = id
+    const js = document.createElement("script");
+    js.id = id;
     js.src = src;
     js.onload = onLoadFunc; // fascinating
     firstJs.parentNode.insertBefore(js, firstJs);
@@ -40,7 +40,7 @@ var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 export function handleClientLoad(updateSigninCallback){
   if(window.gapi === undefined) return;
   
-  console.log("client load yay")
+  console.log("client load yay");
 
   window.gapi.load("client:auth2", () => {
     window.gapi.client.init({
@@ -63,7 +63,7 @@ export function handleClientLoad(updateSigninCallback){
     }, function(error) {
       console.log(JSON.stringify(error, null, 2));
     });
-  })
+  });
 }
 
 /**
@@ -88,8 +88,8 @@ export function gapiSignout(event) {
  */
 // function appendPre(message) {
 //   console.log(message)
-//   // var pre = document.getElementById('content');
-//   // var textContent = document.createTextNode(message + '\n');
+//   // var pre = document.getElementById("content");
+//   // var textContent = document.createTextNode(message + "\n");
 //   // pre.appendChild(textContent);
 // }
 
@@ -108,15 +108,15 @@ export function getCalendarList(calListCallback) {
   });
   
   // window.gapi.client.calendar.events.list({
-  //   'calendarId': 'primary',
-  //   'timeMin': (new Date()).toISOString(),
-  //   'showDeleted': false,
-  //   'singleEvents': true,
-  //   'maxResults': 10,
-  //   'orderBy': 'startTime'
+  //   "calendarId": "primary",
+  //   "timeMin": (new Date()).toISOString(),
+  //   "showDeleted": false,
+  //   "singleEvents": true,
+  //   "maxResults": 10,
+  //   "orderBy": "startTime"
   // }).then(function(response) {
   //   var events = response.result.items;
-  //   appendPre('Upcoming events:');
+  //   appendPre("Upcoming events:");
 
   //   if (events.length > 0) {
   //     for (var i = 0; i < events.length; i++) {
@@ -125,10 +125,10 @@ export function getCalendarList(calListCallback) {
   //       if (!when) {
   //         when = event.start.date;
   //       }
-  //       appendPre(event.summary + ' (' + when + ')')
+  //       appendPre(event.summary + " (" + when + ")")
   //     }
   //   } else {
-  //     appendPre('No upcoming events found.');
+  //     appendPre("No upcoming events found.");
   //   }
   // });
 }

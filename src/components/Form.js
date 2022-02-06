@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { auth, fs } from '../firebase';
+import { auth, fs } from "../firebase";
 
-import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup, Checkbox } from '@mui/material';
+import { RadioGroup, TextField, FormControlLabel, FormLabel, Radio, FormGroup, Checkbox } from "@mui/material";
 
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-// import { AddCircleRoundedIcon, AddCircleOutlineOutlinedIcon } from '@mui/icons-material'
-// import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+// import { AddCircleRoundedIcon, AddCircleOutlineOutlinedIcon } from "@mui/icons-material"
+// import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
 
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import { addDoc, collection } from 'firebase/firestore';
-import { parseDate, parseTime } from '../utils/todosFunctions';
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DateTimePicker from "@mui/lab/DateTimePicker";
+import { addDoc, collection } from "firebase/firestore";
+import { parseDate, parseTime } from "../utils/todosFunctions";
 
-// import * as chrono from 'chrono-node';
+// import * as chrono from "chrono-node";
 
 // Added more fields usinig this!
 // https://dev.to/jleewebdev/using-the-usestate-hook-and-working-with-forms-in-react-js-m6b
@@ -174,26 +174,26 @@ const Form = () => {
         <>
             <TextField
                     required
-                    variant='standard'
-                    label='Quick Add Todo'
-                    type='text'
+                    variant="standard"
+                    label="Quick Add Todo"
+                    type="text"
                     value={quickAdd.text}
                     onChange={(e) => parseQuickAdd(e)}
                     disabled={quickAdd.formModified}
-                    className='textfield'
-                    size='medium'
+                    className="textfield"
+                    size="medium"
                 />
 
-            <div className='form'>
+            <div className="form">
                 <TextField
                     required
-                    variant='standard'
-                    label='Add Todo'
-                    type='text'
+                    variant="standard"
+                    label="Add Todo"
+                    type="text"
                     value={formData.atitle}
-                    onChange={(e) => {setFormData({...formData, atitle: e.target.value}); setQuickAdd({...quickAdd, formModified: true})}}
-                    className='textfield'
-                    size='medium'
+                    onChange={(e) => {setFormData({...formData, atitle: e.target.value}); setQuickAdd({...quickAdd, formModified: true});}}
+                    className="textfield"
+                    size="medium"
                 />
                 <br/>
                 <br/>
@@ -213,22 +213,22 @@ const Form = () => {
                                 else
                                     setFormData({...formData, dueDate: e});
                                 
-                                setQuickAdd({...quickAdd, formModified: true})
+                                setQuickAdd({...quickAdd, formModified: true});
                             }}
-                            className='textfield'
-                            size='medium'
+                            className="textfield"
+                            size="medium"
                         />
                     </LocalizationProvider>
 
                     {/* <TextField
-                        variant='standard'
-                        label='Due Date'
-                        type='datetime-local'
+                        variant="standard"
+                        label="Due Date"
+                        type="datetime-local"
                         value={formData.dueDate}
                         defaultValue={new Date()}
                         onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
-                        className='textfield'
-                        size='medium'
+                        className="textfield"
+                        size="medium"
                     /> */}
 
                     <RadioGroup row>
@@ -251,14 +251,14 @@ const Form = () => {
                 </FormGroup>
                 
                 <TextField
-                    variant='standard'
-                    label='Estimated Hours'
+                    variant="standard"
+                    label="Estimated Hours"
                     helperText="How Long Will the Task Take You?"
-                    type='number'
+                    type="number"
                     value={formData.estTime}
                     onChange={(e) => setFormData({...formData, estTime: e.target.value})}
-                    className='textfield'
-                    size='medium'
+                    className="textfield"
+                    size="medium"
                 />
                 
                 
@@ -266,14 +266,14 @@ const Form = () => {
                 <br/>
                 
                 {/* <TextField
-                    variant='standard'
-                    label='Priority '
+                    variant="standard"
+                    label="Priority "
                     helperText="0-100 (0 is highest, 100 is lowest)"
-                    type='number'
+                    type="number"
                     value={formData.estTime}
                     onChange={(e) => setFormData({...formData, estTime: e.target.value})}
-                    className='textfield'
-                    size='medium'
+                    className="textfield"
+                    size="medium"
                 />
                 
                 <br/> */}
@@ -282,34 +282,34 @@ const Form = () => {
                 <FormLabel component="legend">Priority</FormLabel>  
                 <RadioGroup row>
                     <FormControlLabel 
-                        checked={formData.priority === 'tbd'}
+                        checked={formData.priority === "tbd"}
                         control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, priority: 'tbd'})}
+                        onChange={(e) => setFormData({...formData, priority: "tbd"})}
                         label="To Be Determined" />
                     {/* <FormControlLabel 
-                        checked={formData.priority === 'vlow'}
+                        checked={formData.priority === "vlow"}
                         control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, priority: 'vlow'})}
+                        onChange={(e) => setFormData({...formData, priority: "vlow"})}
                         label="Very Low" /> */}
                     <FormControlLabel 
-                        checked={formData.priority === 'low'}
+                        checked={formData.priority === "low"}
                         control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, priority: 'low'})}
+                        onChange={(e) => setFormData({...formData, priority: "low"})}
                         label="Low" />
                     <FormControlLabel 
-                        checked={formData.priority === 'medium'}
+                        checked={formData.priority === "medium"}
                         control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, priority: 'medium'})}
+                        onChange={(e) => setFormData({...formData, priority: "medium"})}
                         label="Medium" />
                     <FormControlLabel 
-                        checked={formData.priority === 'high'}
+                        checked={formData.priority === "high"}
                         control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, priority: 'high'})}
+                        onChange={(e) => setFormData({...formData, priority: "high"})}
                         label="High" />
                     {/* <FormControlLabel 
-                        checked={formData.priority === 'vHIGH'}
+                        checked={formData.priority === "vHIGH"}
                         control={<Radio />} 
-                        onChange={(e) => setFormData({...formData, priority: 'vHIGH'})}
+                        onChange={(e) => setFormData({...formData, priority: "vHIGH"})}
                         label="Very high" /> */}
                 </RadioGroup>
                 
@@ -329,10 +329,10 @@ const Form = () => {
                         value={formData.endRecurring}
                         label="End Recurring"
                         onChange={(e) => {
-                            setFormData({...formData, endRecurring: e})
+                            setFormData({...formData, endRecurring: e});
                         }}
-                        className='textfield'
-                        size='medium'
+                        className="textfield"
+                        size="medium"
                     />
                     </LocalizationProvider>
                 
@@ -340,39 +340,39 @@ const Form = () => {
                 
                 <TextField 
                     required
-                    variant='standard'
+                    variant="standard"
                     label="folder"
                     value={formData.folder}
                     onChange={(e) => setFormData({...formData, folder: e.target.value})}
-                    type='text'
+                    type="text"
                 />
 
                 <TextField 
                     required
-                    variant='standard'
+                    variant="standard"
                     label="list name"
                     value={formData.list}
                     onChange={(e) => setFormData({...formData, list: e.target.value})}
-                    type='text'
+                    type="text"
                 />
 
-                <div className='add'>
+                <div className="add">
                     {
-                        formData.atitle === '' ?
+                        formData.atitle === "" ?
                             <AddCircleOutlineIcon
-                                fontSize='large'
-                                className='icon'
+                                fontSize="large"
+                                className="icon"
                             />
                             :
                             <AddCircleIcon
                                 onClick={createTodo}
-                                fontSize='large'
-                                className='icon'
+                                fontSize="large"
+                                className="icon"
                             />
                     }
                 </div>
             </div>
         </>
     );
-}
+};
 export default Form;

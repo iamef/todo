@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 import { onAuthStateChanged } from "firebase/auth";
 
-import './App.css';
-import TodoApp from './components/TodoApp'
-import CalendarIntegration from './components/CalendarIntegration';
-import { loadGoogleScript, handleClientLoad } from './utils/gapiFunctions';
-import { auth } from './firebase';
-import FirebaseSignin from './components/FirebaseSignin';
-// import { getTodos } from './utils/calculateOvershoot';
+import "./App.css";
+import TodoApp from "./components/TodoApp";
+import CalendarIntegration from "./components/CalendarIntegration";
+import { loadGoogleScript, handleClientLoad } from "./utils/gapiFunctions";
+import { auth } from "./firebase";
+import FirebaseSignin from "./components/FirebaseSignin";
+import Sidebar from "./components/Sidebar";
+// import { getTodos } from "./utils/calculateOvershoot";
 
 function App() {
   
@@ -29,12 +30,12 @@ function App() {
   const [firebaseState, setFirebaseState] = useState({  
     firebaseSignedIn: null,
     userFilePath: "users/" + null
-  })
+  });
 
   // useEffect is called after React updates the DOM
   // effect to load gapi
   useEffect(() => {
-    console.log("gapi useEffect")
+    console.log("gapi useEffect");
     if(!gapiState.gapiLoaded){
       loadGoogleScript(() => {
         setGapiState({...gapiState, gapiLoaded: true});    
@@ -53,19 +54,19 @@ function App() {
 
   // effect for firebase login state changes
   useEffect(() => {
-    console.log("firebase useEffect")
+    console.log("firebase useEffect");
     onAuthStateChanged(auth, (user) => {
       console.log(user);
       if(firebaseState.firebaseSignedIn !== (user !== null)){
         // TODO check if firebase is even online at all
-        console.log("fsignin status actually changed", firebaseState.userFilePath)
+        console.log("fsignin status actually changed", firebaseState.userFilePath);
         
         // TODO TEST IF THIS ACTUALLY WORKS
         console.log(firebaseState);
-        console.log({...firebaseState, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)})
-        setFirebaseState({...firebaseState, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)})
+        console.log({...firebaseState, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)});
+        setFirebaseState({...firebaseState, firebaseSignedIn: (user !== null), userFilePath: "users/" + (user ? user.uid : null)});
       }
-    })
+    });
 
   }, 
   // [] necessary because this would run after every render (bad)

@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import { fs } from '../firebase';
+import { fs } from "../firebase";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
-import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button, TableSortLabel } from '@mui/material';
-import { calculateBuffer, todosDateTimeParse } from '../utils/todosFunctions';
-import { collection, doc, getDoc, onSnapshot, query, setDoc } from 'firebase/firestore';
-import TodoItem from './TodoItem';
+import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button, TableSortLabel } from "@mui/material";
+import { calculateBuffer, todosDateTimeParse } from "../utils/todosFunctions";
+import { collection, doc, getDoc, onSnapshot, query, setDoc } from "firebase/firestore";
+import TodoItem from "./TodoItem";
 
 class TodoList extends React.Component{
     constructor(props){
@@ -38,60 +38,60 @@ class TodoList extends React.Component{
 
         this.headCells = [
             {
-              firebaseKey: ['folder', 'list'],
-              id: 'todoFolderList',
+              firebaseKey: ["folder", "list"],
+              id: "todoFolderList",
               numeric: false,
               disablePadding: true,
-              label: 'folder/list',
+              label: "folder/list",
               align: "left"
 
             },
             {
-              firebaseKey: 'atitle',
-              id: 'todoTitle',
+              firebaseKey: "atitle",
+              id: "todoTitle",
               numeric: false,
               disablePadding: true,
-              label: 'title',
+              label: "title",
               align: "left"
             },
             {
-              firebaseKey: 'dueDate',
-              id: 'todoDueDate',
+              firebaseKey: "dueDate",
+              id: "todoDueDate",
               numeric: false,
               disablePadding: false,
-              label: 'dueDate',
+              label: "dueDate",
               align: "right"
             },
             {
-              firebaseKey: 'deadlineType',
-              id: 'todoDeadlineType',
+              firebaseKey: "deadlineType",
+              id: "todoDeadlineType",
               numeric: true,
               disablePadding: false,
-              label: 'dType',
+              label: "dType",
               align: "right"
             },
             {
-              firebaseKey: 'estTime',
-              id: 'todoEstimatedTime',
+              firebaseKey: "estTime",
+              id: "todoEstimatedTime",
               numeric: true,
               disablePadding: false,
-              label: 'eT',
+              label: "eT",
               align: "right"
             },
             {
-              firebaseKey: 'priority',
-              id: 'todoPriority',
+              firebaseKey: "priority",
+              id: "todoPriority",
               numeric: false,
               disablePadding: false,
-              label: 'priority',
+              label: "priority",
               align: "right"
             },
             {
-              firebaseKey: 'bufferHrs',
-              id: 'todoBuffer',
+              firebaseKey: "bufferHrs",
+              id: "todoBuffer",
               numeric: true,
               disablePadding: false,
-              label: 'buffer',
+              label: "buffer",
               align: "right"
             },
         ];
@@ -108,7 +108,7 @@ class TodoList extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        console.log("Todolist update", prevProps, this.props, prevState, this.state)
+        console.log("Todolist update", prevProps, this.props, prevState, this.state);
         
         this.todoFilePath = this.props.userFirebasePath +  "/Todos";
         
@@ -121,14 +121,14 @@ class TodoList extends React.Component{
         if(this.props.firebaseSignedIn !== null){
             // if you just signed into or out of FIREBASE
             if(prevProps.firebaseSignedIn !== this.props.firebaseSignedIn){
-                this.initializeTodolist()
+                this.initializeTodolist();
             // if you just signed into GCAL
             }else if(this.props.gapiSignedIn === true){
                 if(prevProps.gapiSignedIn !== this.props.gapiSignedIn || prevState.hardDeadlineOnlyBuffer !== this.state.hardDeadlineOnlyBuffer){
                     if(Array.isArray(this.state.todoList)){
                         this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
                             this.setState({todoList: todoListWithBuffers});
-                        })
+                        });
                     }
                 }
 
@@ -160,7 +160,7 @@ class TodoList extends React.Component{
             var itemRemoved = false;
             // check what kinds of changes were made to the firebase todolist
             
-            console.log(querySnapshot.size, querySnapshot.docs.length, querySnapshot.docChanges().length)
+            console.log(querySnapshot.size, querySnapshot.docs.length, querySnapshot.docChanges().length);
             
             querySnapshot.docChanges().forEach((change) => {
                 if (change.type === "added") {
@@ -169,8 +169,8 @@ class TodoList extends React.Component{
                 }
                 if (change.type === "modified") {
                     if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.todoList)){
-                        var found = this.state.todoList.find((todo) => todo.id === change.doc.id)
-                        var changedData = change.doc.data()
+                        var found = this.state.todoList.find((todo) => todo.id === change.doc.id);
+                        var changedData = change.doc.data();
                         
                         if(found === undefined || changedData === undefined){
                             debugger;
@@ -198,7 +198,7 @@ class TodoList extends React.Component{
             });
 
             if(itemAdded || itemRemoved || updateItemModified){
-                var fsTodoList = [] // when a list is empty you want it update the firestore to empty
+                var fsTodoList = []; // when a list is empty you want it update the firestore to empty
                 
                 // console.log(querySnapshot);
                 querySnapshot.forEach((qdoc) => {
@@ -211,7 +211,7 @@ class TodoList extends React.Component{
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
                         todoListWithBuffers.sort(this.compareForMultipleProperties(...this.orderBy));
                         this.setState({todoList: todoListWithBuffers});
-                    })
+                    });
                 }else{
                     // TODO reset buffer if you aren't signed in
                     for(var todo of fsTodoList){
@@ -233,50 +233,50 @@ class TodoList extends React.Component{
         getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
             // console.log(docSnap.data().calendars)
 
-            var calendars = docSnap.data().calendars
-            console.log(calendars)
+            var calendars = docSnap.data().calendars;
+            console.log(calendars);
 
             if(calendars === undefined){
                 for(var todo of todoList){
-                  todo.bufferHrs = "select calendars"
+                  todo.bufferHrs = "select calendars";
                 }
-                callback(todoList)
+                callback(todoList);
             }else{
                 calculateBuffer(todoList, calendars, this.state.hardDeadlineOnlyBuffer).then((buffers) => {
                     for(var todo of todoList){
-                        var bufferMS = buffers[todo.id]["bufferMS"]
+                        var bufferMS = buffers[todo.id]["bufferMS"];
                         
                         
-                        if(typeof(bufferMS) === 'number'){
-                            todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
+                        if(typeof(bufferMS) === "number"){
+                            todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2");
                         }else{
-                            todo.bufferHrs = bufferMS
+                            todo.bufferHrs = bufferMS;
                         }
                         
                         for(var priority of ["tbd", "medium", "high"]){
                             // debugger;
                             
-                            bufferMS = buffers[todo.id]["bufferMS_" + priority]
-                            if(typeof(bufferMS) === 'number'){
-                                todo["bufferHrs_" + priority] = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2")
-                            }else if(typeof(bufferMS) === 'undefined'){
-                                todo["bufferHrs_" + priority] = "--"
+                            bufferMS = buffers[todo.id]["bufferMS_" + priority];
+                            if(typeof(bufferMS) === "number"){
+                                todo["bufferHrs_" + priority] = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2");
+                            }else if(typeof(bufferMS) === "undefined"){
+                                todo["bufferHrs_" + priority] = "--";
                             }else{
-                                todo["bufferHrs_" + priority] = bufferMS
+                                todo["bufferHrs_" + priority] = bufferMS;
                             }
 
                         }
 
-                        setDoc(doc(fs, this.todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} )
+                        setDoc(doc(fs, this.todoFilePath + "/" + todo.id), {...todo, bufferData: buffers[todo.id]} );
 
                         // todo.bufferData = buffers[todo.id]
                     }
                     
-                    callback(todoList)
+                    callback(todoList);
                 });
             }
 
-        })
+        });
     }
     
     // argsTuple in the form (whatever to sort by, isAscending)
@@ -289,24 +289,24 @@ class TodoList extends React.Component{
     compareForMultipleProperties(...sortOrder){
         
         function singlePropertyCompare(item1, item2, type, ascending=true){
-            if(type === 'dueDate'){
+            if(type === "dueDate"){
                 var ret;
     
-                if(item1 === '' && item2 === ''){
-                    ret = 0
-                }else if(item1 === ''){
-                    ret = 1  // this means item1 - item2 is positive
-                }else if(item2 === ''){
-                    ret = -1 // this means item1 - item2 is negative
+                if(item1 === "" && item2 === ""){
+                    ret = 0;
+                }else if(item1 === ""){
+                    ret = 1;  // this means item1 - item2 is positive
+                }else if(item2 === ""){
+                    ret = -1; // this means item1 - item2 is negative
                 }
-                ret = todosDateTimeParse(item1) - todosDateTimeParse(item2)
+                ret = todosDateTimeParse(item1) - todosDateTimeParse(item2);
     
-                return (ascending ? ret : -1*ret)
+                return (ascending ? ret : -1*ret);
             }else if(type === "priority"){
-                var priorityLevels = ["low", "tbd", "medium", "high"]
+                var priorityLevels = ["low", "tbd", "medium", "high"];
                 
                 // higher priorities should appear first
-                return -1* (priorityLevels.indexOf(item1) - priorityLevels.indexOf(item2)) 
+                return -1* (priorityLevels.indexOf(item1) - priorityLevels.indexOf(item2));
             }
     
             if (item1 === item2) return 0;
@@ -337,7 +337,7 @@ class TodoList extends React.Component{
             }
             
             return 0;
-        }
+        };
     }
     
     sortedArray(arr, ...sortOrder){
@@ -383,8 +383,8 @@ class TodoList extends React.Component{
                                     active={this.orderBy[1] === cellJson.firebaseKey}
                                     onClick={() => {
                                         this.setState({todoList: this.sortedArray(this.state.todoList, "complete", cellJson.firebaseKey)});
-                                        this.orderBy.splice(1,0,cellJson.firebaseKey)
-                                        this.orderBy = [...new Set(this.orderBy)]
+                                        this.orderBy.splice(1,0,cellJson.firebaseKey);
+                                        this.orderBy = [...new Set(this.orderBy)];
                                         console.log("clicked", cellJson.label, this.orderBy);
                                     }}
                                 >{cellJson.label}</TableSortLabel>

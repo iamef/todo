@@ -1,47 +1,64 @@
-import { Button } from '@mui/material';
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 
-import CalendarSelection from './CalendarSelection';
-import { gapiSignin, gapiSignout, getCalendarList } from '../utils/gapiFunctions';
+import CalendarSelection from "./CalendarSelection";
+import { gapiSignin, gapiSignout, getCalendarList } from "../utils/gapiFunctions";
+
+import { Button } from "@mui/material";
 
 function LoginButton(props){
     return (
         <Button
             variant='contained'
             id='authorize_button'
+            // eslint-disable-next-line react/prop-types
             onClick={props.onClick}
         >
             Connect to GCAL
         </Button>
-    )
+    );
 }
+
+LoginButton.PropTypes = {
+    onClick: PropTypes.func
+};
 
 function SignoutButton(props){
     return (    
         <Button
             variant='contained'
             id='signout_button'
+            // eslint-disable-next-line react/prop-types
             onClick={props.onClick}
         >
             Disconnect Google Calendar
         </Button>
-    )
+    );
 
 }
+
+SignoutButton.PropTypes = {
+    onClick: PropTypes.func
+};
 
 function ShowCalendarButton(props){
     return (
         <Button
+            // eslint-disable-next-line react/prop-types
             onClick={props.onClick}
         >
             Show / Hide Calendar Checkboxes
         </Button>
-    )
+    );
 }
+
+ShowCalendarButton.PropTypes = {
+    onClick: PropTypes.func
+};
 
 class CalendarIntegration extends React.Component{
     constructor(props){
-        super(props) // props are external and are passed into the class
+        super(props); // props are external and are passed into the class
         // console.log("Cal Integration", props)
         
         this.handleShowCalClick = this.handleShowCalClick.bind(this);
@@ -74,11 +91,11 @@ class CalendarIntegration extends React.Component{
     }
 
     handleAuthClick(){
-        gapiSignin()
+        gapiSignin();
     }
 
     handleSignoutClick(){
-        gapiSignout()
+        gapiSignout();
     }
 
     // the show cal checkboxes button
@@ -88,10 +105,10 @@ class CalendarIntegration extends React.Component{
         if(show){
             getCalendarList((cals) => {
                 this.setState({calendarsAvailable: cals});
-            })
+            });
         }
         
-        console.log("clicked!")
+        console.log("clicked!");
         this.setState((state) => {
             return {showCalendars: !state.showCalendars};
         });
@@ -109,7 +126,7 @@ class CalendarIntegration extends React.Component{
                     userFirebasePath = {this.props.userFirebasePath}
                 />
                 </>
-                )
+                );
             else{
                 return (
                 <>
@@ -117,14 +134,21 @@ class CalendarIntegration extends React.Component{
                 <ShowCalendarButton onClick={this.handleShowCalClick}></ShowCalendarButton>
                 {/* <CalendarSelection calendars = {this.state.calendarsAvailable}/> */}
                 </>
-                )
+                );
             }
         }else if(this.props.gapiSignedIn === null){
             return null;
         }
         
-        return <LoginButton onClick={this.handleAuthClick} />
+        return <LoginButton onClick={this.handleAuthClick} />;
     }
 }
+
+CalendarIntegration.propTypes = {
+    gapiLoaded: PropTypes.bool,
+    gapiSignedIn: PropTypes.bool, 
+    userFirebasePath: PropTypes.string
+    // PropTypes.oneOfType([ ])
+};
 
 export default CalendarIntegration;
