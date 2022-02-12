@@ -78,8 +78,17 @@ function App() {
 
   return (
     <>
-      <div className='app'>
-        <FirebaseSignin 
+      <div className="app">
+        <Sidebar/>
+        
+        <TodoApp 
+          gapiLoaded={gapiState.gapiLoaded} 
+          gapiSignedIn={gapiState.gapiSignedIn}
+          firebaseSignedIn={firebaseState.firebaseSignedIn}
+          userFirebasePath={firebaseState.userFilePath}
+        />
+
+        <FirebaseSignin
           firebaseSignedIn={firebaseState.firebaseSignedIn}
         />
         <CalendarIntegration 
@@ -87,16 +96,12 @@ function App() {
           gapiSignedIn={gapiState.gapiSignedIn}
           userFirebasePath={firebaseState.userFilePath}
         />
-        <TodoApp 
-          gapiLoaded={gapiState.gapiLoaded} 
-          gapiSignedIn={gapiState.gapiSignedIn}
-          firebaseSignedIn={firebaseState.firebaseSignedIn}
-          userFirebasePath={firebaseState.userFilePath}
-        />
+
+        
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+      onreadystatechange="if (this.readyState === "complete") this.onload()">
     </script> */}
     </>
   );
