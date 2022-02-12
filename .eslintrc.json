@@ -1,22 +1,31 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
+    // "env": {
+    //     "browser": true,
+    //     "es2021": true
+    // },
+    // "extends": [
+    //     "eslint:recommended",
+    //     "plugin:react/recommended"
+    // ],
+    
+    // "parser": "@babel/eslint-parser",
+    // parserOptions leads to 
+    // Parsing error: ImportDeclaration should appear when the mode is ES6 and in the module context
+    // however
+    // leaving it off makes it throw errors on modules and jsx
     "parserOptions": {
         "ecmaFeatures": {
-            "jsx": true
+            "jsx": true,
+            "modules": true
         },
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "react"
-    ],
+    // "plugins": [
+    //     "react"
+    // ],
+    
+    // having only the rules uncommented out works
     "rules": {
         // "indent": [
         //     "error",
