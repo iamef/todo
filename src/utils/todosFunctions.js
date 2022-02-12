@@ -191,6 +191,75 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   return buffersById;
 }
 
+// argsTuple in the form (whatever to sort by, isAscending)
+// javascript technically doesn't have tuples...
+// returns a comparable function given the arguments
+// creds: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
+// TODO move this to TodoLIst functions at some point
+// TODO what if I just had a stable sorting function. Bruh...
+// actually according to mozilla.org, it is stable. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+export function compareForMultipleProperties(...sortOrder){
+    
+  function singlePropertyCompare(item1, item2, type, ascending=true){
+      if(type === "dueDate"){
+          var ret;
+
+          if(item1 === "" && item2 === ""){
+              ret = 0;
+          }else if(item1 === ""){
+              ret = 1;  // this means item1 - item2 is positive
+          }else if(item2 === ""){
+              ret = -1; // this means item1 - item2 is negative
+          }
+          ret = todosDateTimeParse(item1) - todosDateTimeParse(item2);
+
+          return (ascending ? ret : -1*ret);
+      }else if(type === "priority"){
+          var priorityLevels = ["low", "tbd", "medium", "high"];
+          
+          // higher priorities should appear first
+          return -1* (priorityLevels.indexOf(item1) - priorityLevels.indexOf(item2));
+      }
+
+      if (item1 === item2) return 0;
+      return item1 < item2 ? -1 : 1;
+  }
+  
+  return function(item1, item2){
+      
+      // console.log(argsTuple)
+
+      for(var arg of sortOrder){
+          // console.log(arg)
+          
+          var type, sortAscending;
+          if(Array.isArray(arg)){
+              type = arg[0];
+              sortAscending = arg[1];
+          }else{
+              type = arg;
+              sortAscending = true;
+          }
+
+          var res = singlePropertyCompare(item1[type], item2[type], type, sortAscending);
+          
+          // console.log(item1[type], item2[type], type, sortAscending, res)
+
+          if(res !== 0) return res;
+      }
+      
+      return 0;
+  };
+}
+
+export function sortedArray(arr, ...sortOrder){
+  // debugger;
+  console.log(sortOrder);
+  let result = [...arr];
+  debugger;
+  result.sort(this.compareForMultipleProperties(...sortOrder));
+  return result;
+}
 
 /** returns JSON in format
 // {

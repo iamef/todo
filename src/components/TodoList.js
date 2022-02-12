@@ -5,8 +5,8 @@ import { fs } from "../firebase";
 import { motion } from "framer-motion";
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button, TableSortLabel } from "@mui/material";
-import { calculateBuffer, todosDateTimeParse } from "../utils/todosFunctions";
-import { collection, doc, getDoc, onSnapshot, query, setDoc } from "firebase/firestore";
+import { calculateBuffer, todosDateTimeParse, compareForMultipleProperties, sortedArray } from "../utils/todosFunctions";
+import { arrayUnion, collection, doc, getDoc, onSnapshot, query, setDoc } from "firebase/firestore";
 import TodoItem from "./TodoItem";
 
 class TodoList extends React.Component{
@@ -154,7 +154,8 @@ class TodoList extends React.Component{
         
         // console.log(fsTodoQuery);
 
-        this.unsubscribeFirebaseTodolist = onSnapshot(fsTodoQuery, { includeMetadataChanges: true } ,(querySnapshot) => {
+        //runs whenever the todolist on Firebase gets updated
+        this.unsubscribeFirebaseTodolist = onSnapshot(fsTodoQuery, { includeMetadataChanges: true }, (querySnapshot) => {
             var itemAdded = false;
             var updateItemModified = false;
             var itemRemoved = false;
@@ -162,6 +163,7 @@ class TodoList extends React.Component{
             
             console.log(querySnapshot.size, querySnapshot.docs.length, querySnapshot.docChanges().length);
             
+            // log what kinds of changes happened
             querySnapshot.docChanges().forEach((change) => {
                 if (change.type === "added") {
                     itemAdded = true;
@@ -197,19 +199,19 @@ class TodoList extends React.Component{
                 }
             });
 
+            // avoid infinite updates due to recalculating buffer time
             if(itemAdded || itemRemoved || updateItemModified){
                 var fsTodoList = []; // when a list is empty you want it update the firestore to empty
                 
-                // console.log(querySnapshot);
                 querySnapshot.forEach((qdoc) => {
                     console.log(qdoc.id, " => ", qdoc.data());
                     fsTodoList.push({id: qdoc.id, ...qdoc.data()});
                 });
 
-                // TODO implement calendar stuff later
+                // recalculate buffers
                 if(this.props.gapiSignedIn === true){
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
-                        todoListWithBuffers.sort(this.compareForMultipleProperties(...this.orderBy));
+                        todoListWithBuffers.sort(compareForMultipleProperties(...this.orderBy));
                         this.setState({todoList: todoListWithBuffers});
                     });
                 }else{
@@ -217,12 +219,10 @@ class TodoList extends React.Component{
                     for(var todo of fsTodoList){
                         todo.bufferHrs = "Log Into GCAL";
                     }
-                    fsTodoList.sort(this.compareForMultipleProperties(...this.orderBy));
+                    fsTodoList.sort(compareForMultipleProperties(...this.orderBy));
                     this.setState({todoList: fsTodoList});
                 }
 
-                // this.setState({todoList: fsTodoList});
-                // console.log("todoList", todoList)
             }
 
         });
@@ -279,75 +279,6 @@ class TodoList extends React.Component{
         });
     }
     
-    // argsTuple in the form (whatever to sort by, isAscending)
-    // javascript technically doesn't have tuples...
-    // returns a comparable function given the arguments
-    // creds: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
-    // TODO move this to TodoLIst functions at some point
-    // TODO what if I just had a stable sorting function. Bruh...
-    // actually according to mozilla.org, it is stable. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-    compareForMultipleProperties(...sortOrder){
-        
-        function singlePropertyCompare(item1, item2, type, ascending=true){
-            if(type === "dueDate"){
-                var ret;
-    
-                if(item1 === "" && item2 === ""){
-                    ret = 0;
-                }else if(item1 === ""){
-                    ret = 1;  // this means item1 - item2 is positive
-                }else if(item2 === ""){
-                    ret = -1; // this means item1 - item2 is negative
-                }
-                ret = todosDateTimeParse(item1) - todosDateTimeParse(item2);
-    
-                return (ascending ? ret : -1*ret);
-            }else if(type === "priority"){
-                var priorityLevels = ["low", "tbd", "medium", "high"];
-                
-                // higher priorities should appear first
-                return -1* (priorityLevels.indexOf(item1) - priorityLevels.indexOf(item2));
-            }
-    
-            if (item1 === item2) return 0;
-            return item1 < item2 ? -1 : 1;
-        }
-        
-        return function(item1, item2){
-            
-            // console.log(argsTuple)
-
-            for(var arg of sortOrder){
-                // console.log(arg)
-                
-                var type, sortAscending;
-                if(Array.isArray(arg)){
-                    type = arg[0];
-                    sortAscending = arg[1];
-                }else{
-                    type = arg;
-                    sortAscending = true;
-                }
-
-                var res = singlePropertyCompare(item1[type], item2[type], type, sortAscending);
-                
-                // console.log(item1[type], item2[type], type, sortAscending, res)
-
-                if(res !== 0) return res;
-            }
-            
-            return 0;
-        };
-    }
-    
-    sortedArray(arr, ...sortOrder){
-        // debugger;
-        console.log(sortOrder);
-        let result = [...arr];
-        result.sort(this.compareForMultipleProperties(...sortOrder));
-        return result;
-    }
-    
     render(){
         return (
             <motion.div>
@@ -382,7 +313,7 @@ class TodoList extends React.Component{
                                 <TableSortLabel
                                     active={this.orderBy[1] === cellJson.firebaseKey}
                                     onClick={() => {
-                                        this.setState({todoList: this.sortedArray(this.state.todoList, "complete", cellJson.firebaseKey)});
+                                        this.setState({todoList: sortedArray(this.state.todoList, "complete", cellJson.firebaseKey)});
                                         this.orderBy.splice(1,0,cellJson.firebaseKey);
                                         this.orderBy = [...new Set(this.orderBy)];
                                         console.log("clicked", cellJson.label, this.orderBy);

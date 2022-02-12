@@ -11,7 +11,6 @@ function LoginButton(props){
         <Button
             variant='contained'
             id='authorize_button'
-            // eslint-disable-next-line react/prop-types
             onClick={props.onClick}
         >
             Connect to GCAL
@@ -28,7 +27,6 @@ function SignoutButton(props){
         <Button
             variant='contained'
             id='signout_button'
-            // eslint-disable-next-line react/prop-types
             onClick={props.onClick}
         >
             Disconnect Google Calendar
@@ -44,7 +42,6 @@ SignoutButton.PropTypes = {
 function ShowCalendarButton(props){
     return (
         <Button
-            // eslint-disable-next-line react/prop-types
             onClick={props.onClick}
         >
             Show / Hide Calendar Checkboxes
