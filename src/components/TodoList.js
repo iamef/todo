@@ -164,9 +164,17 @@ class TodoList extends React.Component{
         this.unsubscribeFirebaseTodolist();
         
         var fsTodoRef = collection(fs, this.todoFilePath);
-
-        // var fsTodoQuery = query(fsTodoRef, orderBy("folder"), orderBy("list"));
-        var fsTodoQuery = query(fsTodoRef);
+        var fsTodoQuery;
+        
+        if(filter.folder !== undefined){
+            if(filter.list !== undefined){
+                fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder), where("list", "==", filter.list));
+            }else{
+                fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder));
+            }
+        }else{
+            fsTodoQuery = query(fsTodoRef);
+        }
         
         // console.log(fsTodoQuery);
 
