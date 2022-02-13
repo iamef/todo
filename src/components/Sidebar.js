@@ -1,15 +1,26 @@
 import React from "react";
 import { SidebarData } from "./SidebarData";
+import { eventBus } from "../utils/eventBus";
 
 function Sidebar(){
-    return <div className="sidebar">
+    function createFilterFolderEvent(folderName){
+        eventBus.dispatch("filterFolder", {folder: folderName});
+    }
+
+    function createFilterListEvent(folderName, listName){
+        eventBus.dispatch("filterList", {folder: folderName, list: listName});
+    }
+    
+    
+    return (
+    <div className="sidebar">
         <ul className="sidebarList">
             {SidebarData.map((folderval,folderkey) => 
                 <li key={folderkey} className="row folder">
                     {/* <div>{folderval.icon}</div> */}
                     <div 
                         key="title"
-                        
+                        onClick={() => createFilterFolderEvent(folderval.title)}
                     >
                         {folderval.title}
                     </div>
@@ -19,6 +30,7 @@ function Sidebar(){
                             <li 
                                 key={listKey} 
                                 className="row list"
+                                onClick={() => createFilterListEvent(folderval.title, listVal)}
                                 >
                                 {listVal}
                             </li>
@@ -26,9 +38,10 @@ function Sidebar(){
                     </ul>
                 </li>
 
-)}
+            )}
         </ul>
-    </div>;
+    </div>
+    );
 }
 
 export default Sidebar;
