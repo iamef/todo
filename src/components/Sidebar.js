@@ -1,23 +1,32 @@
 import React from "react";
-// import "../App.css";
 import { SidebarData } from "./SidebarData";
 
 function Sidebar(){
     return <div className="sidebar">
         <ul className="sidebarList">
-            <li>Happy</li>
-            <li>Happy</li>
-            <li>Happy</li>
-            <li>Happy</li>
-            <li>Happy</li>
-            <li>Happy</li>
+            {SidebarData.map((folderval,folderkey) => 
+                <li key={folderkey} className="row folder">
+                    {/* <div>{folderval.icon}</div> */}
+                    <div 
+                        key="title"
+                        
+                    >
+                        {folderval.title}
+                    </div>
 
-            {SidebarData.map((val,key) => 
-                <li key={key} className="sidebarRow">
-                    <div>{val.icon}</div>
-                    <div>{val.title}</div>
+                    <ul className="folderList" key="listInFolder">
+                        {folderval.lists.map((listVal,listKey) => 
+                            <li 
+                                key={listKey} 
+                                className="row list"
+                                >
+                                {listVal}
+                            </li>
+                        )}
+                    </ul>
                 </li>
-            )}
+
+)}
         </ul>
     </div>;
 }
