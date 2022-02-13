@@ -126,7 +126,7 @@ class CalendarSelection extends React.Component{
   }
 }
 
-CalendarSelection.PropTypes = {
+CalendarSelection.propTypes = {
   userFirebasePath: PropTypes.string,
   calendars: PropTypes.arrayOf(PropTypes.string)
 };

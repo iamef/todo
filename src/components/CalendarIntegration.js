@@ -18,7 +18,7 @@ function LoginButton(props){
     );
 }
 
-LoginButton.PropTypes = {
+LoginButton.propTypes = {
     onClick: PropTypes.func
 };
 
@@ -35,7 +35,7 @@ function SignoutButton(props){
 
 }
 
-SignoutButton.PropTypes = {
+SignoutButton.propTypes = {
     onClick: PropTypes.func
 };
 
@@ -49,7 +49,7 @@ function ShowCalendarButton(props){
     );
 }
 
-ShowCalendarButton.PropTypes = {
+ShowCalendarButton.propTypes = {
     onClick: PropTypes.func
 };
 
