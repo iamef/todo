@@ -15,6 +15,15 @@ function Sidebar(){
     return (
     <div className="sidebar">
         <ul className="sidebarList">
+            <li key="allfolders" className="row folder">
+                <div 
+                    key="title"
+                    onClick={() => eventBus.dispatch("filterFolder", {})}
+                >
+                All Tasks
+            </div>
+            </li>
+            
             {SidebarData.map((folderval,folderkey) => 
                 <li key={folderkey} className="row folder">
                     {/* <div>{folderval.icon}</div> */}
