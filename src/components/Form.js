@@ -80,7 +80,13 @@ const Form = () => {
             }
         }
         
-        setFormData({...intialFormState, dueDate: todo.dueDate});
+        setFormData({
+            ...formData,
+            atitle: "",
+            deadlineType: "noDeadline",
+            recurring: false,
+            endRecurring: null,
+        });
 
         setQuickAdd({text: "", formModified: false});
     };
@@ -116,7 +122,7 @@ const Form = () => {
                         currQAStr.substring(Math.max(dateParseData.endIndex, timeParseData.endIndex));
 
             }else{
-                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day);
+                dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day, 23, 59);
                 setFormData({...formData, dueDate: dueDate});
                 console.log("set form data", dueDate);
 
