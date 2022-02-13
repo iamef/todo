@@ -5,9 +5,10 @@ import { fs } from "../firebase";
 import { motion } from "framer-motion";
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button, TableSortLabel } from "@mui/material";
-import { calculateBuffer, todosDateTimeParse, compareForMultipleProperties, sortedArray } from "../utils/todosFunctions";
-import { arrayUnion, collection, doc, getDoc, onSnapshot, query, setDoc } from "firebase/firestore";
+import { calculateBuffer, compareForMultipleProperties, sortedArray } from "../utils/todosFunctions";
+import { collection, doc, getDoc, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import TodoItem from "./TodoItem";
+import { eventBus } from "../utils/eventBus";
 
 class TodoList extends React.Component{
     constructor(props){
@@ -105,6 +106,16 @@ class TodoList extends React.Component{
         }else{
             console.log("Firebase login is null");
         }
+
+        eventBus.on("filterFolder", (data) =>{
+            this.initializeTodolist(data);
+            // this.setState({folderFilter: data.folder});
+        });
+
+        eventBus.on("filterList", (data) =>{
+            this.initializeTodolist(data);
+            // this.setState({folderFilter: data.folder, listFilter: data.list});
+        });
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
@@ -144,7 +155,12 @@ class TodoList extends React.Component{
         }
     }
 
-    initializeTodolist(){
+    componentWillUnmount() {
+        eventBus.remove("filterFolder");
+        eventBus.remove("filterList");
+    }    
+
+    initializeTodolist(filter={}){
         this.unsubscribeFirebaseTodolist();
         
         var fsTodoRef = collection(fs, this.todoFilePath);
