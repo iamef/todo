@@ -50,6 +50,7 @@ function App() {
   // having a functional update setGapiState(g => ...)
   // doesn't seem to work 
   // since setGapiState is called twice in the useEffect
+  // eslint-disable-next-line
   []); 
 
   // effect for firebase login state changes
@@ -74,6 +75,7 @@ function App() {
   // doesn't seem to work 
   // because the props for firebaseState seem to show up as undefined
   // for some reason
+  // eslint-disable-next-line
   []); 
 
   return (
