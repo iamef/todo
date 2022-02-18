@@ -44,7 +44,12 @@
       "semi": [
         "warn",
         "always"
-      ]
+      ],
+      "prefer-const":["warn"],
+      "no-magic-numbers":["warn"],
+      "no-var":"warn",
+      "no-implicit-globals":"warn",
+      "no-redeclare":"warn"
     }
   },
   "browserslist": {
