@@ -256,8 +256,9 @@ export function sortedArray(arr, ...sortOrder){
   // debugger;
   console.log(sortOrder);
   let result = [...arr];
+  sortOrder = sortOrder.flat();
   debugger;
-  result.sort(this.compareForMultipleProperties(...sortOrder));
+  result.sort(compareForMultipleProperties(...sortOrder));
   return result;
 }
 
