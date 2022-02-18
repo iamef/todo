@@ -337,9 +337,9 @@ class TodoList extends React.Component{
                                 <TableSortLabel
                                     active={this.orderBy[1] === cellJson.firebaseKey}
                                     onClick={() => {
-                                        this.setState({todoList: sortedArray(this.state.todoList, "complete", cellJson.firebaseKey)});
                                         this.orderBy.splice(1,0,cellJson.firebaseKey);
                                         this.orderBy = [...new Set(this.orderBy)];
+                                        this.setState({todoList: sortedArray(this.state.todoList, ...this.orderBy)});
                                         console.log("clicked", cellJson.label, this.orderBy);
                                     }}
                                 >{cellJson.label}</TableSortLabel>
