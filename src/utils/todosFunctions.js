@@ -19,9 +19,6 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   var buffersById = {};
   
   // get calendars that are checked
-  // console.log("unsortedtodos", todos);
-
-  // console.log(calendars);
   if(calendars === undefined){
     for(var nocaltodo of todos){
       nocaltodo.bufferMS = "select calendars";
@@ -43,17 +40,45 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
     return todosDateTimeParse(item1.dueDate) - todosDateTimeParse(item2.dueDate);
   });
   
-  // console.log("SORTED", sortedTodos);
-  
-  var currBufferMS = 0;
-  
+  // get events 3 weeks from now
   const nowDate = new Date();
   const threeWeeksDate = new Date();
   threeWeeksDate.setDate(nowDate.getDate() + 21);
+  const events = await getEvents();
+  
+  async function getEvents(by="end"){
+    const retEvents = [];
+
+    for(let calId of calendars){
+      var events = await window.gapi.client.calendar.events.list({
+        "calendarId": calId,
+        "timeMin": nowDate.toISOString(), // note this is end time
+        "timeMax": threeWeeksDate.toISOString(), 
+        "showDeleted": false,
+        "singleEvents": true,
+        "orderBy": "startTime"
+      });
+      // console.log(events.result.items)
+      retEvents.push(...events.result.items);
+    }
+    // retSortedEvents.sort((item1, item2) => {
+    //   if(item1[by] === "" && item2[by] === ""){
+    //     return 0;
+    //   }else if(item1[by] === ""){
+    //     return 1;  // this means item1 - item2 is positive
+    //   }else if(item2[by] === ""){
+    //     return -1; // this means item1 - item2 is negative
+    //   }
+    //   return Date.parse(item1[by]) - Date.parse(item2[by]);
+    // });
+
+    return retEvents;
+  }
+  
+  var currBufferMS = 0;
 
   var prevTodoDueDate = nowDate;
   var prevTodoName = "none, 1st todo";
-  
   
   // calculate for all priorities
   for(var todo of sortedTodos){
@@ -69,11 +94,9 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
       buffersById[todo.id]["bufferMS"] = "soft";
       continue;
     }
-
     
     var todoDueDate = todosDateTimeParse(todo.dueDate);
     
-
     if(todoDueDate > threeWeeksDate){
       buffersById[todo.id]["bufferMS"] = "3wk";
       continue;
@@ -88,62 +111,108 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
 
     var msToComplete = Number(todo.estTime) * 60*60*1000;
 
-    // console.log(prevBufferMS / (60*60*1000), hoursBetweenTasks, hoursEventsBetweenTasks);
-
     if(prevTodoDueDate < todoDueDate){
-      var eList = [];
+      // var eList = [];
 
-      for(var calId of calendars){
+      // for(var calId of calendars){
         
-        var events = await window.gapi.client.calendar.events.list({
-          "calendarId": calId,
-          "timeMin": prevTodoDueDate.toISOString(), // note this is end time
-          "timeMax": todoDueDate.toISOString(), 
-          "showDeleted": false,
-          "singleEvents": true,
-          "orderBy": "startTime"
-        });
-        // console.log(events.result.items)
-        eList = eList.concat(events.result.items);
-      }
+      //   var events = await window.gapi.client.calendar.events.list({
+      //     "calendarId": calId,
+      //     "timeMin": prevTodoDueDate.toISOString(), // note this is end time
+      //     "timeMax": todoDueDate.toISOString(), 
+      //     "showDeleted": false,
+      //     "singleEvents": true,
+      //     "orderBy": "startTime"
+      //   });
+      //   // console.log(events.result.items)
+      //   eList = eList.concat(events.result.items);
+      // }
 
-      // console.log("eList", eList)
+      // // console.log("eList", eList)
       buffersById[todo.id]["events"] = [];
-      for(var event of eList){
-        // TODO needs to work on this calculation
-        // console.log(event.summary, event.start, event.end);
-        // debugger;
-        // console.log(event);
+      // for(var event of eList){
+      //   // TODO needs to work on this calculation
+      //   // console.log(event.summary, event.start, event.end);
+      //   // debugger;
+      //   // console.log(event);
         
-        var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime));
-        var endTime = Math.min(todoDueDate, new Date(event.end.dateTime));
+      //   var startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime));
+      //   var endTime = Math.min(todoDueDate, new Date(event.end.dateTime));
         
-        // console.log((endTime - startTime) / (60*60*1000))
-        if(isNaN(startTime) || isNaN(endTime)){
-          console.log(event.summary, event.creator, event.htmlLink);
-        }else{
-          buffersById[todo.id]["events"].push({
-              summary: event.summary, 
-              start: event.start.dateTime,
-              end: event.end.dateTime,
-              htmlLink: event.htmlLink
-          });
+      //   // console.log((endTime - startTime) / (60*60*1000))
+      //   if(isNaN(startTime) || isNaN(endTime)){
+      //     console.log(event.summary, event.creator, event.htmlLink);
+      //   }else{
+      //     buffersById[todo.id]["events"].push({
+      //         summary: event.summary, 
+      //         start: event.start.dateTime,
+      //         end: event.end.dateTime,
+      //         htmlLink: event.htmlLink
+      //     });
 
-          msEventsBetweenTasks += (endTime - startTime);
+      //     msEventsBetweenTasks += (endTime - startTime);
+      //   }
+      // }
+
+      // buffersById[todo.id]["events"].sort((item1, item2) => {
+      //   if(item1.start === "" && item2.start === ""){
+      //     return 0;
+      //   }else if(item1.start === ""){
+      //     return 1;  // this means item1 - item2 is positive
+      //   }else if(item2.start === ""){
+      //     return -1; // this means item1 - item2 is negative
+      //   }
+        
+      //   return Date.parse(item1.start) - Date.parse(item2.start);
+      // });
+
+      // for(let [indexOffset,event] of sortedEventsByEnd.slice(sortedEventsIndex).entries()){
+      
+      debugger;
+      for(let event of events){        
+        const eventStartTime = new Date(event.start.dateTime);
+        const eventEndTime = new Date(event.end.dateTime);
+
+        const eventWithinTimeframe = eventStartTime <= todoDueDate && prevTodoDueDate <= eventEndTime;
+        const amOrganizer = event.organizer.self === true;
+        
+        // assume that if you are an organizer, it seems like you can't decline the event?
+        const meAsAttendee = event.attendees ? event.attendees.filter((a) => (a.self))[0] : undefined;
+        const acceptedInvite = (meAsAttendee !== undefined && meAsAttendee.responseStatus === "accepted");
+
+        if(eventWithinTimeframe /* && (amOrganizer || acceptedInvite)*/){
+          //event.attendees[0].self
+          // event.attendees.filter((a) => (a.self)); or event.organizer.self === true
+          // let apple = [
+          //   {
+          //       "email": "emilyfan@mit.edu",
+          //       "self": true,
+          //       "responseStatus": "needsAction"
+          //   }
+          // ];
+
+          var startTime = Math.max(prevTodoDueDate, eventStartTime);
+          var endTime = Math.min(todoDueDate, eventEndTime);
+          
+          // console.log((endTime - startTime) / (60*60*1000))
+          if(isNaN(startTime) || isNaN(endTime)){
+            console.log(event.summary, event.creator, event.htmlLink);
+          }else{
+            buffersById[todo.id]["events"].push({
+                summary: event.summary, 
+                start: event.start.dateTime,
+                end: event.end.dateTime,
+                htmlLink: event.htmlLink
+            });
+
+            msEventsBetweenTasks += (endTime - startTime);
+          }
         }
+        
+        
       }
 
-      buffersById[todo.id]["events"].sort((item1, item2) => {
-        if(item1.start === "" && item2.start === ""){
-          return 0;
-        }else if(item1.start === ""){
-          return 1;  // this means item1 - item2 is positive
-        }else if(item2.start === ""){
-          return -1; // this means item1 - item2 is negative
-        }
-        
-        return Date.parse(item1.start) - Date.parse(item2.start);
-      });
+
 
       hoursEventsBetweenTasks = msEventsBetweenTasks / (60*60*1000);
       
