@@ -30,7 +30,7 @@ const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+let SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
 
 /**
@@ -88,8 +88,8 @@ export function gapiSignout(event) {
  */
 // function appendPre(message) {
 //   console.log(message)
-//   // var pre = document.getElementById("content");
-//   // var textContent = document.createTextNode(message + "\n");
+//   // let pre = document.getElementById("content");
+//   // let textContent = document.createTextNode(message + "\n");
 //   // pre.appendChild(textContent);
 // }
 
@@ -100,9 +100,9 @@ export function gapiSignout(event) {
  */
 export function getCalendarList(calListCallback) {
   // https://stackoverflow.com/questions/29974011/try-to-display-calendar-list-from-google-api-using-java-script
-  var request = window.gapi.client.calendar.calendarList.list();
+  let request = window.gapi.client.calendar.calendarList.list();
   request.execute(function(resp){
-    var calendars = resp.items;
+    let calendars = resp.items;
     // console.log(calendars);
     calListCallback(calendars);
   });
@@ -115,13 +115,13 @@ export function getCalendarList(calListCallback) {
   //   "maxResults": 10,
   //   "orderBy": "startTime"
   // }).then(function(response) {
-  //   var events = response.result.items;
+  //   let events = response.result.items;
   //   appendPre("Upcoming events:");
 
   //   if (events.length > 0) {
-  //     for (var i = 0; i < events.length; i++) {
-  //       var event = events[i];
-  //       var when = event.start.dateTime;
+  //     for (let i = 0; i < events.length; i++) {
+  //       let event = events[i];
+  //       let when = event.start.dateTime;
   //       if (!when) {
   //         when = event.start.date;
   //       }
