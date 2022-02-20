@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 import { TableContainer, Table, TableRow, TableCell, TableBody, TableHead, Button, TableSortLabel } from "@mui/material";
 import { calculateBuffer, compareForMultipleProperties, sortedArray } from "../utils/todosFunctions";
-import { collection, doc, getDoc, onSnapshot, query, setDoc, where } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot} from "firebase/firestore";
 import TodoItem from "./TodoItem";
 import { eventBus } from "../utils/eventBus";
 
@@ -171,22 +171,22 @@ class TodoList extends React.Component{
         this.unsubscribeFirebaseTodolist();
         
         var fsTodoRef = collection(fs, this.todoFilePath);
-        var fsTodoQuery;
+        // var fsTodoQuery;
         
-        if(filter.folder !== undefined){
-            if(filter.list !== undefined){
-                fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder), where("list", "==", filter.list));
-            }else{
-                fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder));
-            }
-        }else{
-            fsTodoQuery = query(fsTodoRef);
-        }
+        // if(filter.folder !== undefined){
+        //     if(filter.list !== undefined){
+        //         fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder), where("list", "==", filter.list));
+        //     }else{
+        //         fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder));
+        //     }
+        // }else{
+        //     fsTodoQuery = query(fsTodoRef);
+        // }
         
         // console.log(fsTodoQuery);
 
         //runs whenever the todolist on Firebase gets updated
-        this.unsubscribeFirebaseTodolist = onSnapshot(fsTodoQuery, { includeMetadataChanges: true }, (querySnapshot) => {
+        this.unsubscribeFirebaseTodolist = onSnapshot(fsTodoRef, { includeMetadataChanges: true }, (querySnapshot) => {
             var itemAdded = false;
             var updateItemModified = false;
             var itemRemoved = false;
@@ -198,7 +198,7 @@ class TodoList extends React.Component{
             querySnapshot.docChanges().forEach((change) => {
                 if (change.type === "added") {
                     itemAdded = true;
-                    console.log("New firebase item: ", change.doc.data());
+                    // console.log("New firebase item: ", change.doc.data());
                 }
                 if (change.type === "modified") {
                     if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.todoList)){

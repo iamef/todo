@@ -168,7 +168,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
 
       // for(let [indexOffset,event] of sortedEventsByEnd.slice(sortedEventsIndex).entries()){
       
-      debugger;
+      // debugger;
       for(let event of events){        
         const eventStartTime = new Date(event.start.dateTime);
         const eventEndTime = new Date(event.end.dateTime);
@@ -326,7 +326,7 @@ export function sortedArray(arr, ...sortOrder){
   console.log(sortOrder);
   let result = [...arr];
   sortOrder = sortOrder.flat();
-  debugger;
+  // debugger;
   result.sort(compareForMultipleProperties(...sortOrder));
   return result;
 }
