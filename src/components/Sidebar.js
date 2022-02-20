@@ -1,8 +1,10 @@
-import React from "react";
-import { SidebarData } from "./SidebarData";
+import React, { useEffect, useState } from "react";
 import { eventBus } from "../utils/eventBus";
 
 function Sidebar(){
+    
+    const [sidebarElems, setSidebarElems] = useState(new Map());
+
     function createFilterFolderEvent(folderName){
         eventBus.dispatch("filterFolder", {folder: folderName});
     }
@@ -11,7 +13,39 @@ function Sidebar(){
         eventBus.dispatch("filterList", {folder: folderName, list: listName});
     }
     
+    useEffect(() => {
+        eventBus.on("todoListUpdated", (todoList) => {
+            debugger;
+
+            let initialFolderMap = new Map();
+            for(let todo of todoList){
+                if(initialFolderMap.get(todo.folder) === undefined){
+                    initialFolderMap.set(todo.folder, new Set());
+                }
+                initialFolderMap.get(todo.folder).add(todo.list);
+            }
+
+            let sortedFolderMap = new Map();
+
+            for(let folder of [...initialFolderMap.keys()].sort()){
+                debugger;
+                sortedFolderMap.set(folder, new Set());
+                for(let list of [...initialFolderMap.get(folder)].sort()){
+                    debugger;
+                    sortedFolderMap.get(folder).add(list);
+                }
+            }
+
+            setSidebarElems(sortedFolderMap);
+            
+        });
+
+        // clean up
+        return () => eventBus.remove("todoListUpdated");
+    }, []);
     
+    
+
     return (
     <div className="sidebar">
         <ul className="sidebarList">
@@ -24,24 +58,24 @@ function Sidebar(){
             </div>
             </li>
             
-            {SidebarData.map((folderval,folderkey) => 
-                <li key={folderkey} className="row folder">
+            {[...sidebarElems.keys()].map((folderName) => 
+                <li key={folderName} className="row folder">
                     {/* <div>{folderval.icon}</div> */}
                     <div 
                         key="title"
-                        onClick={() => createFilterFolderEvent(folderval.title)}
+                        onClick={() => createFilterFolderEvent(folderName)}
                     >
-                        {folderval.title}
+                        {folderName}
                     </div>
 
                     <ul className="folderList" key="listInFolder">
-                        {folderval.lists.map((listVal,listKey) => 
+                        {[...sidebarElems.get(folderName)].map((listName) => 
                             <li 
-                                key={listKey} 
+                                key={listName} 
                                 className="row list"
-                                onClick={() => createFilterListEvent(folderval.title, listVal)}
+                                onClick={() => createFilterListEvent(folderName, listName)}
                                 >
-                                {listVal}
+                                {listName}
                             </li>
                         )}
                     </ul>
