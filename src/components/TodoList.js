@@ -170,8 +170,8 @@ class TodoList extends React.Component{
     initializeTodolist(filter={}){
         this.unsubscribeFirebaseTodolist();
         
-        var fsTodoRef = collection(fs, this.todoFilePath);
-        // var fsTodoQuery;
+        const fsTodoRef = collection(fs, this.todoFilePath);
+        // const fsTodoQuery;
         
         // if(filter.folder !== undefined){
         //     if(filter.list !== undefined){
@@ -187,9 +187,9 @@ class TodoList extends React.Component{
 
         //runs whenever the todolist on Firebase gets updated
         this.unsubscribeFirebaseTodolist = onSnapshot(fsTodoRef, { includeMetadataChanges: true }, (querySnapshot) => {
-            var itemAdded = false;
-            var updateItemModified = false;
-            var itemRemoved = false;
+            let itemAdded = false;
+            let updateItemModified = false;
+            let itemRemoved = false;
             // check what kinds of changes were made to the firebase todolist
             
             console.log(querySnapshot.size, querySnapshot.docs.length, querySnapshot.docChanges().length);
@@ -202,8 +202,8 @@ class TodoList extends React.Component{
                 }
                 if (change.type === "modified") {
                     if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.todoList)){
-                        var found = this.state.todoList.find((todo) => todo.id === change.doc.id);
-                        var changedData = change.doc.data();
+                        const found = this.state.todoList.find((todo) => todo.id === change.doc.id);
+                        const changedData = change.doc.data();
                         
                         if(found === undefined || changedData === undefined){
                             debugger;
@@ -232,7 +232,7 @@ class TodoList extends React.Component{
 
             // avoid infinite updates due to recalculating buffer time
             if(itemAdded || itemRemoved || updateItemModified){
-                var fsTodoList = []; // when a list is empty you want it update the firestore to empty
+                const fsTodoList = []; // when a list is empty you want it update the firestore to empty
 
                 querySnapshot.forEach((qdoc) => {
                     // console.log(qdoc.id, " => ", qdoc.data());
@@ -249,7 +249,7 @@ class TodoList extends React.Component{
                     });
                 }else{
                     // TODO reset buffer if you aren't signed in
-                    for(var todo of fsTodoList){
+                    for(const todo of fsTodoList){
                         todo.bufferHrs = "Log Into GCAL";
                     }
                     fsTodoList.sort(compareForMultipleProperties(...this.orderBy));
@@ -291,18 +291,18 @@ class TodoList extends React.Component{
         getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
             // console.log(docSnap.data().calendars)
 
-            var calendars = docSnap.data().calendars;
+            const calendars = docSnap.data().calendars;
             console.log(calendars);
 
             if(calendars === undefined){
-                for(var todo of todoList){
+                for(const todo of todoList){
                   todo.bufferHrs = "select calendars";
                 }
                 callback(todoList);
             }else{
                 calculateBuffer(todoList, calendars, this.state.hardDeadlineOnlyBuffer).then((buffers) => {
-                    for(var todo of todoList){
-                        var bufferMS = buffers[todo.id]["bufferMS"];
+                    for(const todo of todoList){
+                        let bufferMS = buffers[todo.id]["bufferMS"];
                         
                         
                         if(typeof(bufferMS) === "number"){
@@ -311,7 +311,7 @@ class TodoList extends React.Component{
                             todo.bufferHrs = bufferMS;
                         }
                         
-                        for(var priority of ["tbd", "medium", "high"]){
+                        for(const priority of ["tbd", "medium", "high"]){
                             // debugger;
                             
                             bufferMS = buffers[todo.id]["bufferMS_" + priority];

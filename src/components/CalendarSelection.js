@@ -13,7 +13,7 @@ class CalendarSelection extends React.Component{
 
     this.state = {};
 
-    // var formDataInitialJSON = this.props.calendars.map((calendar) => {
+    // let formDataInitialJSON = this.props.calendars.map((calendar) => {
     //     return "\"" + calendar.id + "\"" + ": false"
     // }).toString()
     // formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
@@ -31,10 +31,10 @@ class CalendarSelection extends React.Component{
     console.log(this.props.userFirebasePath);
 
     getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
-      var calendars = docSnap.data().calendars;
+      let calendars = docSnap.data().calendars;
 
       if(calendars !== undefined){
-        var formDataInitialJSON = calendars.map((calID) => {
+        let formDataInitialJSON = calendars.map((calID) => {
           return "\"" + calID + "\": true";
         }).toString();
         formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}");
@@ -53,11 +53,11 @@ class CalendarSelection extends React.Component{
   //   console.log(props, this.props, state)
   //   if(props === this.props) return;
 
-  //   // var formDataInitialJSON = ""
+  //   // let formDataInitialJSON = ""
     
   //   if(!(this.props.calendars === undefined)){
   //     console.log("this cal is not undefined")
-  //     var formDataInitialJSON = this.props.calendars.map((calendar) => {
+  //     let formDataInitialJSON = this.props.calendars.map((calendar) => {
   //         return "\"" + calendar.id + "\": false"
   //     }).toString()
   //     formDataInitialJSON = JSON.parse("{" + formDataInitialJSON + "}")
@@ -87,9 +87,9 @@ class CalendarSelection extends React.Component{
   }
 
   submitCheckedCalendars(){
-    var calsToInclude = [];
+    let calsToInclude = [];
     console.log(this.state);
-    for(var key in this.state){
+    for(let key in this.state){
       if(this.state[key]) calsToInclude.push(key);
     }
     console.log(calsToInclude);
