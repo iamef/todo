@@ -22,10 +22,9 @@ class TodoList extends React.Component{
         // whereas this.state cannot be mappable
         // https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
         
-        this.todoList = false;
         // making todoList into a variable doesn't work
         // the todolist won't update when I click complete and stuff
-        this.state = { displayedTodoList: false, hardDeadlineOnlyBuffer: false, filter: {} };
+        this.state = { todoList: false, hardDeadlineOnlyBuffer: false, filter: {} };
 
         this.orderBy = ["complete", "priority", "dueDate", "folder", "list"];
         
@@ -111,9 +110,7 @@ class TodoList extends React.Component{
         eventBus.on("filterFolder", (data) =>{
             // this.initializeTodolist(data);
 
-            this.setState({filter: data}, () => {
-                this.setState({displayedTodoList: this.filteredTodos()});
-            });
+            this.setState({filter: data});
 
             // this.setState({displayedTodoList: this.todoList.filter((elem) => elem.folder === data.folder)});
         });
@@ -121,9 +118,7 @@ class TodoList extends React.Component{
         eventBus.on("filterList", (data) =>{
             // this.initializeTodolist(data);
 
-            this.setState({filter: data}, () => {
-                this.setState({displayedTodoList: this.filteredTodos()});
-            });
+            this.setState({filter: data});
 
             // this.setState({displayedTodoList: this.todoList.filter((elem) => (elem.folder === data.folder && elem.list === data.list))});
         });
@@ -147,10 +142,9 @@ class TodoList extends React.Component{
             // if you just signed into GCAL
             }else if(this.props.gapiSignedIn === true){
                 if(prevProps.gapiSignedIn !== this.props.gapiSignedIn || prevState.hardDeadlineOnlyBuffer !== this.state.hardDeadlineOnlyBuffer){
-                    if(Array.isArray(this.state.displayedTodoList)){
-                        this.getTodoListWithBuffers(this.state.displayedTodoList, (todoListWithBuffers) => {
-                            this.todoList = todoListWithBuffers;
-                            this.setState({displayedTodoList: this.filteredTodos()});
+                    if(Array.isArray(this.state.todoList)){
+                        this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+                            this.setState({todoList: todoListWithBuffers});
                         });
                     }
                 }
@@ -162,13 +156,9 @@ class TodoList extends React.Component{
                 alert("somehow firebase signin has become null");
                 
                 this.unsubscribeFirebaseTodolist();
-                this.todoList = false;
-                this.setState({displayedTodoList: false});
+                this.setState({todoList: false});
             }
         }
-
-
-
     }
 
     componentWillUnmount() {
@@ -180,17 +170,17 @@ class TodoList extends React.Component{
         this.unsubscribeFirebaseTodolist();
         
         var fsTodoRef = collection(fs, this.todoFilePath);
-        var fsTodoQuery = query(fsTodoRef);
+        var fsTodoQuery;
         
-        // if(filter.folder !== undefined){
-        //     if(filter.list !== undefined){
-        //         fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder), where("list", "==", filter.list));
-        //     }else{
-        //         fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder));
-        //     }
-        // }else{
-        //     fsTodoQuery = query(fsTodoRef);
-        // }
+        if(filter.folder !== undefined){
+            if(filter.list !== undefined){
+                fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder), where("list", "==", filter.list));
+            }else{
+                fsTodoQuery = query(fsTodoRef, where("folder", "==", filter.folder));
+            }
+        }else{
+            fsTodoQuery = query(fsTodoRef);
+        }
         
         // console.log(fsTodoQuery);
 
@@ -210,13 +200,13 @@ class TodoList extends React.Component{
                     console.log("New firebase item: ", change.doc.data());
                 }
                 if (change.type === "modified") {
-                    if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.displayedTodoList)){
-                        var found = this.state.displayedTodoList.find((todo) => todo.id === change.doc.id);
+                    if(querySnapshot.docChanges().length === 1 && Array.isArray(this.state.todoList)){
+                        var found = this.state.todoList.find((todo) => todo.id === change.doc.id);
                         var changedData = change.doc.data();
                         
                         if(found === undefined || changedData === undefined){
-                            // debugger;
-                            // alert("found or changedData is undefined");
+                            debugger;
+                            alert("found or changedData is undefined");
                             console.log("found or changedData is undefined", found, changedData);
                         }else{
                             if(found.complete === changedData.complete && 
@@ -250,19 +240,9 @@ class TodoList extends React.Component{
 
                 // recalculate buffers
                 if(this.props.gapiSignedIn === true){
-                    fsTodoList.sort(compareForMultipleProperties(...this.orderBy));
-                    this.todoList = fsTodoList;
-
-                    this.setState({displayedTodoList: this.filteredTodos()});
-                    
                     this.getTodoListWithBuffers(fsTodoList, (todoListWithBuffers) => {
                         todoListWithBuffers.sort(compareForMultipleProperties(...this.orderBy));
-                        
-                        this.todoList = todoListWithBuffers;
-                        
-                        // TODO change
-                        this.setState({displayedTodoList: this.filteredTodos()});
-                        // this.setState({displayedTodoList: todoListWithBuffers});
+                        this.setState({todoList: todoListWithBuffers});
                     });
                 }else{
                     // TODO reset buffer if you aren't signed in
@@ -270,11 +250,7 @@ class TodoList extends React.Component{
                         todo.bufferHrs = "Log Into GCAL";
                     }
                     fsTodoList.sort(compareForMultipleProperties(...this.orderBy));
-                    this.todoList = fsTodoList;
-                    
-                    // TODO change
-                    // this.setState({displayedTodoList: fsTodoList});
-                    this.setState({displayedTodoList: this.filteredTodos()});
+                    this.setState({todoList: fsTodoList});
                 }
 
             }
@@ -286,14 +262,14 @@ class TodoList extends React.Component{
     // filteredTodos based on filter state and todo
     filteredTodos(){
         // let filteredTodos = false;
-        if(this.todoList !== false){
+        if(this.state.todoList !== false){
             if(this.state.filter.folder !== undefined){
                 if(this.state.filter.list !== undefined){
-                    return this.todoList.filter((elem) => (elem.folder === this.state.filter.folder && elem.list === this.state.filter.list));
+                    return this.state.todoList.filter((elem) => (elem.folder === this.state.filter.folder && elem.list === this.state.filter.list));
                 }
-                return this.todoList.filter((elem) => (elem.folder === this.state.filter.folder));
+                return this.state.todoList.filter((elem) => (elem.folder === this.state.filter.folder));
             }
-            return this.todoList;
+            return this.state.todoList;
         }
         return false;
     }
@@ -373,7 +349,7 @@ class TodoList extends React.Component{
             
             <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table" padding="none" >
-                {/* table based sorting! https://mui.com/components/tables/#sorting-amp-selecting */}
+                {/* // TODO add table based sorting! https://mui.com/components/tables/#sorting-amp-selecting */}
                 <TableHead>
                     <TableRow>
                         <TableCell></TableCell>
@@ -384,7 +360,7 @@ class TodoList extends React.Component{
                                     onClick={() => {
                                         this.orderBy.splice(1,0,cellJson.firebaseKey);
                                         this.orderBy = [...new Set(this.orderBy)];
-                                        this.setState({displayedTodoList: sortedArray(this.state.displayedTodoList, ...this.orderBy)});
+                                        this.setState({todoList: sortedArray(this.state.todoList, ...this.orderBy)});
                                         console.log("clicked", cellJson.label, this.orderBy);
                                     }}
                                 >{cellJson.label}</TableSortLabel>
@@ -393,8 +369,8 @@ class TodoList extends React.Component{
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {this.state.displayedTodoList ?
-                    this.state.displayedTodoList.map((todo) => 
+                {this.state.todoList ?
+                    this.filteredTodos().map((todo) => 
                         <TodoItem todo={todo} headCells={this.headCells} todoFilePath={this.todoFilePath} key={todo.id}/>
                     )
                     :
