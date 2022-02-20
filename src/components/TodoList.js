@@ -233,11 +233,13 @@ class TodoList extends React.Component{
             // avoid infinite updates due to recalculating buffer time
             if(itemAdded || itemRemoved || updateItemModified){
                 var fsTodoList = []; // when a list is empty you want it update the firestore to empty
-                
+
                 querySnapshot.forEach((qdoc) => {
-                    console.log(qdoc.id, " => ", qdoc.data());
+                    // console.log(qdoc.id, " => ", qdoc.data());
                     fsTodoList.push({id: qdoc.id, ...qdoc.data()});
                 });
+
+                eventBus.dispatch("todoListUpdated", fsTodoList);
 
                 // recalculate buffers
                 if(this.props.gapiSignedIn === true){
@@ -262,7 +264,10 @@ class TodoList extends React.Component{
 
     // filteredTodos based on filter state and todo
     filteredTodos(){
-        // let filteredTodos = false;
+        // tell sidebar that todolist has been updated
+        // give sidebar the list of folders and lists
+        // eventBus.dispatch("todoListUpdated", this.state.todoList);
+
         if(this.state.todoList !== false){
             if(this.state.filter.folder !== undefined){
                 if(this.state.filter.list !== undefined){
