@@ -16,6 +16,7 @@ class TodoList extends React.Component{
         console.log("Todolist props", props);
         
         this.initializeTodolist = this.initializeTodolist.bind(this);
+        this.recalculateBuffer = this.recalculateBuffer.bind(this);
         
         // need the todoList because 
         // this.state.todoList can be mappable
@@ -274,6 +275,13 @@ class TodoList extends React.Component{
         return false;
     }
 
+    recalculateBuffer(){
+        this.getTodoListWithBuffers(this.state.todoList, (todoListWithBuffers) => {
+            todoListWithBuffers.sort(compareForMultipleProperties(...this.orderBy));
+            this.setState({todoList: todoListWithBuffers});
+        });
+    }
+
     getTodoListWithBuffers(todoList, callback){
         getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
             // console.log(docSnap.data().calendars)
@@ -345,6 +353,16 @@ class TodoList extends React.Component{
                 >
                     Calculate Buffer for HARD Deadlines Only
                 </Button>
+            }
+
+            { this.props.gapiSignedIn ?
+                <Button 
+                    variant="contained"
+                    onClick={this.recalculateBuffer}
+                >
+                    Recalculate buffer
+                </Button>
+                : null
             }
             
             <TableContainer>
