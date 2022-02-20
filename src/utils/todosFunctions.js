@@ -180,7 +180,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
         const meAsAttendee = event.attendees ? event.attendees.filter((a) => (a.self))[0] : undefined;
         const acceptedInvite = (meAsAttendee !== undefined && meAsAttendee.responseStatus === "accepted");
 
-        if(eventWithinTimeframe /* && (amOrganizer || acceptedInvite)*/){
+        if(eventWithinTimeframe && (amOrganizer || acceptedInvite)){
           //event.attendees[0].self
           // event.attendees.filter((a) => (a.self)); or event.organizer.self === true
           // let apple = [
