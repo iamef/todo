@@ -44,8 +44,10 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   
   // get events 3 weeks from now
   const nowDate = new Date();
+  
+  const numDaysIn3Weeks = 21;
   const threeWeeksDate = new Date();
-  threeWeeksDate.setDate(nowDate.getDate() + 21);
+  threeWeeksDate.setDate(nowDate.getDate() + numDaysIn3Weeks);
   const events = await getEvents();
   
   async function getEvents(by="end"){
@@ -82,6 +84,10 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   let prevTodoDueDate = nowDate;
   let prevTodoName = "none, 1st todo";
   
+  // eslint-disable-next-line no-magic-numbers
+  const msPerHour = 60*60*1000;
+
+
   // calculate for all priorities
   for(const todo of sortedTodos){
     buffersById[todo.id] = {};
@@ -106,12 +112,12 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
     
     const prevBufferMS = currBufferMS;
     const msBetweenTasks = Math.max(0, todoDueDate - prevTodoDueDate);
-    const hoursBetweenTasks = msBetweenTasks / (60*60*1000);
+    const hoursBetweenTasks = msBetweenTasks / (msPerHour);
     
     let msEventsBetweenTasks = 0;
     let hoursEventsBetweenTasks = 0;
 
-    const msToComplete = Number(todo.estTime) * 60*60*1000;
+    const msToComplete = Number(todo.estTime) * msPerHour;
 
     if(prevTodoDueDate < todoDueDate){
       // const eList = [];
@@ -141,7 +147,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
       //   const startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime));
       //   const endTime = Math.min(todoDueDate, new Date(event.end.dateTime));
         
-      //   // console.log((endTime - startTime) / (60*60*1000))
+      //   // console.log((endTime - startTime) / (msPerHour))
       //   if(isNaN(startTime) || isNaN(endTime)){
       //     console.log(event.summary, event.creator, event.htmlLink);
       //   }else{
@@ -196,7 +202,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
           const startTime = Math.max(prevTodoDueDate, eventStartTime);
           const endTime = Math.min(todoDueDate, eventEndTime);
           
-          // console.log((endTime - startTime) / (60*60*1000))
+          // console.log((endTime - startTime) / (msPerHour))
           if(isNaN(startTime) || isNaN(endTime)){
             console.log(event.summary, event.creator, event.htmlLink);
           }else{
@@ -216,14 +222,14 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
 
 
 
-      hoursEventsBetweenTasks = msEventsBetweenTasks / (60*60*1000);
+      hoursEventsBetweenTasks = msEventsBetweenTasks / (msPerHour);
       
       prevTodoDueDate = todoDueDate;
     }
 
     currBufferMS = prevBufferMS + msBetweenTasks - 
                             msEventsBetweenTasks - msToComplete;
-    // currBuffer -= Number(todo.estTime) * 60*60*1000  // convert to miliseconds
+    // currBuffer -= Number(todo.estTime) * msPerHour  // convert to miliseconds
     // console.log(todo.id)
     
     buffersById[todo.id]["prevTodo"] = prevTodoName;
@@ -251,7 +257,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
         if(priorityLevels.indexOf(todo.priority) >= i){
           buffersById[todo.id]["bufferMS_" + priorityLevels[i]] = buffersById[todo.id]["bufferMS"] + msLowerPriorityTasks;
         }else{
-          msLowerPriorityTasks += Number(todo.estTime) * 60*60*1000;
+          msLowerPriorityTasks += Number(todo.estTime) * msPerHour;
         }
       }
     }
@@ -414,10 +420,11 @@ export function parseDate(str){
           // console.log(monthStr)
           const monthStr = monthNames[i];
 
-          let splitIndex = 3;
-          if(monthStr === "September"){
-              splitIndex = 4;
-          }
+          // eslint-disable-next-line no-magic-numbers
+          const splitIndex = (monthStr === "September"? 4 : 3);
+          // if(monthStr === "September"){
+          //     splitIndex = 4;
+          // }
 
           const monthREString = monthStr.substring(0, splitIndex) + "(" + monthStr.substring(splitIndex) + "){0,1}";
           const dayREString = "[123]{0,1}\\d(\\w\\w){0,1}";
@@ -482,6 +489,7 @@ export function parseDate(str){
               
               let daysFromToday = i - dateNow.getDay();
               if(daysFromToday <= 0){
+                  // eslint-disable-next-line no-magic-numbers
                   daysFromToday += 7;
               }
               
@@ -549,6 +557,7 @@ export function parseTime(str){
           timeFound = true;
 
           hours = parseInt(res[0].match(/[01]{0,1}\d/)[0]);
+          // eslint-disable-next-line no-magic-numbers
           hours += 12;
 
           minutes = 0;

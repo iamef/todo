@@ -46,7 +46,13 @@
         "always"
       ],
       "prefer-const":["warn"],
-      "no-magic-numbers":["warn"],
+      "no-magic-numbers":[
+        "warn", 
+        {
+          "ignore": [-1,0,1,2], 
+          "ignoreArrayIndexes": true
+        }
+      ],
       "no-var":"warn",
       "no-implicit-globals":"warn",
       "no-redeclare":"warn"

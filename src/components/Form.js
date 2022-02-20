@@ -67,12 +67,13 @@ const Form = () => {
                 // should be fine lol
                 const endDate = formData.recurring ? formData.endRecurring: formData.dueDate;
                 
+                const numDaysInWeek = 7;
                 const currDueDate = formData.dueDate;
-                currDueDate.setDate(currDueDate.getDate() + 7);
+                currDueDate.setDate(currDueDate.getDate() + numDaysInWeek);
                 while(currDueDate <= endDate){
                     todo.dueDate = currDueDate;
                     addOneTodoToFirebase(todo);
-                    currDueDate.setDate(currDueDate.getDate() + 7);
+                    currDueDate.setDate(currDueDate.getDate() + numDaysInWeek);
                 }
             }else{
                 // TODO improve this statement
@@ -122,6 +123,7 @@ const Form = () => {
                         currQAStr.substring(Math.max(dateParseData.endIndex, timeParseData.endIndex));
 
             }else{
+                // eslint-disable-next-line no-magic-numbers
                 dueDate = new Date(dateParseData.year, dateParseData.month, dateParseData.day, 23, 59);
                 setFormData({...formData, dueDate: dueDate});
                 console.log("set form data", dueDate);
