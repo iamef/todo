@@ -30,7 +30,7 @@ const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-let SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
 
 /**
@@ -100,9 +100,9 @@ export function gapiSignout(event) {
  */
 export function getCalendarList(calListCallback) {
   // https://stackoverflow.com/questions/29974011/try-to-display-calendar-list-from-google-api-using-java-script
-  let request = window.gapi.client.calendar.calendarList.list();
+  const request = window.gapi.client.calendar.calendarList.list();
   request.execute(function(resp){
-    let calendars = resp.items;
+    const calendars = resp.items;
     // console.log(calendars);
     calListCallback(calendars);
   });

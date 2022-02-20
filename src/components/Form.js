@@ -39,14 +39,14 @@ const Form = () => {
     function addOneTodoToFirebase(todo){
         if(todo.dueDate !== null){ // || todo.dueDate !== "" || (todo.dueDate instanceof Date && isNaN(todo.dueDate))){
             // todo.dueDate = todo.dueDate.toLocaleString()
-            let datObjDueDate = todo.dueDate;
+            const datObjDueDate = todo.dueDate;
             todo.dueDate = datObjDueDate.toLocaleDateString().split("/");
             todo.dueDate = `${todo.dueDate[0]}/${todo.dueDate[1]}/${todo.dueDate[2].substring(2)} `;
             todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[0].split(":", 2).join(":");
             todo.dueDate += datObjDueDate.toLocaleTimeString().split(" ")[1];
         }
         
-        let todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
+        const todoFilePath = "users/" + (auth.currentUser ? auth.currentUser.uid : null) + "/Todos";
         // todoFilePath +=  formData.folder + "/" + formData.list;
 
         addDoc(collection(fs, todoFilePath), todo);
@@ -65,9 +65,9 @@ const Form = () => {
             if(formData.endRecurring !== null){
                 // also what if the endDate < startDate
                 // should be fine lol
-                let endDate = formData.recurring ? formData.endRecurring: formData.dueDate;
+                const endDate = formData.recurring ? formData.endRecurring: formData.dueDate;
                 
-                let currDueDate = formData.dueDate;
+                const currDueDate = formData.dueDate;
                 currDueDate.setDate(currDueDate.getDate() + 7);
                 while(currDueDate <= endDate){
                     todo.dueDate = currDueDate;
@@ -92,7 +92,7 @@ const Form = () => {
     };
 
     function parseQuickAdd(e){
-        let currQAStr = e.target.value;
+        const currQAStr = e.target.value;
         
         setQuickAdd({...quickAdd, text: currQAStr});
 
@@ -101,10 +101,10 @@ const Form = () => {
 
         // TODO split into many diff functions
         // FIND DATE
-        let dateParseData = parseDate(currQAStr);
+        const dateParseData = parseDate(currQAStr);
 
         // FIND TIME
-        let timeParseData = parseTime(currQAStr);
+        const timeParseData = parseTime(currQAStr);
 
         // rest of string is title
         let title = currQAStr;
@@ -138,7 +138,7 @@ const Form = () => {
         }else{
             if(timeParseData !== false){
                 
-                let dateNow = new Date();
+                const dateNow = new Date();
                 
                 if(dateNow.getHours() > timeParseData.hours){
                     dateNow.setDate(dateNow.getDate() + 1);

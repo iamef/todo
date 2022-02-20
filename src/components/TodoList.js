@@ -304,9 +304,12 @@ class TodoList extends React.Component{
                     for(const todo of todoList){
                         let bufferMS = buffers[todo.id]["bufferMS"];
                         
+                        // eslint-disable-next-line no-magic-numbers
+                        const msPerHour = 60*60*1000;
+                        
                         
                         if(typeof(bufferMS) === "number"){
-                            todo.bufferHrs = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2");
+                            todo.bufferHrs = Number(Math.round( (bufferMS/(msPerHour)) +"e+2") + "e-2");
                         }else{
                             todo.bufferHrs = bufferMS;
                         }
@@ -316,7 +319,7 @@ class TodoList extends React.Component{
                             
                             bufferMS = buffers[todo.id]["bufferMS_" + priority];
                             if(typeof(bufferMS) === "number"){
-                                todo["bufferHrs_" + priority] = Number(Math.round( (bufferMS/(60*60*1000)) +"e+2") + "e-2");
+                                todo["bufferHrs_" + priority] = Number(Math.round( (bufferMS/(msPerHour)) +"e+2") + "e-2");
                             }else if(typeof(bufferMS) === "undefined"){
                                 todo["bufferHrs_" + priority] = "--";
                             }else{

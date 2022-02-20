@@ -31,7 +31,7 @@ class CalendarSelection extends React.Component{
     console.log(this.props.userFirebasePath);
 
     getDoc(doc(fs, this.props.userFirebasePath)).then((docSnap) => {
-      let calendars = docSnap.data().calendars;
+      const calendars = docSnap.data().calendars;
 
       if(calendars !== undefined){
         let formDataInitialJSON = calendars.map((calID) => {
@@ -87,9 +87,9 @@ class CalendarSelection extends React.Component{
   }
 
   submitCheckedCalendars(){
-    let calsToInclude = [];
+    const calsToInclude = [];
     console.log(this.state);
-    for(let key in this.state){
+    for(const key in this.state){
       if(this.state[key]) calsToInclude.push(key);
     }
     console.log(calsToInclude);

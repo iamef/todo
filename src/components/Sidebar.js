@@ -17,20 +17,20 @@ function Sidebar(){
         eventBus.on("todoListUpdated", (todoList) => {
             debugger;
 
-            let initialFolderMap = new Map();
-            for(let todo of todoList){
+            const initialFolderMap = new Map();
+            for(const todo of todoList){
                 if(initialFolderMap.get(todo.folder) === undefined){
                     initialFolderMap.set(todo.folder, new Set());
                 }
                 initialFolderMap.get(todo.folder).add(todo.list);
             }
 
-            let sortedFolderMap = new Map();
+            const sortedFolderMap = new Map();
 
-            for(let folder of [...initialFolderMap.keys()].sort()){
+            for(const folder of [...initialFolderMap.keys()].sort()){
                 debugger;
                 sortedFolderMap.set(folder, new Set());
-                for(let list of [...initialFolderMap.get(folder)].sort()){
+                for(const list of [...initialFolderMap.get(folder)].sort()){
                     debugger;
                     sortedFolderMap.get(folder).add(list);
                 }

@@ -2,13 +2,15 @@ export function todosDateTimeParse(todoDateTimeStr){
   if(todoDateTimeStr == null){
     return null;
   }
-  let todosRegExp = /([01]{0,1}\d)\/([0123]{0,1}\d)\/(\d\d) ([01]{0,1}\d):([0-5]\d)([AP]M)/i;
-  let res = todosRegExp.exec(todoDateTimeStr);
-  let month = parseInt(res[1]) - 1;
-  let day = parseInt(res[2]);
-  let year = parseInt(res[3]) + 2000;
-  let hour = parseInt(res[4]) + (res[6] === "AM" ? 0 : 12);
-  let minute = parseInt(res[5]);
+  const todosRegExp = /([01]{0,1}\d)\/([0123]{0,1}\d)\/(\d\d) ([01]{0,1}\d):([0-5]\d)([AP]M)/i;
+  const res = todosRegExp.exec(todoDateTimeStr);
+  const month = parseInt(res[1]) - 1;
+  const day = parseInt(res[2]);
+  // eslint-disable-next-line no-magic-numbers
+  const year = parseInt(res[3]) + 2000;
+  // eslint-disable-next-line no-magic-numbers
+  const hour = parseInt(res[4]) + (res[6] === "AM" ? 0 : 12);
+  const minute = parseInt(res[5]);
 
   return new Date(year, month, day, hour, minute);
 }
@@ -16,11 +18,11 @@ export function todosDateTimeParse(todoDateTimeStr){
 // later on add support for overshoots  based on priority
 // Update to this https://blog.patricktriest.com/what-is-async-await-why-should-you-care/
 export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
-  let buffersById = {};
+  const buffersById = {};
   
   // get calendars that are checked
   if(calendars === undefined){
-    for(let nocaltodo of todos){
+    for(const nocaltodo of todos){
       nocaltodo.bufferMS = "select calendars";
     }
     return todos;
@@ -28,7 +30,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
 
   // sort todos in order of dueDate
   // can later incoporate priority
-  let sortedTodos = todos.slice().sort((item1, item2) => {
+  const sortedTodos = todos.slice().sort((item1, item2) => {
     if(item1.dueDate === "" && item2.dueDate === ""){
       return 0;
     }else if(item1.dueDate === ""){
@@ -49,8 +51,8 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   async function getEvents(by="end"){
     const retEvents = [];
 
-    for(let calId of calendars){
-      let events = await window.gapi.client.calendar.events.list({
+    for(const calId of calendars){
+      const events = await window.gapi.client.calendar.events.list({
         "calendarId": calId,
         "timeMin": nowDate.toISOString(), // note this is end time
         "timeMax": threeWeeksDate.toISOString(), 
@@ -81,7 +83,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   let prevTodoName = "none, 1st todo";
   
   // calculate for all priorities
-  for(let todo of sortedTodos){
+  for(const todo of sortedTodos){
     buffersById[todo.id] = {};
     
     if(todo.dueDate === null || todo.complete){
@@ -95,28 +97,28 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
       continue;
     }
     
-    let todoDueDate = todosDateTimeParse(todo.dueDate);
+    const todoDueDate = todosDateTimeParse(todo.dueDate);
     
     if(todoDueDate > threeWeeksDate){
       buffersById[todo.id]["bufferMS"] = "3wk";
       continue;
     }
     
-    let prevBufferMS = currBufferMS;
-    let msBetweenTasks = Math.max(0, todoDueDate - prevTodoDueDate);
-    let hoursBetweenTasks = msBetweenTasks / (60*60*1000);
+    const prevBufferMS = currBufferMS;
+    const msBetweenTasks = Math.max(0, todoDueDate - prevTodoDueDate);
+    const hoursBetweenTasks = msBetweenTasks / (60*60*1000);
     
     let msEventsBetweenTasks = 0;
     let hoursEventsBetweenTasks = 0;
 
-    let msToComplete = Number(todo.estTime) * 60*60*1000;
+    const msToComplete = Number(todo.estTime) * 60*60*1000;
 
     if(prevTodoDueDate < todoDueDate){
-      // let eList = [];
+      // const eList = [];
 
-      // for(let calId of calendars){
+      // for(const calId of calendars){
         
-      //   let events = await window.gapi.client.calendar.events.list({
+      //   const events = await window.gapi.client.calendar.events.list({
       //     "calendarId": calId,
       //     "timeMin": prevTodoDueDate.toISOString(), // note this is end time
       //     "timeMax": todoDueDate.toISOString(), 
@@ -130,14 +132,14 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
 
       // // console.log("eList", eList)
       buffersById[todo.id]["events"] = [];
-      // for(let event of eList){
+      // for(const event of eList){
       //   // TODO needs to work on this calculation
       //   // console.log(event.summary, event.start, event.end);
       //   // debugger;
       //   // console.log(event);
         
-      //   let startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime));
-      //   let endTime = Math.min(todoDueDate, new Date(event.end.dateTime));
+      //   const startTime = Math.max(prevTodoDueDate, new Date(event.start.dateTime));
+      //   const endTime = Math.min(todoDueDate, new Date(event.end.dateTime));
         
       //   // console.log((endTime - startTime) / (60*60*1000))
       //   if(isNaN(startTime) || isNaN(endTime)){
@@ -166,10 +168,10 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
       //   return Date.parse(item1.start) - Date.parse(item2.start);
       // });
 
-      // for(let [indexOffset,event] of sortedEventsByEnd.slice(sortedEventsIndex).entries()){
+      // for(const [indexOffset,event] of sortedEventsByEnd.slice(sortedEventsIndex).entries()){
       
       // debugger;
-      for(let event of events){        
+      for(const event of events){        
         const eventStartTime = new Date(event.start.dateTime);
         const eventEndTime = new Date(event.end.dateTime);
 
@@ -183,7 +185,7 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
         if(eventWithinTimeframe && (amOrganizer || acceptedInvite)){
           //event.attendees[0].self
           // event.attendees.filter((a) => (a.self)); or event.organizer.self === true
-          // let apple = [
+          // const apple = [
           //   {
           //       "email": "emilyfan@mit.edu",
           //       "self": true,
@@ -191,8 +193,8 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
           //   }
           // ];
 
-          let startTime = Math.max(prevTodoDueDate, eventStartTime);
-          let endTime = Math.min(todoDueDate, eventEndTime);
+          const startTime = Math.max(prevTodoDueDate, eventStartTime);
+          const endTime = Math.min(todoDueDate, eventEndTime);
           
           // console.log((endTime - startTime) / (60*60*1000))
           if(isNaN(startTime) || isNaN(endTime)){
@@ -237,13 +239,13 @@ export async function calculateBuffer(todos, calendars, hardDeadlineOnlyBuffer){
   }
 
   // TODO centralize this priority Levels stuff
-  let priorityLevels = ["low", "tbd", "medium", "high"];
+  const priorityLevels = ["low", "tbd", "medium", "high"];
   
 
   // we skip low priority
   for(let i=1; i < priorityLevels.length; i++){
     let msLowerPriorityTasks = 0;
-    for(let todo of sortedTodos){
+    for(const todo of sortedTodos){
       
       if(todosDateTimeParse(todo.dueDate) < threeWeeksDate){
         if(priorityLevels.indexOf(todo.priority) >= i){
@@ -284,7 +286,7 @@ export function compareForMultipleProperties(...sortOrder){
 
           return (ascending ? ret : -1*ret);
       }else if(type === "priority"){
-          let priorityLevels = ["low", "tbd", "medium", "high"];
+          const priorityLevels = ["low", "tbd", "medium", "high"];
           
           // higher priorities should appear first
           return -1* (priorityLevels.indexOf(item1) - priorityLevels.indexOf(item2));
@@ -298,7 +300,7 @@ export function compareForMultipleProperties(...sortOrder){
       
       // console.log(argsTuple)
 
-      for(let arg of sortOrder){
+      for(const arg of sortOrder){
           // console.log(arg)
           
           let type, sortAscending;
@@ -310,7 +312,7 @@ export function compareForMultipleProperties(...sortOrder){
               sortAscending = true;
           }
 
-          let res = singlePropertyCompare(item1[type], item2[type], type, sortAscending);
+          const res = singlePropertyCompare(item1[type], item2[type], type, sortAscending);
           
           // console.log(item1[type], item2[type], type, sortAscending, res)
 
@@ -324,7 +326,7 @@ export function compareForMultipleProperties(...sortOrder){
 export function sortedArray(arr, ...sortOrder){
   // debugger;
   console.log(sortOrder);
-  let result = [...arr];
+  const result = [...arr];
   sortOrder = sortOrder.flat();
   // debugger;
   result.sort(compareForMultipleProperties(...sortOrder));
@@ -344,13 +346,13 @@ export function sortedArray(arr, ...sortOrder){
 export function parseDate(str){
   let dateFound = false;
   
-  let dateNow = new Date();
+  const dateNow = new Date();
   let day = null;
   let month = null;
   let year = null;
 
   // today, tod
-  let todayRegExp = /tod(ay){0,1}\s/i;
+  const todayRegExp = /tod(ay){0,1}\s/i;
   let res = todayRegExp.exec(str);  // let res = todayRegExp.exec("todtodaytodayTODAY ")
   if(res !== null){
       console.log(res);
@@ -364,11 +366,11 @@ export function parseDate(str){
   }
   
   // tomorrow, tmr
-  let dateTomorrow = new Date();
+  const dateTomorrow = new Date();
   dateTomorrow.setDate(dateNow.getDate() + 1);
 
   if(!dateFound){
-      let tomorrowRegExp = /tom(morrow){0,1}\s/i;
+      const tomorrowRegExp = /tom(morrow){0,1}\s/i;
       res = tomorrowRegExp.exec(str);  // let res = todayRegExp.exec("todtodaytodayTODAY ")
       console.log(res);
       if(res !== null){
@@ -382,7 +384,7 @@ export function parseDate(str){
       }
   }
   if(!dateFound){
-      let tmrRegExp = /tmr{0,1}\s/i;
+      const tmrRegExp = /tmr{0,1}\s/i;
       res = tmrRegExp.exec(str); // let res = todayRegExp.exec("todtodaytodayTODAY ")
       console.log(res);
       if(res !== null){
@@ -407,21 +409,21 @@ export function parseDate(str){
   // TODO add day number checks for 31+ (ex: January 39th)
   if(!dateFound){
       // TODO think about enums
-      let monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+      const monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
       for(let i=0; i < monthNames.length; i++){
           // console.log(monthStr)
-          let monthStr = monthNames[i];
+          const monthStr = monthNames[i];
 
           let splitIndex = 3;
           if(monthStr === "September"){
               splitIndex = 4;
           }
 
-          let monthREString = monthStr.substring(0, splitIndex) + "(" + monthStr.substring(splitIndex) + "){0,1}";
-          let dayREString = "[123]{0,1}\\d(\\w\\w){0,1}";
+          const monthREString = monthStr.substring(0, splitIndex) + "(" + monthStr.substring(splitIndex) + "){0,1}";
+          const dayREString = "[123]{0,1}\\d(\\w\\w){0,1}";
 
           // TODO add European method
-          let monthRegExp = RegExp(monthREString + "\\s" + dayREString, "i");
+          const monthRegExp = RegExp(monthREString + "\\s" + dayREString, "i");
           // let res = monthRegExp.exec('"January 1", "February 5", "March 2nd", "April 5", "May 6", "June 21", "July 55", "August 24", "September 33", "October 44", "November 7", "December 39"')
           
           res = monthRegExp.exec(str);
@@ -444,13 +446,13 @@ export function parseDate(str){
   
   // this day of the week
   // TODO add this as an option
-  let daysOfWeekNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const daysOfWeekNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   if(!dateFound){
       for(let i=0; i < daysOfWeekNames.length; i++){
-          let dayStr = daysOfWeekNames[i];
+          const dayStr = daysOfWeekNames[i];
           
-          let splitIndex = 3;
-          let thisDayRegExp = RegExp(dayStr.substring(0, splitIndex) + "(" + dayStr.substring(splitIndex) + "){0,1}\\s", "i");
+          const splitIndex = 3;
+          const thisDayRegExp = RegExp(dayStr.substring(0, splitIndex) + "(" + dayStr.substring(splitIndex) + "){0,1}\\s", "i");
           // res = thisDayRegExp.exec("'Sun day', 'Monday ', 'Tuesday ', 'Wed nesday', 'Thurs day', 'Fri day', 'Sat urday'")
           // console.log(res);
           res = thisDayRegExp.exec(str);
@@ -458,19 +460,19 @@ export function parseDate(str){
           if(dayStr === "Tuesday"){
               if(res === null){
                   // Tues
-                  let tuesRegExp = RegExp("Tues\\s", "i");
+                  const tuesRegExp = RegExp("Tues\\s", "i");
                   console.log(tuesRegExp.exec("tues tuesday"));
                   res = tuesRegExp.exec(str);
               }
           }else if(dayStr === "Wednesday"){
               if(res === null){
-                  let wedsRegExp = RegExp("Weds\\s", "i");
+                  const wedsRegExp = RegExp("Weds\\s", "i");
                   res = wedsRegExp.exec(str);
               }
           }else if(dayStr === "Thursday"){
               if(res === null){
                   // Thur/Thurs
-                  let thursRegExp = RegExp("Thur[s]{0,1}\\s", "i");
+                  const thursRegExp = RegExp("Thur[s]{0,1}\\s", "i");
                   res = thursRegExp.exec(str);
               }
           }
@@ -483,7 +485,7 @@ export function parseDate(str){
                   daysFromToday += 7;
               }
               
-              let dateWeekday = new Date();
+              const dateWeekday = new Date();
 
               dateWeekday.setDate(dateNow.getDate() + daysFromToday);
 
@@ -520,7 +522,7 @@ export function parseTime(str){
   
   // 7pm or 7 pm 7:30pm
   // TODO more sophisticated time parsing (99 is not valid)
-  let timeAMRegExp = /[01]{0,1}\d(:\d\d){0,1}\s{0,1}am\s/i;
+  const timeAMRegExp = /[01]{0,1}\d(:\d\d){0,1}\s{0,1}am\s/i;
   let res = timeAMRegExp.exec(str);
   let hours, minutes;
 
@@ -540,7 +542,7 @@ export function parseTime(str){
   }
 
   if(!timeFound){
-      let timePMRegExp = /[01]{0,1}\d(:\d\d){0,1}\s{0,1}pm\s/i;
+      const timePMRegExp = /[01]{0,1}\d(:\d\d){0,1}\s{0,1}pm\s/i;
       res = timePMRegExp.exec(str);
       if(res !== null){
           console.log(res);
@@ -562,7 +564,7 @@ export function parseTime(str){
   
   // 23:47
   if(!timeFound){
-      let hhmmRegExp = /([012]{0,1}\d:\d\d)\s/i;
+      const hhmmRegExp = /([012]{0,1}\d:\d\d)\s/i;
       res = hhmmRegExp.exec(str);
 
       if(res !== null){

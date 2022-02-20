@@ -10,31 +10,31 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { TableRow, TableCell } from "@mui/material";
 
 function deleteTodo(todo, todoFilePath){
-    let todoDoc = doc(collection(fs, todoFilePath), todo.id);
+    const todoDoc = doc(collection(fs, todoFilePath), todo.id);
     console.log(todoDoc.id, todoDoc);
     deleteDoc(todoDoc);
 }
 
 function completeTodo(todo, todoFilePath){
     // TODO COMPLETE SEEMS TO BE BUGGY!!!
-    let todoDoc = doc(collection(fs, todoFilePath), todo.id);
+    const todoDoc = doc(collection(fs, todoFilePath), todo.id);
     console.log("completeTodo", todoDoc.id, todoDoc, "from " + todo.complete + " to " + !todo.complete);
     updateDoc(todoDoc, {complete: !todo.complete});
     
     // // https://stackoverflow.com/questions/29537299/react-how-to-update-state-item1-in-state-using-setstate
-    // let foundIndex = this.state.todoList.find((todo) => todo.id === todo.id)
+    // const foundIndex = this.state.todoList.find((todo) => todo.id === todo.id)
     
-    // let todoListCopy = [...this.state.todoList]
+    // const todoListCopy = [...this.state.todoList]
     // todo.complete = !todo.complete // update todo item
     // todoListCopy[foundIndex] = todo
     // this.setState({todoList: todoListCopy})
 }
 
 function editTodo(todo, item, todoFilePath){
-    let todoDoc = doc(collection(fs, todoFilePath), todo.id);
+    const todoDoc = doc(collection(fs, todoFilePath), todo.id);
     console.log(todoDoc.id, todoDoc);
 
-    let updatedData = prompt("Please update " + item, todo[item]);
+    const updatedData = prompt("Please update " + item, todo[item]);
 
     if(updatedData !== null)
         updateDoc(todoDoc, {[item]: updatedData});

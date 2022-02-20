@@ -98,7 +98,7 @@ class CalendarIntegration extends React.Component{
     // the show cal checkboxes button
     // should only show when signed in
     handleShowCalClick(){
-        let show = !this.state.showCalendars;
+        const show = !this.state.showCalendars;
         if(show){
             getCalendarList((cals) => {
                 this.setState({calendarsAvailable: cals});
