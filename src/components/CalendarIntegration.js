@@ -12,6 +12,7 @@ function LoginButton(props){
             variant='contained'
             id='authorize_button'
             onClick={props.onClick}
+            className="topRight"
         >
             Connect to GCAL
         </Button>
@@ -28,6 +29,7 @@ function SignoutButton(props){
             variant='contained'
             id='signout_button'
             onClick={props.onClick}
+            className="topRight"
         >
             Disconnect Google Calendar
         </Button>
@@ -43,6 +45,7 @@ function ShowCalendarButton(props){
     return (
         <Button
             onClick={props.onClick}
+            className="topRight"
         >
             Show / Hide Calendar Checkboxes
         </Button>

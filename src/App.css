@@ -66,6 +66,18 @@ body {
   padding: 0%;
 }
 
+.topRight{
+  position: fixed;
+  float: right;
+}
+.calendarChecklist{
+  margin-left: 300px;
+  padding: 1%;
+  /* means relative to whatever position it would have been */
+  position: relative;
+  display:inline-block;
+}
+
 .todoapp {
   /* width: 90%; */
   /* width: 100%; */

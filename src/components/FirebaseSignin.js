@@ -10,6 +10,7 @@ function FirebaseSignInButton(props){
           variant="contained"
           // id="ahhhhhhhhhhh"
           onClick={props.onClick}
+          className="topRight"
       >
           Firebase Sign In
       </Button>
@@ -22,6 +23,7 @@ function FirebaseSignOutButton(props){
           variant="contained"
           // id="ouuuutt"
           onClick={props.onClick}
+          className="topRight"
       >
           Firebase Sign Out
       </Button>

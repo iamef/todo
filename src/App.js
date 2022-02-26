@@ -83,6 +83,17 @@ function App() {
       <div className="app">
         <Sidebar/>
         
+        <FirebaseSignin
+          firebaseSignedIn={firebaseState.firebaseSignedIn}
+          className="topRight" 
+        />
+        <CalendarIntegration 
+          gapiLoaded={gapiState.gapiLoaded} 
+          gapiSignedIn={gapiState.gapiSignedIn}
+          userFirebasePath={firebaseState.userFilePath}
+          className="topRight" 
+        />
+
         <TodoApp 
           gapiLoaded={gapiState.gapiLoaded} 
           gapiSignedIn={gapiState.gapiSignedIn}
@@ -90,15 +101,7 @@ function App() {
           userFirebasePath={firebaseState.userFilePath}
         />
 
-        <FirebaseSignin
-          firebaseSignedIn={firebaseState.firebaseSignedIn}
-        />
-        <CalendarIntegration 
-          gapiLoaded={gapiState.gapiLoaded} 
-          gapiSignedIn={gapiState.gapiSignedIn}
-          userFirebasePath={firebaseState.userFilePath}
-        />
-
+        
         
       </div>
       {/* <script async defer src="https://apis.google.com/js/api.js"

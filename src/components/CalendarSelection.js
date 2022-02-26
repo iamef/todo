@@ -104,7 +104,7 @@ class CalendarSelection extends React.Component{
     if(this.props.calendars === undefined) return null;
 
     return (
-      <>
+      <div className="calendarChecklist">
       <FormGroup>
           { this.props.calendars.map((calendar) => 
               <FormControlLabel 
@@ -113,6 +113,7 @@ class CalendarSelection extends React.Component{
                   label= {calendar.summary}
                   key= {calendar.id}
                   onChange={ (e) => this.handleCheckChange(e, calendar.id) }
+                  // className="calendarChecklist"
               /> 
           ) }
       </FormGroup>
@@ -121,7 +122,7 @@ class CalendarSelection extends React.Component{
       >
         Submit
       </Button>
-      </>
+      </div>
     );
   }
 }
